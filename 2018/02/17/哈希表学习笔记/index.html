@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.1.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.1.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.1.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="MIT《算法导论》课程第7课《哈希表》学习笔记. 哈希表 用于解决Symbol-table问题  设表S有n条记录，每条记录为x，包含键key和值value。   在哈希表上的操作Insert(S, x)用于在哈希表S中插入一条记录x，Delete(S, x)用于在S中删除一条记录x，Search(S, k)在S中搜索以k为键值的记录，如果找到的返回该记录，如果没有找到则返回空。 直接映射法假设k">
+<meta name="keywords" content="Data Structure">
+<meta property="og:type" content="article">
+<meta property="og:title" content="哈希表学习笔记">
+<meta property="og:url" content="https://andrewsher.github.io/2018/02/17/哈希表学习笔记/index.html">
+<meta property="og:site_name" content="祁可翰的Blog">
+<meta property="og:description" content="MIT《算法导论》课程第7课《哈希表》学习笔记. 哈希表 用于解决Symbol-table问题  设表S有n条记录，每条记录为x，包含键key和值value。   在哈希表上的操作Insert(S, x)用于在哈希表S中插入一条记录x，Delete(S, x)用于在S中删除一条记录x，Search(S, k)在S中搜索以k为键值的记录，如果找到的返回该记录，如果没有找到则返回空。 直接映射法假设k">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-02-17T12:34:46.947Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="哈希表学习笔记">
+<meta name="twitter:description" content="MIT《算法导论》课程第7课《哈希表》学习笔记. 哈希表 用于解决Symbol-table问题  设表S有n条记录，每条记录为x，包含键key和值value。   在哈希表上的操作Insert(S, x)用于在哈希表S中插入一条记录x，Delete(S, x)用于在S中删除一条记录x，Search(S, k)在S中搜索以k为键值的记录，如果找到的返回该记录，如果没有找到则返回空。 直接映射法假设k">
+
+
+
+
+
+
+  <link rel="canonical" href="https://andrewsher.github.io/2018/02/17/哈希表学习笔记/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>哈希表学习笔记 | 祁可翰的Blog</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">祁可翰的Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+</li>
+
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+</li>
+
+      
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2018/02/17/哈希表学习笔记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁可翰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="祁可翰的Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">哈希表学习笔记
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+                
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-02-17T08:59:43+08:00">2018-02-17</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>MIT《算法导论》课程第7课《哈希表》学习笔记.</p>
+<h2 id="哈希表"><a href="#哈希表" class="headerlink" title="哈希表"></a>哈希表</h2><ol>
+<li><p>用于解决Symbol-table问题</p>
+</li>
+<li><p>设表S有n条记录，每条记录为x，包含键key和值value。</p>
+</li>
+</ol>
+<h3 id="在哈希表上的操作"><a href="#在哈希表上的操作" class="headerlink" title="在哈希表上的操作"></a>在哈希表上的操作</h3><p><code>Insert(S, x)</code>用于在哈希表S中插入一条记录x，<code>Delete(S, x)</code>用于在S中删除一条记录x，<code>Search(S, k)</code>在S中搜索以k为键值的记录，如果找到的返回该记录，如果没有找到则返回空。</p>
+<h3 id="直接映射法"><a href="#直接映射法" class="headerlink" title="直接映射法"></a>直接映射法</h3><p>假设key来自一个含有m个元素的集合$U={0, 1, 2, \dots,m-1}$，设这些键值相互独立。</p>
+<p>建立一个从0到m-1的数组$T[0\cdots m-1]$来表示S。</p>
+<p>$$<br>T[k]=<br>\begin{cases}<br>x,&amp;\mathtt{if}&amp;x\in S &amp; \mathtt{and} &amp; \mathtt{key}[x]=k \<br>\mathtt{nil},&amp;其他<br>\end{cases}<br>$$</p>
+<p>时间复杂度$O(1)$</p>
+<h3 id="哈希法"><a href="#哈希法" class="headerlink" title="哈希法"></a>哈希法</h3><p>运用一个哈希函数$H$来“随机地”将键(key)映射到槽(slot)。当一个键被映射到一个已经存在记录的槽时，碰撞(collision)就发生了。</p>
+<h2 id="链接法"><a href="#链接法" class="headerlink" title="链接法"></a>链接法</h2><p>把映射到同一槽的键值保存在链表中。</p>
+<h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>最坏情况：S中所有键映射到同一个槽，此时的时间复杂度$\Theta(n)$，其中$n=|S|$。</p>
+<p>平均情况：假设S中的每一个键有同样的概率被映射到任意一个槽中。定义一个存放n个键、映射到m个槽的哈希表，其装载因子$\alpha=\frac{n}{m}$（平均每个槽里键的数量）。</p>
+<p>预期的失败搜索次数$=\Theta(1+\alpha)$</p>
+<p>当$\alpha = \Theta(1)$，即$n=O(m)$时，预期的搜索次数为$\Theta(1)$。</p>
+<h2 id="选择一个哈希函数"><a href="#选择一个哈希函数" class="headerlink" title="选择一个哈希函数"></a>选择一个哈希函数</h2><p>我们期望选择这样的哈希函数，它能够把键(key)均匀地映射到槽(slot)里，而键本身的一些分布的特性不会影响它在哈希表中的均匀性。</p>
+<h3 id="除法哈希法-Division-method"><a href="#除法哈希法-Division-method" class="headerlink" title="除法哈希法(Division method)"></a>除法哈希法(Division method)</h3><p>$$<br>h(k) = k \pmod m，其中m是槽的数量<br>$$</p>
+<p>注意不要选择太小的$m$值作为除数。如当除数=2，key都为偶数时，永远用不到奇数槽。</p>
+<p>当$m=2^r$时，哈希表取决于k的二进制的某些位，而同类数据的二进制形式常常存在某种规律性（“随机性”不好），这样的哈希函数就不好。</p>
+<p>好的方法是选取指数作为除数，不要太接近2的幂或10的幂。</p>
+<h3 id="乘法哈希法-Multiplication-method"><a href="#乘法哈希法-Multiplication-method" class="headerlink" title="乘法哈希法 Multiplication method"></a>乘法哈希法 Multiplication method</h3><p>设槽的数量$m=2^r$，计算机的字长为$w$。选取如下的哈希函数：</p>
+<p>$$<br>h(k)=(A \cdot k \pmod {2^w}) \mathtt{rsh}(w-r)<br>$$</p>
+<p>其中A是一个奇数，且$2^{w-r} \lt A \lt 2^w$，“rsh”表示二进制右移运算。A的取值不能太接近$2^{w-r}$或$2^w$。</p>
+<p>对于计算机来说，先乘以$A$再对$2^w$取余比直接取余快。</p>
+<p>如，取$m=8=2^3，w=7，A=(1011001)_2$。</p>
+<center><br>$$<br>A \cdot k = (10010100110011)_2<br>$$<br></center>
+
+<p>对$2^w$取模，即取二进制的后$w$位，得到</p>
+<center><br>$$<br>(0110011)_2<br>$$<br></center>
+
+<p>右移$w-r=7-3=4$位，得到</p>
+<center><br>$$<br>(011)_2<br>$$<br></center>
+
+<p>于是$h(k)=(011)_2$</p>
+<h2 id="开放寻址法-Open-addressing"><a href="#开放寻址法-Open-addressing" class="headerlink" title="开放寻址法 Open addressing"></a>开放寻址法 Open addressing</h2><p>在这种方法里，没有链表。这种方法要求系统地探查哈希表，直到找到一个空的槽为止。</p>
+<h3 id="探查方法"><a href="#探查方法" class="headerlink" title="探查方法"></a>探查方法</h3><p>线性探查：</p>
+<p>$$<br>h(k,i)=(h(k,0)+i) \pmod m<br>$$</p>
+<p>这种方法会遇到“一次集群”的问题，即一段区域内的槽都被占满。</p>
+<p>二次哈希：</p>
+<p>$$<br>h(k,i)=[h_1(k)+i\cdot h_2(k)] \pmod m<br>$$</p>
+<p>通常选择$m=w^r$，且$h_2(k)$总为奇数。</p>
+<h3 id="开放探查的分析"><a href="#开放探查的分析" class="headerlink" title="开放探查的分析"></a>开放探查的分析</h3><p>假设“均匀哈希”，即所有键都均等地有$m!$种探查序列，且每个键都相互独立。</p>
+<p>如果$\alpha \lt 1$（即$n \lt m$），则预期的探查次数$\le \frac{1}{1-\alpha}$。</p>
+<p>证明：</p>
+<p>假设一个失败的探查案例，一次的探查是必须的，发生碰撞的概率是$\frac{n}{m}$。第二次探查是必须的，发生碰撞的概率是$\frac{n-1}{m-1}$。第三次的探查是必须的，发生碰撞的概率是$\frac{n-2}{m-2}$。</p>
+<p>注意到$\frac{n-i}{m-i} \lt \frac{n}{m} = \alpha$, for $i$ = $1,2,\dots,n-1$。</p>
+<p>那么，预期的探查次数为：</p>
+<p>$$<br>\begin{align}<br>&amp; 1+\frac{n}{m}(1+\frac{n-1}{m-1}(1+\frac{n-2}{m-2}(\dots (1+\frac{1}{m-n})\dots))) \<br>\le &amp; 1+\alpha(1+\alpha(1+\alpha(\dots(1+\alpha)\dots))) \<br>\le &amp; 1+\alpha + \alpha^2 + \alpha^3 + \dots \<br>= &amp; \sum \limits_{i=0} \limits^{\infty} \alpha^i \<br>= &amp; \frac{1}{1-\alpha}<br>\end{align}<br>$$</p>
+<p>证毕。</p>
+<p>$\alpha \lt 1$为常数，平均需要$\Theta(1)$次探查。</p>
+<p>$\alpha=0.5$，表示哈希表有50%为空，平均需要2次探查。</p>
+<p>$\alpha = 0.1$，平均需要10次探查。</p>
+<p>如果$\alpha = 1$，哈希表的利用率为100%，理论上的平均探查次数为$\infty$。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Data-Structure/" rel="tag"># Data Structure</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/14/顺序统计与中值学习笔记/" rel="next" title="顺序统计与中值学习笔记">
+                <i class="fa fa-chevron-left"></i> 顺序统计与中值学习笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/02/18/全域哈希与完全哈希学习笔记/" rel="prev" title="全域哈希与完全哈希学习笔记">
+                全域哈希与完全哈希学习笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">祁可翰</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">15</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#哈希表"><span class="nav-number">1.</span> <span class="nav-text">哈希表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#在哈希表上的操作"><span class="nav-number">1.1.</span> <span class="nav-text">在哈希表上的操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#直接映射法"><span class="nav-number">1.2.</span> <span class="nav-text">直接映射法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#哈希法"><span class="nav-number">1.3.</span> <span class="nav-text">哈希法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#链接法"><span class="nav-number">2.</span> <span class="nav-text">链接法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#分析"><span class="nav-number">2.1.</span> <span class="nav-text">分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#选择一个哈希函数"><span class="nav-number">3.</span> <span class="nav-text">选择一个哈希函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#除法哈希法-Division-method"><span class="nav-number">3.1.</span> <span class="nav-text">除法哈希法(Division method)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#乘法哈希法-Multiplication-method"><span class="nav-number">3.2.</span> <span class="nav-text">乘法哈希法 Multiplication method</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#开放寻址法-Open-addressing"><span class="nav-number">4.</span> <span class="nav-text">开放寻址法 Open addressing</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#探查方法"><span class="nav-number">4.1.</span> <span class="nav-text">探查方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开放探查的分析"><span class="nav-number">4.2.</span> <span class="nav-text">开放探查的分析</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">祁可翰</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Muse</a> v6.1.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.1.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

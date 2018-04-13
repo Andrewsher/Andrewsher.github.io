@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.1.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.1.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.1.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="MIT《算法导论》课程第8课《全域哈希与完全哈希》学习笔记. 哈希的一个根本缺陷 对任意的一个哈希函数，都存在一个不好的键集，其中的所有的键都被映射到同一个槽。 解决方法：随机地选择哈希函数，形成“全域哈希”。 全域哈希 Universal Hashing令$U$是键的集合，$H$是哈希函数的有限集合，$H$中的哈希函数将$U$映射到${0,1,\dots,m-1}$。如果满足：对所有的两两互异的">
+<meta name="keywords" content="Data Structure">
+<meta property="og:type" content="article">
+<meta property="og:title" content="全域哈希与完全哈希学习笔记">
+<meta property="og:url" content="https://andrewsher.github.io/2018/02/18/全域哈希与完全哈希学习笔记/index.html">
+<meta property="og:site_name" content="祁可翰的Blog">
+<meta property="og:description" content="MIT《算法导论》课程第8课《全域哈希与完全哈希》学习笔记. 哈希的一个根本缺陷 对任意的一个哈希函数，都存在一个不好的键集，其中的所有的键都被映射到同一个槽。 解决方法：随机地选择哈希函数，形成“全域哈希”。 全域哈希 Universal Hashing令$U$是键的集合，$H$是哈希函数的有限集合，$H$中的哈希函数将$U$映射到${0,1,\dots,m-1}$。如果满足：对所有的两两互异的">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/9654612-3470b8c16f323f60.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/243">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/9654612-81c77d995083ef0e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/482">
+<meta property="og:updated_time" content="2018-02-18T02:29:18.483Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="全域哈希与完全哈希学习笔记">
+<meta name="twitter:description" content="MIT《算法导论》课程第8课《全域哈希与完全哈希》学习笔记. 哈希的一个根本缺陷 对任意的一个哈希函数，都存在一个不好的键集，其中的所有的键都被映射到同一个槽。 解决方法：随机地选择哈希函数，形成“全域哈希”。 全域哈希 Universal Hashing令$U$是键的集合，$H$是哈希函数的有限集合，$H$中的哈希函数将$U$映射到${0,1,\dots,m-1}$。如果满足：对所有的两两互异的">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/9654612-3470b8c16f323f60.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/243">
+
+
+
+
+
+
+  <link rel="canonical" href="https://andrewsher.github.io/2018/02/18/全域哈希与完全哈希学习笔记/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>全域哈希与完全哈希学习笔记 | 祁可翰的Blog</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">祁可翰的Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+</li>
+
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+</li>
+
+      
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2018/02/18/全域哈希与完全哈希学习笔记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁可翰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="祁可翰的Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">全域哈希与完全哈希学习笔记
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+                
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-02-18T08:55:36+08:00">2018-02-18</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>MIT《算法导论》课程第8课《全域哈希与完全哈希》学习笔记.</p>
+<p><em>哈希的一个根本缺陷</em></p>
+<p>对任意的一个哈希函数，都存在一个不好的键集，其中的所有的键都被映射到同一个槽。</p>
+<p>解决方法：随机地选择哈希函数，形成“全域哈希”。</p>
+<h2 id="全域哈希-Universal-Hashing"><a href="#全域哈希-Universal-Hashing" class="headerlink" title="全域哈希 Universal Hashing"></a>全域哈希 Universal Hashing</h2><p>令$U$是键的集合，$H$是哈希函数的有限集合，$H$中的哈希函数将$U$映射到${0,1,\dots,m-1}$。如果满足：对所有的两两互异的键$x$和$y$，有$|{h\in H : h(x) = h(y) } | = \frac{|H|}{m}$，则称$H$是全域的。</p>
+<p>从另一个角度来看，如果$h$从$H$里随机地选取，则$x$和$y$发生碰撞的概率是$\frac{1}{m}$。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9654612-3470b8c16f323f60.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/243" alt=""></p>
+<p>从$H$里随机地选取一个$h$，将$n$个键映射到$m$个槽，对于给定的键$x$，期望的碰撞次数$\lt \frac{n}{m} = \alpha$。 证明如下。</p>
+<p>设$C_x$为随机变量，用来表示哈希表$T$中与$x$发生碰撞的总次数。它实际上是指示器随机变量之和。</p>
+<p>令</p>
+<p>$$<br>C_{x,y}<br>\begin{cases}<br>1,&amp; 如果h(x)=h(y) \<br>0,&amp; 其他<br>\end{cases}<br>$$</p>
+<p>则</p>
+<p>$$<br>E[C_{x,y}] = \frac{1}{m}<br>$$</p>
+<p>$$<br>C_x=\sum\limits_{y \in T - {x}} C_{x,y}<br>$$</p>
+<p>$$<br>\begin{align}<br>E[C_x] &amp;= E\left[\sum\limits_{y \in T - {x}} C_{x,y}\right] \<br> &amp;= \sum\limits_{y \in T - {x}} E[C_{x, y}] \<br> &amp;= \sum\limits_{y \in T - {x}} \frac{1}{m} \<br> &amp;=\frac{n-1}{m} \<br> &amp; \lt frac{n}{m} \<br> &amp;= \alpha<br>\end{align}<br>$$</p>
+<p>证毕.</p>
+<h2 id="构建一个全域哈希"><a href="#构建一个全域哈希" class="headerlink" title="构建一个全域哈希"></a>构建一个全域哈希</h2><p>令槽数$m$为质数。将全域里的任意键$k$分解成$r+1$位的$m$进制表示，即：</p>
+<p>$$<br>k = &lt;k_0,k_1,\dots,k_r&gt;,0 \le k_i \le m - 1<br>$$</p>
+<p>随机地选择一个数$a = &lt;a_0, a_1, \dots, a_r&gt;$，其中每一个$a_i$都随机地从${0, 1, \dots, m - 1}$中选取。</p>
+<p>定义哈希函数$h_a(k) = \left( \sum \limits_{l = 0} \limits^r a_ik_i \right) \pmod m$。</p>
+<p>函数集$H = {h_a}$，其大小$|H| = m ^ {r +1}$，此时的$H$是全域的，证明如下。</p>
+<p>令$x = &lt;x_0, x_1, \dots, x_r&gt;, y = &lt;y_0, y_1, \dots, y_r&gt;$位两个互异的键，则$x$和$y$至少有以为不同，不妨设它们在第$0$位不相同，即$x_0 \ne y_0$.</p>
+<p>设$H$中存在函数$h_a$使得$x$和$y$发生碰撞.</p>
+<p>于是有：</p>
+<p>$$<br>\begin{align}<br> &amp; h_a(x) = h_a(y) \<br>\Rightarrow &amp; \sum\limits_{i = 0}\limits^r a_ix_i \equiv \sum\limits_{i=0}\limits^r a_iy_i \pmod m \<br>\Rightarrow &amp; \sum\limits_{i=0}\limits^r a_i(x_i - y_i) \equiv 0 \pmod m \<br>\Rightarrow &amp; a_0(x_0-y_0) + \sum\limits_{i=1}\limits^r a_i(x_i-y_i) \equiv 0 \pmod m \<br>\Rightarrow &amp; a_0(x_0-y_0) \equiv - \sum\limits_{i=1}\limits^r a_i(x_i-y_i) \pmod m<br>\end{align}<br>$$</p>
+<p><em>Number Theory Fact</em></p>
+<p>令$m$为质数，对任意的$z \in Z_m$（除$m$取余的整数）且$z \neq 0 \pmod m$，存在唯一的$z^{-1} \in Z_m$使得$z \cdot z^{-1} \equiv 1 \pmod m$。如$m=7$，有：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">$z$</th>
+<th style="text-align:center">1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">$z^{-1}$</td>
+<td style="text-align:center">1</td>
+<td>4</td>
+<td>5</td>
+<td>2</td>
+<td>3</td>
+<td>6</td>
+</tr>
+</tbody>
+</table>
+<p>由于$x_0 \ne y_0$，故而$\exists (x_0 - y_0) ^ {-1}$.</p>
+<p>$$<br>\Rightarrow a_0 \equiv \left(-\sum\limits_{i=0}\limits^r a_i(x_i-y_i)\right)\cdot (x_0-y_0)^{-1} \pmod m<br>$$</p>
+<p>因此，对于任意选定的$a_0,a_1,\dots,a_r$，在$a_0$的所有$m$种选择中，有且只有一种选择导致发生碰撞，其余的$m-1$种选择不会导致碰撞。</p>
+<p>因此，导致$x$和$y$碰撞的$h_a$的数目为：</p>
+<p>$$<br>\begin{align}<br>&amp; m \cdot m \cdot \dots \cdot 1 \<br>=&amp; m^r \<br>=&amp; \frac{|H|}{m}<br>\end{align}<br>$$</p>
+<h2 id="完全哈希-Perfect-Hashing"><a href="#完全哈希-Perfect-Hashing" class="headerlink" title="完全哈希 Perfect Hashing"></a>完全哈希 Perfect Hashing</h2><p>给定$n$个键，创建一个静态的哈希表，其大小$m=O(n)$，使得在最坏情况下，查找的时间为$O(1)$。</p>
+<p>关键在于使用一个双级结构，并且每一级都使用全域哈希。通过这种方法，我们可以做到在第二级哈希表没有碰撞。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9654612-81c77d995083ef0e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/482" alt="完全哈希示意图"></p>
+<p>如果有$n_i$个项被同时哈希到第1级的槽$i$，那么有$m_i=n_i^2$个槽在第二级的哈希表中。</p>
+<h3 id="对第二级的分析"><a href="#对第二级的分析" class="headerlink" title="对第二级的分析"></a>对第二级的分析</h3><p>如果我们把$n$个键映射到$m=n^2$个槽中，使用的哈希函数$h$是从全域集合$H$中随机挑选的，那么期望的碰撞次数小于$\frac{1}{2}$。证明如下。</p>
+<p>对于两个给定的键，经过$h \in H$哈希后，碰撞的概率为$\frac{1}{m} = \frac{1}{n^2}$。而一共有$C_2^n$对键。</p>
+<p>因此，</p>
+<p>$$<br>\begin{align}<br>E[碰撞次数] &amp;= C^n_2 \cdot \frac{1}{n^2} \<br> &amp;= \frac{n(n-1)}{2} \cdot \frac{1}{n^2} \<br> &amp; \lt \frac{1}{2}<br>\end{align}<br>$$</p>
+<p>证毕.</p>
+<p><em>引理：马尔科夫不等式</em></p>
+<p>对下界为$0$的随机变量$x$，</p>
+<p>$$<br>P(x \ge t) \le \frac{E[x]}{t}<br>$$</p>
+<p>证明如下。</p>
+<p>$$<br>\begin{align}<br>E[x] &amp;= \sum\limits_{x=0}\limits^\infty x \cdot P(X=x) \<br> &amp; \ge \sum\limits_{x=t}\limits^\infty x \cdot P(X=x) \<br>&amp; \ge \sum\limits_{x=t}\limits^\infty t \cdot P(X=x) \<br> &amp;= t \cdot P(X\ge x)<br>\end{align}<br>$$</p>
+<p>引理证毕.</p>
+<p>于是，$P(没有碰撞)\ge \frac{1}{2}$.证明如下.</p>
+<p>$$<br>\begin{align}<br>P(至少1个碰撞) &amp; \le \frac{E[碰撞次数]} {1} \<br> &amp; \le \frac{1}{2}<br>\end{align}<br>$$</p>
+<p>证毕.</p>
+<p>为找到良好的第2级的哈希函数，只需要随机测试几个，因为至少有一半的哈长局势都能保证不会发生碰撞。</p>
+<h3 id="空间复杂度分析"><a href="#空间复杂度分析" class="headerlink" title="空间复杂度分析"></a>空间复杂度分析</h3><p>整个二级表的空间复杂度为$\Theta(n)$.证明如下.</p>
+<p>对于第1级，选择$m=n$.令$n_i$作为被哈希到槽$i$里的键的数量。</p>
+<p>对于第2级的每个哈希表$S_i$，选择$m_i=n_i^2$.</p>
+<p>于是：</p>
+<p>$$<br>\begin{align}<br>E[总的存储空间]&amp;=n+E\left[\sum\limits_{i=0}\limits^{m-1} \Theta(n_i^2)\right]  \<br> &amp;=\Theta(n)(由桶排序分析可得)<br>\end{align}<br>$$</p>
+<p>证毕.</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Data-Structure/" rel="tag"># Data Structure</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/17/哈希表学习笔记/" rel="next" title="哈希表学习笔记">
+                <i class="fa fa-chevron-left"></i> 哈希表学习笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/03/整数与浮点数的运算/" rel="prev" title="整数与浮点数的运算">
+                整数与浮点数的运算 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">祁可翰</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">15</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#全域哈希-Universal-Hashing"><span class="nav-number">1.</span> <span class="nav-text">全域哈希 Universal Hashing</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#构建一个全域哈希"><span class="nav-number">2.</span> <span class="nav-text">构建一个全域哈希</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#完全哈希-Perfect-Hashing"><span class="nav-number">3.</span> <span class="nav-text">完全哈希 Perfect Hashing</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#对第二级的分析"><span class="nav-number">3.1.</span> <span class="nav-text">对第二级的分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#空间复杂度分析"><span class="nav-number">3.2.</span> <span class="nav-text">空间复杂度分析</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">祁可翰</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Muse</a> v6.1.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.1.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

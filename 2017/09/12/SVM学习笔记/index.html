@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.1.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.1.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.1.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="Coursera平台 Andrew Ng《Machine Learning》课程SVM一章（第7周）学习笔记。对SVM的初步理解：一种二类分类模型，在特征空间上使类到边界间隔最大。 从 Logistic Regression 到 Support Vector Machine对 Logistic Regression，我们有： $$g(z) = h_\theta(x) = \frac{1}{1 +">
+<meta name="keywords" content="Machine Learning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SVM学习笔记">
+<meta property="og:url" content="https://andrewsher.github.io/2017/09/12/SVM学习笔记/index.html">
+<meta property="og:site_name" content="祁可翰的Blog">
+<meta property="og:description" content="Coursera平台 Andrew Ng《Machine Learning》课程SVM一章（第7周）学习笔记。对SVM的初步理解：一种二类分类模型，在特征空间上使类到边界间隔最大。 从 Logistic Regression 到 Support Vector Machine对 Logistic Regression，我们有： $$g(z) = h_\theta(x) = \frac{1}{1 +">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2017-09-12T16:52:10.127Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SVM学习笔记">
+<meta name="twitter:description" content="Coursera平台 Andrew Ng《Machine Learning》课程SVM一章（第7周）学习笔记。对SVM的初步理解：一种二类分类模型，在特征空间上使类到边界间隔最大。 从 Logistic Regression 到 Support Vector Machine对 Logistic Regression，我们有： $$g(z) = h_\theta(x) = \frac{1}{1 +">
+
+
+
+
+
+
+  <link rel="canonical" href="https://andrewsher.github.io/2017/09/12/SVM学习笔记/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>SVM学习笔记 | 祁可翰的Blog</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">祁可翰的Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+</li>
+
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+</li>
+
+      
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2017/09/12/SVM学习笔记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁可翰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="祁可翰的Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">SVM学习笔记
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+                
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-12T21:49:26+08:00">2017-09-12</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>Coursera平台 Andrew Ng《Machine Learning》课程SVM一章（第7周）学习笔记。<br>对SVM的初步理解：一种二类分类模型，在特征空间上使类到边界间隔最大。</p>
+<h2 id="从-Logistic-Regression-到-Support-Vector-Machine"><a href="#从-Logistic-Regression-到-Support-Vector-Machine" class="headerlink" title="从 Logistic Regression 到 Support Vector Machine"></a>从 Logistic Regression 到 Support Vector Machine</h2><p>对 Logistic Regression，我们有：</p>
+<center><br>$$<br>g(z) = h_\theta(x) = \frac{1}{1 + e^{-\theta^Tx}}<br>$$<br>$$<br>z = \theta^Tx<br>$$<br></center>
+
+<p>预测“1”当$h_\theta(x)\ge 0.5$或$z\ge 0$时；<br>预测“0”当$h_\theta(x)\lt 0.5$或$z\lt 0$时。</p>
+<p>训练过程：</p>
+<center><br>$$<br>\min\limits_\theta\frac{1}{m}\left[\sum\limits_{i=1}\limits^{m}y^{(i)}\left(-\log h_\theta\left(x^{(i)}\right)\right)+\left(1-y^{(i)}\right)\left(-\log\left(1-h_\theta\left(x^{(i)}\right)\right)\right)\right]+\frac{\lambda}{2m}\sum\limits_{j=1}\limits^{n}\theta_j^2<br>$$<br></center>
+
+<p>对SVM，当$y=1$时，我们希望代价函数为$cost_1(z)$，当$z\ge 1$时，$cost_1(z)=0$；当$y=0$时，我们希望代价函数为$cost_0(z)$，当$z\le -1$时，$cost_0(z)=0$。</p>
+<p>利用$cost_1$和$cost_0$得到新的代价函数：</p>
+<center><br>$$<br>\frac{1}{m}\left[\sum\limits_{i=1}\limits^{m}y^{(i)}cost_1(z)+(1-y^{(i)})cost_0(z)\right]+\frac{\lambda}{2m}\sum\limits_{j=1}\limits^{n}\theta_j^2<br>$$<br></center>
+
+<p>可取：</p>
+<center><br>$$<br>cost_1(\theta^Tx^{(i)})=-\log h_\theta(x^{(i)})<br>$$<br>$$<br>cost_0(\theta^Tx^{(i)})=-\log (1-h_\theta(x^{(i)}))<br>$$<br></center>
+
+<p>消去$m$和第二项中的$\lambda$，则训练过程为：</p>
+<center><br>$$<br>\min\limits_\theta C\sum\limits_{i=1}\limits^{m}\left[y^{(i)}cost_1(\theta^Tx^{(i)})+(1-y^{(i)})cost_0(\theta^Tx^{(i)})\right] + \frac{1}{2}\sum\limits_{j=1}\limits^{n}\theta_j^2<br>$$<br></center>
+
+<p>训练过程以$\pm 1$为依据，预测“1”当$\theta^Tx\ge 0$时，预测“0”当$\theta^Tx\lt 0$时。</p>
+<h2 id="最大间隔分类器"><a href="#最大间隔分类器" class="headerlink" title="最大间隔分类器"></a>最大间隔分类器</h2><p>SVM可以尝试发现一个与样本数据集有最大间隔的分类边界。考虑SVM的训练过程：</p>
+<center><br>$$<br>\min\limits_\theta C\sum\limits_{i=1}\limits^{m}\left[y^{(i)}cost_1(\theta^Tx^{(i)})+(1-y^{(i)})cost_0(\theta^Tx^{(i)})\right] + \frac{1}{2}\sum\limits_{j=1}\limits^{n}\theta_j^2<br>$$<br></center>
+
+<p>如果我们找到了对应的参数$\theta$，使得$y=0$和$y=1$时上式的左边一项都尽量为0（即$y=0$时$\theta^Tx\le -1$，$y=1$时$\theta^Tx\ge 1$），则上式变为：</p>
+<center><br>$$<br>\min\limits_\theta \frac{1}{2} \sum\limits_{j=1}\limits^{n}\theta_j^2<br>$$<br>s.t.$\theta^Tx^{(i)}\ge 1$ if $y^{(i)}=1$, $\theta^Tx^{(i)}\le -1$ if $y^{(i)}=0$<br></center>
+
+<p>取向量$\vec\theta$和$\vec{x^{(i)}}$：</p>
+<center><br>$$<br>\vec\theta = \left(\begin{matrix} \theta_0 \ \theta_1 \ \theta_2 \ \vdots \ \theta_n \end{matrix}\right),\vec{x^{(i)}} = \left(\begin{matrix} 1\x^{(i)}_1 \ x^{(i)}_2 \ \vdots \ x^{(i)}_n \end{matrix}\right)<br>$$<br></center>
+
+<p>对于$y=1$一类，其“边缘”（接近分界）的数据，有$\theta^Tx^{(i)}=1$（取临界值），或$\vec\theta \vec{x^{(i)}}=1$。<br>又：$\min\limits_\theta \frac{1}{2}\sum\limits_{j=1}\limits^{n}\theta_j^2=\min\limits_\theta \frac{1}{2} \left|\left|\vec\theta\right|\right|^2$</p>
+<p>故判定边界（以$\vec\theta$为法向量）与$x^{(i)}$间隔最大。</p>
+<p>对于$y=0$一类，同理。</p>
+<h2 id="核函数"><a href="#核函数" class="headerlink" title="核函数"></a>核函数</h2><p>核函数可用于构建非线性的分类模型，用于计算新的特征。<br>选定“地标”(landscape)$l^{(1)},l^{(2)},l^{(3)}, \cdots$，给定训练实例$x$，计算$x$与$l^{(i)}$的“相似程度”作为新的特征$f_i$，$i=1,2,3,\cdots$。</p>
+<p>此时的SVM决策边界为$\theta^Tf$，其中</p>
+<center><br>$$<br>f=\left( \begin{matrix} 1 \ f_1 \ f_2 \ \vdots \ f_n \end{matrix} \right)<br>$$<br></center>
+
+<h3 id="高斯核函数"><a href="#高斯核函数" class="headerlink" title="高斯核函数"></a>高斯核函数</h3><center><br>$$<br>f_i=similarity(x,l^{(i)})=\exp\left(-\frac{||x-l^{(i)}||^2}{2\sigma}\right)<br>$$<br></center>
+
+<p>当$x$接近$l^{(i)}$时，$f_i\approx 1$；当$x$远离$l^{(i)}$时，$f_i\approx 0$。</p>
+<p>当$\theta^Tf\ge 0$时预测“1”；当$\theta^Tf\lt 0$时预测“0”。</p>
+<h3 id="l-i-的获取"><a href="#l-i-的获取" class="headerlink" title="$l^{(i)}$的获取"></a>$l^{(i)}$的获取</h3><p>设$m$为训练集的大小。</p>
+<ul>
+<li>给出${x^{(i)},y^{(i)}},i=1,2,\cdots,m$</li>
+<li>选择$l^{(i)}=x{(i)},i=1,2,\cdots,m$</li>
+<li>给出训练实例$x$，计算$f_i=similarity(x,l^{(i)}),i=1,2,\cdots,m$</li>
+</ul>
+<h3 id="具有核函数的SVM"><a href="#具有核函数的SVM" class="headerlink" title="具有核函数的SVM"></a>具有核函数的SVM</h3><p>其训练过程为：</p>
+<p><ceter><br>$$<br>\min\limits_\theta C \sum\limits_{i=1}\limits^{m} \left[y^{(i)}cost_1(\theta^Tf^{(i)}) + (1-y^{(i)})cost_0(\theta^Tf^{(i)})\right] + \frac{1}{2}\sum\limits_{j=1}\limits^{m}\theta_j^2<br>$$<br></ceter></p>
+<p>其中，</p>
+<center><br>$$<br>f^{(i)}= \left( \begin{matrix} 1 \ f^{(i)}_1 \ \vdots \ f^{(i)}_m \end{matrix} \right) \in \mathbb{R}^{m+1}  , f^{(i)}_i=1<br>$$<br></center>
+
+<h2 id="SVM的参数选择与应用"><a href="#SVM的参数选择与应用" class="headerlink" title="SVM的参数选择与应用"></a>SVM的参数选择与应用</h2><p>SVM参数选择：</p>
+<ul>
+<li>$C$较大，相当于$\lambda$较小，可能导致过拟合，high variance。</li>
+<li>$C$较小，相当于$\lambda$较大，可能导致欠拟合，high bias。</li>
+<li>$\sigma$较大，导致high bias。</li>
+<li>$\sigma$较小，导致high variance。</li>
+</ul>
+<p>使用SVM，需要选择参数$C$，选择核函数（常用高斯核函数（需要选择参数$\sigma$）、无核函数（“线性核函数”））。</p>
+<h2 id="Logistic-Regression-与-SVM-比较"><a href="#Logistic-Regression-与-SVM-比较" class="headerlink" title="Logistic Regression 与 SVM 比较"></a>Logistic Regression 与 SVM 比较</h2><p>设$m$为训练集大小，$n$为特征数。<br>一些普遍的准则：</p>
+<ul>
+<li>如果$n$（相较于$m$）很大，通常使用逻辑回归，或采用带线性核函数的SVM。</li>
+<li>如果$n$较小，$m$中等大小（如$n$为1000，$m$为10000），采用带高斯核函数的SVM。</li>
+<li>如果$n$较小，$m$较大，直接使用SVM会较慢。需要创建、增加更多的特征，然后使用逻辑回归，或带线性核函数的SVM。</li>
+</ul>
+<p>神经网络在上述情况下表现较好，但计算较慢。选择SVM主要在于其代价函数是凸函数，不存在局部最小非全局最小的情况。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/09/07/A-Solution-of-A-Written-Question-in-An-Examination-3/" rel="next" title="A Solution of A Written Question in An Examination (3)">
+                <i class="fa fa-chevron-left"></i> A Solution of A Written Question in An Examination (3)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/09/16/异常检测学习笔记/" rel="prev" title="异常检测学习笔记">
+                异常检测学习笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">祁可翰</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">15</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">tags</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#从-Logistic-Regression-到-Support-Vector-Machine"><span class="nav-number">1.</span> <span class="nav-text">从 Logistic Regression 到 Support Vector Machine</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#最大间隔分类器"><span class="nav-number">2.</span> <span class="nav-text">最大间隔分类器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#核函数"><span class="nav-number">3.</span> <span class="nav-text">核函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#高斯核函数"><span class="nav-number">3.1.</span> <span class="nav-text">高斯核函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#l-i-的获取"><span class="nav-number">3.2.</span> <span class="nav-text">$l^{(i)}$的获取</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#具有核函数的SVM"><span class="nav-number">3.3.</span> <span class="nav-text">具有核函数的SVM</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SVM的参数选择与应用"><span class="nav-number">4.</span> <span class="nav-text">SVM的参数选择与应用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Logistic-Regression-与-SVM-比较"><span class="nav-number">5.</span> <span class="nav-text">Logistic Regression 与 SVM 比较</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">祁可翰</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Muse</a> v6.1.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.1.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
