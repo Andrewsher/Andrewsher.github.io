@@ -289,6 +289,152 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2018/06/10/感知机学习笔记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁可翰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="祁可翰的Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/06/10/感知机学习笔记/" itemprop="url">
+                  感知机学习笔记
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+                
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-10T21:24:01+08:00">2018-06-10</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="感知机"><a href="#感知机" class="headerlink" title="感知机"></a>感知机</h1><p>$$<br>f(x)=sign(w \cdot x + b)<br>$$</p>
+<p>其中，w，b是感知机的模型参数，$w \in R^n$是权值，$ b \in R $是偏置。</p>
+<p>$$<br>sign(x) =<br>\begin{cases}<br>+1,&amp;x \ge 0 \<br>-1, &amp;x \lt 0<br>\end{cases}<br>$$</p>
+<p>这是一种线性分类模型，属于判别模型。</p>
+<p>对它的几何解释：$w \cdot x + b = 0$对应$R^n$中的一个超平面，将特征空间分为两部分；$w$是法向量，$b$是截距。</p>
+<h1 id="数据集的线形可分性"><a href="#数据集的线形可分性" class="headerlink" title="数据集的线形可分性"></a>数据集的线形可分性</h1><p>设数据集：<br>$$<br>T = { (x_1, y_1), \dots, (x_N, y_N)}<br>$$</p>
+<p>如果在$R^n$中，存在$w \cdot x + b = 0$的超平面，将正负实例完全正确地划分到超平面的两侧，则称$T$为线形可分，否则为线型不可分。</p>
+<h1 id="对-x-0-的分类"><a href="#对-x-0-的分类" class="headerlink" title="对$x_0$的分类"></a>对$x_0$的分类</h1><p>$x_0$到超平面$S$的距离：$\frac{1}{||w||}|w\cdot x_0+b|$，而对于误分类的点，有$y_i(w \cdot x_i + b) \lt 0$。于是误分类的总距离：</p>
+<p>$$<br>-\frac{1}{||w||} \sum\limits_{x_i \in M}y_i(w\cdot w_i + b)<br>$$</p>
+<p>Loss function:</p>
+<p>$$<br>L(w, b) = -\sum\limits_{x_i \in M}y_i(w\cdot w_i + b)<br>$$</p>
+<p>其中$M$是误分类点的集合。</p>
+<h1 id="优化过程"><a href="#优化过程" class="headerlink" title="优化过程"></a>优化过程</h1><p>$$<br>\min \limits_{w, b} -\sum\limits_{x_i \in M} y_i(w\cdot x_i + b)<br>$$</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">while 存在误分类点:</span><br><span class="line">  随机选择误分类点$$(x_i, y_i)$</span><br><span class="line">  $w$ := $w + \eta y_ix_i$</span><br><span class="line">  $b$ := $b + \eta y_i$</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2018/04/10/平衡搜索树/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1957,191 +2103,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2017/09/16/异常检测学习笔记/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="祁可翰">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="祁可翰的Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/09/16/异常检测学习笔记/" itemprop="url">
-                  异常检测学习笔记
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-                
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-16T18:44:27+08:00">2017-09-16</time>
-            
-
-            
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Coursera平台 Andrew Ng《Machine Learning》课程Anomaly Detection一章（第9周）学习笔记。</p>
-<p>已知训练集$(x^{(1)},x{(2)},\dots,x^{(m)})$，给出测试数据$x_{test}$。建立模型$p(x)$，如果$p(x_{test})\lt\epsilon$，则认为$x_{test}$异常，否则认为其正常。</p>
-<h2 id="高斯分布"><a href="#高斯分布" class="headerlink" title="高斯分布"></a>高斯分布</h2><p>设$x\in\mathbb{R}$服从高斯分布，其均值为$\mu$，方差为$\sigma$，则</p>
-<center><br>$$<br>p(x;\mu,\sigma^2)=\frac{1}{\sqrt{2\pi}\sigma}\exp(-\frac{(x-\mu)^2}{2\sigma^2})<br>$$<br></center>
-
-<p>参数估计：</p>
-<ul>
-<li>Dataset: $(x^{(1)},\dots,x^{(m)}),x^{(i)}\in\mathbb{R}$</li>
-<li>$\mu=\frac{1}{m}\sum\limits_{i=1}\limits^{m}x^{(i)}$</li>
-<li>$\sigma^2=\frac{1}{m}\sum\limits_{i=1}\limits^{m}(x^{(i)}-\mu)^2$</li>
-</ul>
-<h2 id="异常检测算法"><a href="#异常检测算法" class="headerlink" title="异常检测算法"></a>异常检测算法</h2><p>给出训练集$(x^{(1)},\dots,x^{(m)}),x^{(i)}\in\mathbb{R}^n$，若$x_i$服从高斯分布，其均值为$\mu_i$，方差为$\sigma_i^2$，则可建立模型：</p>
-<center><br>    $$<br>    p(x)=p(x_1;\mu_1,\sigma_1^2)\times\dots\times p(x_n;\mu_n,\sigma_n^2)=\prod\limits_{j=1}\limits^np(x_j;\mu_j,\sigma_j^2)<br>    $$<br></center>
-
-<p>计算步骤如下：</p>
-<ul>
-<li>选择可能异常的$x$；</li>
-<li>计算$\mu_1,\dots,\mu_n,\sigma_1^2,\dots,\sigma_n^2$</li>
-<li>计算$p(x)$。若$p(x)\lt\epsilon $，则认为$x$异常。</li>
-</ul>
-<h2 id="Develop-and-Evaluation-an-Anomaly-Detection-Algorithm"><a href="#Develop-and-Evaluation-an-Anomaly-Detection-Algorithm" class="headerlink" title="Develop and Evaluation an Anomaly Detection Algorithm"></a>Develop and Evaluation an Anomaly Detection Algorithm</h2><p>使用带有标签的数据作为交叉验证集和测试集的数据。算法估计过程如下：</p>
-<ul>
-<li>对训练集数据$(x^{(1)},\dots,x^{(m)})$，获取模型$p(x)$。</li>
-<li>在交叉验证集数据上，使用$p(x)$预测$y$：</li>
-</ul>
-<center><br>$$<br>y=<br>\begin{cases}<br>1&amp;,if &amp; p(x) \lt \epsilon \<br>0&amp;,if &amp; p(x) \ge \epsilon<br>\end{cases}<br>$$<br></center>
-
-<ul>
-<li>计算： True positive, false positive, false negative, true negative。</li>
-<li>计算：Recall, Precision。</li>
-<li>计算： $F1_{score}$。</li>
-</ul>
-<p>可使用CV集，选择使$F1_{score}$最小的$\epsilon$值。</p>
-<h2 id="多元高斯分布"><a href="#多元高斯分布" class="headerlink" title="多元高斯分布"></a>多元高斯分布</h2><p>数据$x\in\mathbb{R}^n$，参数$\mu\in\mathbb{R}^n$，$\Sigma\in\mathbb{R}^{n\times n}$。</p>
-<center><br>$$<br>p(x;\mu,\Sigma)=<br>\frac{1}{(2\pi)^{\frac{n}{2}}|\Sigma|^{\frac{1}{2}}}<br>\exp\left(-\frac{1}{2}(x-\mu)^T\Sigma^{-1}(x-\mu)\right)<br>$$<br></center>
-
-<h3 id="使用多元高斯分布的异常检测"><a href="#使用多元高斯分布的异常检测" class="headerlink" title="使用多元高斯分布的异常检测"></a>使用多元高斯分布的异常检测</h3><p>计算步骤：</p>
-<ol>
-<li><p>$\mu=\frac{1}{m}\sum\limits_{i=1}\limits^{m}x^{(i)}$，$\Sigma=\frac{1}{m}\sum\limits_{i=1}\limits^{m}(x^{(i)}-\mu)(x^{(i)}-\mu)^T$</p>
-</li>
-<li><p>对于测试数据$x$，计算：</p>
-</li>
-</ol>
-<center><br>$$<br>p(x;\mu,\Sigma)=<br>\frac{1}{(2\pi)^{\frac{n}{2}}|\Sigma|^{\frac{1}{2}}}<br>\exp\left(-\frac{1}{2}(x-\mu)^T\Sigma^{-1}(x-\mu)\right)<br>$$<br></center>
-
-<p>如果$p(x)\lt\epsilon$，则记$x$为异常。</p>
-<h3 id="多元高斯分布和前述高斯分布的关系"><a href="#多元高斯分布和前述高斯分布的关系" class="headerlink" title="多元高斯分布和前述高斯分布的关系"></a>多元高斯分布和前述高斯分布的关系</h3><p>前述模型：</p>
-<center><br>    $$<br>    p(x)=p(x_1;\mu_1,\sigma_1^2)\times\dots\times p(x_n;\mu_n,\sigma_n^2)<br>    $$<br></center>
-
-<p>相当于多元高斯分布的一个特例，此时多元高斯分布的参数</p>
-<center><br>$$<br>\Sigma=\left[<br>\begin{matrix}<br>\sigma_1^2 &amp; &amp; &amp;O \<br> &amp;\sigma_2^2 &amp; &amp; \<br> &amp; &amp; \ddots \<br>O &amp; &amp; &amp; \sigma_n^2<br>\end{matrix}<br>\right]<br>$$<br></center>
-
-<p>计算代价较大，且必须有$m\gt n$。</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2189,7 +2150,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">15</span>
+                    <span class="site-state-item-count">16</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
