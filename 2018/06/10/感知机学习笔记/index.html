@@ -111,7 +111,7 @@
 <meta property="og:site_name" content="祁可翰的Blog">
 <meta property="og:description" content="感知机$$f(x)=sign(w \cdot x + b)$$ 其中，w，b是感知机的模型参数，$w \in R^n$是权值，$ b \in R $是偏置。 $$sign(x) =\begin{cases}+1,&amp;amp;x \ge 0 \-1, &amp;amp;x \lt 0\end{cases}$$ 这是一种线性分类模型，属于判别模型。 对它的几何解释：$w \cdot x + b = 0$对应$R">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-06-10T13:44:58.044Z">
+<meta property="og:updated_time" content="2018-06-11T14:16:22.186Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="感知机学习笔记">
 <meta name="twitter:description" content="感知机$$f(x)=sign(w \cdot x + b)$$ 其中，w，b是感知机的模型参数，$w \in R^n$是权值，$ b \in R $是偏置。 $$sign(x) =\begin{cases}+1,&amp;amp;x \ge 0 \-1, &amp;amp;x \lt 0\end{cases}$$ 这是一种线性分类模型，属于判别模型。 对它的几何解释：$w \cdot x + b = 0$对应$R">
@@ -379,7 +379,34 @@
 <p>$$<br>L(w, b) = -\sum\limits_{x_i \in M}y_i(w\cdot w_i + b)<br>$$</p>
 <p>其中$M$是误分类点的集合。</p>
 <h1 id="优化过程"><a href="#优化过程" class="headerlink" title="优化过程"></a>优化过程</h1><p>$$<br>\min \limits_{w, b} -\sum\limits_{x_i \in M} y_i(w\cdot x_i + b)<br>$$</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">while 存在误分类点:</span><br><span class="line">  随机选择误分类点$$(x_i, y_i)$</span><br><span class="line">  $w$ := $w + \eta y_ix_i$</span><br><span class="line">  $b$ := $b + \eta y_i$</span><br></pre></td></tr></table></figure>
+<p>while 存在误分类点:<br>  随机选择误分类点$(x_i, y_i)$<br>  $w$ := $w + \eta y_ix_i$<br>  $b$ := $b + \eta y_i$</p>
+<h1 id="Novikoff定理"><a href="#Novikoff定理" class="headerlink" title="Novikoff定理"></a>Novikoff定理</h1><p>（1）$\exists || \hat{w}<em>{opt} ||= 1$的超平面$\hat{w}</em>{opt} \cdot \hat{x} + \hat{b}_{opt} = 0$，将线形可分的数据集$T$完全正确地分开；且$\exists \gamma \gt 0, \forall i = 1, 2, \dots, N$，有<br>$$<br>y_i(\hat{w}_{opt} \cdot \hat{x}_i) = y_i(w_{opt}\cdot x_i + b_{opt}) \ge \gamma<br>$$</p>
+<p>（2）令$R = \max \limits_{1 \le i \le N} || \hat{x}_i||$，则感知机算法原始形式在$T$上的误分类次数$k \le \left( \frac{R}{\gamma} \right)^2$</p>
+<h1 id="感知机学习算法的对偶形式"><a href="#感知机学习算法的对偶形式" class="headerlink" title="感知机学习算法的对偶形式"></a>感知机学习算法的对偶形式</h1><p>感知机模型：$f(x) = sign \left(\sum \limits_{j=1} ^{N} \alpha_j y_j x_j \cdot x + b\right)$，其中$\alpha = (\alpha_1, \alpha_2, \dots, \alpha_n)^T$。</p>
+<p>（1）$\alpha := 0, b := 0$</p>
+<p>（2）若存在误分类的$(x_i, y_i)$，则$\alpha_i := \alpha_i + \eta$，$b := b + \eta y_i$。</p>
+<p>（3）重复（2），直到没有误分类。</p>
+<h1 id="证明：样本集-T-线形可分的充要条件是正实例的凸壳与负实例的凸壳互不相交"><a href="#证明：样本集-T-线形可分的充要条件是正实例的凸壳与负实例的凸壳互不相交" class="headerlink" title="证明：样本集$T$线形可分的充要条件是正实例的凸壳与负实例的凸壳互不相交"></a>证明：样本集$T$线形可分的充要条件是正实例的凸壳与负实例的凸壳互不相交</h1><p>$S={x_1, x_2, \dots, x_k} \subset R^n$</p>
+<p>$S$的凸壳$conv(S) = \left{  x = \sum\limits_{i=1}^{k} \lambda_ix_i \mid \sum\limits_{i=1}^{k}\lambda_i = 1, \lambda_i \ge 0, i = 1, 2, \dots, k \right}$</p>
+<p>证明：分$T$为正实例$T_+$和负实例$T_-$，对应的凸壳分别为$conv(T_+)$和$conv(T_-)$。</p>
+<p>(1) 若$T$线形可分，则有超平面$wx+b=0$满足条件。</p>
+<p>对于$T_+$中的$x_i$，有</p>
+<p>$$<br>wx_i+b=\epsilon_i \gt 0<br>$$</p>
+<p>对于$conv(T_+)$中的$t_+$，有</p>
+<p>$$<br>wt_++b = \sum\limits_{i=1}^{k} \lambda_i\epsilon_i + b \gt 0<br>$$</p>
+<p>同理，对于$conv(T_-)$中的$t_-$，有$wt_-+b \lt 0$。</p>
+<p>显然，同一个式子不能同时大于0和小于0，即以上两式不可能同时成立，即不存在$t_0$使得$t_0 \in conv(T_+) \bigwedge t_0 \in conv(T_-)$，即$conv(T_+) \bigcap conv(T_-) = \emptyset$。</p>
+<p>(2)设$||conv(T_+), conv(T_-)|| = \min ||x_+, x_-|| , \forall x_+ \in conv(T_+), \forall x \in conv(T_-)$，并记对应的$x_+, x_-$。</p>
+<p>记$w = x_+ - x_-, b = - \frac{x_+ \cdot x_+ - x_- \cdot x_-}{2}$。</p>
+<p>易知$T_+ \subseteq conv(T_+)， T_- \subseteq conv(T_-)$。</p>
+<p>于是$\forall x_i \in T_+,$</p>
+<p>$$<br>wx_i+b = x_+x_i - x_-x_i - \frac{x_+x_+-x_-x_-}{2} = \frac{||x_–x_i||^2 - ||x_+-x_i||^2}{2}<br>$$</p>
+<p>由于$x_i\in T_+ \subseteq conv(T_+),$</p>
+<p>$$<br>||x_i, x_-|| \gt ||x_i, x_+||<br>$$</p>
+<p>$$<br>\therefore wx_i+b \gt 0<br>$$</p>
+<p>同理，$\forall x_j \in T_-, wx_j+b \lt 0$</p>
+<p>于是，存在超平面$wx+b=0$将$T$正确分开，即$T$线形可分。</p>
+<p>证毕。</p>
 
       
     </div>
@@ -583,7 +610,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#感知机"><span class="nav-number">1.</span> <span class="nav-text">感知机</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据集的线形可分性"><span class="nav-number">2.</span> <span class="nav-text">数据集的线形可分性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#对-x-0-的分类"><span class="nav-number">3.</span> <span class="nav-text">对$x_0$的分类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#优化过程"><span class="nav-number">4.</span> <span class="nav-text">优化过程</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#感知机"><span class="nav-number">1.</span> <span class="nav-text">感知机</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数据集的线形可分性"><span class="nav-number">2.</span> <span class="nav-text">数据集的线形可分性</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#对-x-0-的分类"><span class="nav-number">3.</span> <span class="nav-text">对$x_0$的分类</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#优化过程"><span class="nav-number">4.</span> <span class="nav-text">优化过程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Novikoff定理"><span class="nav-number">5.</span> <span class="nav-text">Novikoff定理</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#感知机学习算法的对偶形式"><span class="nav-number">6.</span> <span class="nav-text">感知机学习算法的对偶形式</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#证明：样本集-T-线形可分的充要条件是正实例的凸壳与负实例的凸壳互不相交"><span class="nav-number">7.</span> <span class="nav-text">证明：样本集$T$线形可分的充要条件是正实例的凸壳与负实例的凸壳互不相交</span></a></li></ol></div>
             
 
           </div>
