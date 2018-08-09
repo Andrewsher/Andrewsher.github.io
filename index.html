@@ -289,6 +289,173 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2018/08/09/线形可分支持向量机/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁可翰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="祁可翰的Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/08/09/线形可分支持向量机/" itemprop="url">
+                  线形可分支持向量机
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+                
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-09T16:05:17+08:00">2018-08-09</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="支持向量机"><a href="#支持向量机" class="headerlink" title="支持向量机"></a>支持向量机</h1><p>定义在特征空间上的间隔最大的线形分类器，核技巧使得它称为事实上的非线性分类器。核函数表示将输入从输入空间映射到特征空间，得到的特征向量的内积。</p>
+<h1 id="线形可分支持向量机"><a href="#线形可分支持向量机" class="headerlink" title="线形可分支持向量机"></a>线形可分支持向量机</h1><p>给定线形可分训练机，通过间隔最大化或等价求解凸二次规划，得到分离超平面：<br>$$<br>w^0 \cdot x + b^0 = 0<br>$$</p>
+<p>以及相应的分类决策函数：<br>$$<br>f(x)=sign(w^0\cdot x+b^0)<br>$$<br>称为线形SVM。</p>
+<h1 id="函数间隔"><a href="#函数间隔" class="headerlink" title="函数间隔"></a>函数间隔</h1><p>定义超平面关于样本点的函数间隔为：<br>$$<br>\hat{\gamma}_i = y_i(w\cdot x_i+b)<br>$$</p>
+<p>超平面$(w,b)$关于训练集$T$的函数间隔：<br>$$<br>\hat{\gamma}=\min\limits_{i=1,\dots,N} \hat{\gamma}_i<br>$$</p>
+<p>点$x_i$与超平面$(w,b)$之间的距离（几何间隔）：<br>$$<br>\gamma_i=y_i(\frac{w}{||w||}\cdot x_i + \frac{b}{||w||})<br>$$</p>
+<p>其中$||w||$为$w$的$L_2$范数。</p>
+<p>$(w,b)$关于$T$的几何间隔：<br>$$<br>\gamma=\min\limits_{i=1,\dots,N}\gamma_i<br>$$</p>
+<p>易知$\gamma_i=\frac{\hat\gamma_i}{||w||}$，$\gamma=\frac{\hat\gamma}{||w||}$</p>
+<h1 id="间隔最大化"><a href="#间隔最大化" class="headerlink" title="间隔最大化"></a>间隔最大化</h1><p>$$<br>\max\limits_{w, b} \gamma<br>$$</p>
+<p>$$<br>s.t. y_i(\frac{w}{||w||}x_i+\frac{b}{||w||}) \ge \gamma, i=1,\dots,N<br>$$</p>
+<p>或：<br>$$<br>\max\limits_{w,b} \frac{\hat\gamma}{||w||}<br>$$<br>$$<br>s.t. y_i(w\cdot x_i+b)\ge \hat\gamma, i=1,\dots,N<br>$$</p>
+<p>或：<br>$$<br>\min\limits_{w,b} \frac{1}{2}||w||^2<br>$$<br>$$<br>s.t. y_i(w\cdot x_i+b) -1 \ge 0, i=1,\dots,N<br>$$</p>
+<h1 id="线形可分支持向量机——最大间隔法"><a href="#线形可分支持向量机——最大间隔法" class="headerlink" title="线形可分支持向量机——最大间隔法"></a>线形可分支持向量机——最大间隔法</h1><p>输入：训练集$t={(x_1,y_1),\dots,(x_N,y_N)}$（二分类）</p>
+<p>输出：最大间隔分离超平面和决策函数</p>
+<ol>
+<li><p>构造并求解最优化问题<br>$$<br>\min\limits_{w,b} \frac{1}{2}||w||^2<br>$$<br>$$<br>s.t. y_i(w\cdot x_i+b) -1 \ge 0, i=1,\dots,N<br>$$<br>求得最优解$w^0,b^0$</p>
+</li>
+<li><p>由此得到分离超平面：<br>$$<br>w^0\cdot x+b^0 =0<br>$$<br>分类决策函数：<br>$$<br>f(x)=sign(w^0x+b^0)<br>$$</p>
+</li>
+</ol>
+<p>线形可分数据集的最大间隔分离超平面是存在且唯一的。</p>
+<h1 id="支持向量"><a href="#支持向量" class="headerlink" title="支持向量"></a>支持向量</h1><p>在线形可分的情况下，训练数据集的样本点中与分离超平面最近的样本点的实例称为支持向量。</p>
+<p>支持向量：$y_i(w\cdot x_i+b)-1=0$</p>
+<p>对于$y_i=+1$的点，支持向量在超平面$H_1:w\cdot x+b=1$上。</p>
+<p>对于$y_i=-1$的点，支持向量在超平面$H_2:w\cdot x+b=-1$上。</p>
+<h1 id="线形可分支持向量机的对偶算法"><a href="#线形可分支持向量机的对偶算法" class="headerlink" title="线形可分支持向量机的对偶算法"></a>线形可分支持向量机的对偶算法</h1><p>应用拉格朗日对偶性，求解对偶问题，得到原始问题的最优解。</p>
+<p>定义拉格朗日函数：<br>$$<br>L(w,b, \alpha) = \frac{1}{2} ||w||^2 - \sum\limits_{i=1}^{N} \alpha_i y_i (w\cdot x_i + b) + \sum\limits_{i=1}^{N} \alpha_i<br>$$<br>其中$\vec\alpha=(\alpha_1,\dots,\alpha_N)^T$为拉格朗日乘子向量。</p>
+<p>根据拉格朗日对偶性，原始问题的对偶问题是极大极小问题：<br>$$<br>\max\limits_{\alpha} \min\limits_{w,b} L(w, b, \alpha)<br>$$</p>
+<p>首先对$(w, b)$求最小：<br>$$<br>\min\limits_{w,b} L(w, b, \alpha) = - \frac{1}{2} \sum\limits_{i=1}^{N} \sum\limits_{j=1}^{N} \alpha_i \alpha_j y_i y_j (x_i \cdot x_j) + \sum\limits_{i=1}^{N}\alpha_i<br>$$</p>
+<p>对上式求对$\alpha$的极大：<br>$$<br>\min\limits_{\alpha} \frac{1}{2}\sum\limits_{i=1}^{N} \sum\limits_{j=1}^{N} \alpha_i\alpha_i y_iy_j (x_i \cdot x_j) - \sum\limits_{i=1}^{N}\alpha_i<br>$$</p>
+<p>$$<br>s.t. \sum\limits_{i=1}^{N}\alpha_iy_i=0, \alpha_i\ge 0, i=1, \dots, N<br>$$</p>
+<p>如果$\alpha^0=(\alpha^0_1, \dots, \alpha^0_l)^T$是上述对偶最优化问题的解，则存在下标$j$，使得$\alpha^0_j \ge 0$，并可按下式求得原始最优化问题的解$w^0,b^0$：<br>$$<br>w^0 = \sum\limits_{i=1}^{N} \alpha^0_iy_ix_i<br>$$<br>$$<br>b^0=y_j - \sum\limits_{i=1}^{N} \alpha^0_iy_i(x_i \cdot x_j)<br>$$</p>
+<p>于是有分离超平面：<br>$$<br>\sum\limits_{=1}^{N} \alpha^0_i y_i (x \cdot x_i) + b^0 = 0<br>$$</p>
+<p>分类决策函数：<br>$$<br>f(x)=sign(\sum\limits_{i=1}^{N} \alpha^0_i y_i (x \cdot x_i) + b^{*})<br>$$</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2018/06/10/感知机学习笔记/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1937,199 +2104,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2017/10/10/神经网络学习笔记/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="祁可翰">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="祁可翰的Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/10/10/神经网络学习笔记/" itemprop="url">
-                  神经网络学习笔记
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-                
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-10-10T12:19:37+08:00">2017-10-10</time>
-            
-
-            
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Coursera平台 Andrew Ng《Machine Learning》课程 Nueral Network 一章学习笔记.</p>
-<h2 id="Neural-Network-Presentation"><a href="#Neural-Network-Presentation" class="headerlink" title="Neural Network Presentation"></a>Neural Network Presentation</h2><p>考虑如下的情况：特征数$n=100$，直接使用sigmoid函数的计算为$g(\theta_0+\theta_1x_1+\theta_2x_2+\theta_3x_1x_2+\theta_4x_1^2x_2+\dots)$，仅二次的乘积有5000次，三次的乘积需计算$O(n^3)$次.对于许多情况，n很大，因而，采用直接计算乘积使用sigmoid函数的方法不是一个好办法.</p>
-<p>对于CV，假设图像大小为$50\times50$像素，对于灰度图$n=(50\times50=)2500$，即</p>
-<center><br>$$<br>x=<br>\begin{pmatrix}<br>像素1(0-255)\<br>像素2(0-255)\<br>\vdots\<br>像素2500(0-255)<br>\end{pmatrix}<br>$$<br></center>
-
-<p>$x_i\times x_j$越有300万个特征，计算量极大.</p>
-<h3 id="神经元模型：Logistic-Unit"><a href="#神经元模型：Logistic-Unit" class="headerlink" title="神经元模型：Logistic Unit"></a>神经元模型：Logistic Unit</h3><p>对于具有3个特征$x_1 x_2 x_3$的逻辑回归，$h_\theta(x)=\frac{1}{1+\exp{(-\theta^Tx)}}$，其中$x=\begin{pmatrix}x_0 &amp; x_1 &amp; x_2 &amp; x_3\end{pmatrix}^T$，$\theta=\begin{pmatrix}\theta_0 &amp; \theta_1 &amp; \theta_2 &amp; \theta_3\end{pmatrix}^T$.</p>
-<p>###一个3层的神经网络</p>
-<p><img src="http://images2017.cnblogs.com/blog/1078653/201708/1078653-20170815155523412-969247593.png" alt="Neural Network" title="一个3层的神经网络"></p>
-<p>上图中，Layer 1 称为 Input Layer，Layer 2 称为 Hidden Layer，Layer 3 称为 Output Layer，$a^{(j)}_i$为第j层第i个单元的激励，$\Theta^{(j)}$为控制第j到第j+1层的映射函数的比重.</p>
-<p>上图中，</p>
-<center><br>$$<br>a^{(2)}<em>1=g(\Theta^{(1)}</em>{10}x_0 + \Theta^{(1)}_{11}x_1 + \Theta^{(1)}_{12}x_2 + \Theta^{(1)}_{13}x_3)<br>$$<br><br>$$<br>a^{(2)}<em>2=g(\Theta^{(1)}</em>{20}x_0 + \Theta^{(1)}_{21}x_1 + \Theta^{(1)}_{22}x_2 + \Theta^{(1)}_{23}x_3)<br>$$<br><br>$$<br>a^{(2)}<em>3=g(\Theta^{(1)}</em>{30}x_0 + \Theta^{(1)}_{31}x_1 + \Theta^{(1)}_{32}x_2 + \Theta^{(1)}_{33}x_3)<br>$$<br><br>$$<br>h_\Theta(x)=a^{(3)}<em>1=g(\Theta^{(2)}</em>{10}a^{(2)}<em>0 + \Theta^{(2)}</em>{11}a^{(2)}<em>1 + \Theta^{(2)}</em>{12}a^{(2)}<em>2 + \Theta^{(2)}</em>{13}a^{(2)}_3)<br>$$<br></center>
-
-<p>其中$x_0=a^{(2)}_0=1$</p>
-<p>若第$j$层有$s_j$个单元，$j+1$层有$s_{j+1}$个 单元，则矩阵$\Theta^{(j)}$为$s_j \times s_{j+1}$阵.</p>
-<p>取$z^{(2)}<em>1=\Theta^{(1)}</em>{10}x_0 + \Theta^{(1)}_{11}x_1 + \Theta^{(1)}_{12}x_2 + \Theta^{(1)}_{13}x_3$，$z^{(2)}<em>2=\Theta^{(1)}</em>{20}x_0 + \Theta^{(1)}_{21}x_1 + \Theta^{(1)}_{22}x_2 + \Theta^{(1)}_{23}x_3$，$z^{(2)}<em>3=\Theta^{(1)}</em>{30}x_0 + \Theta^{(1)}_{31}x_1 + \Theta^{(1)}_{32}x_2 + \Theta^{(1)}_{33}x_3$.</p>
-<p>则$z^{(2)}=\Theta^{(1)}x=\begin{pmatrix}z^{(2)}_1 \ z^{(2)}_2 \ z^{(2)}_3 \end{pmatrix} \in \mathbb{R}^3$</p>
-<p>同理，$z^{(3)}=\Theta^{(2)}a^{(2)}, h_\Theta(x)=a^{(3)}=g(z^{(3)})$</p>
-<p>以上计算过程可称前向传播(Foward Propogation).</p>
-<h3 id="简单例子：“与”门"><a href="#简单例子：“与”门" class="headerlink" title="简单例子：“与”门"></a>简单例子：“与”门</h3><p>记$x_1, x_2 \in \begin{Bmatrix} 0,1\end{Bmatrix},x=\begin{pmatrix} 1 \ x_1 \ x_2\end{pmatrix},h_\Theta(x)=g(\Theta_0+\Theta_1x_1+\Theta_2x_2)$.</p>
-<p>取$\Theta=\begin{pmatrix} -30 \ 20 \ 20\end{pmatrix}$，则输入与输出关系如下：</p>
-<p>$$<br>\begin{array}{c|c|c}<br>{x_1} &amp; {x_2} &amp; {h_\Theta(x)} \<br>\hline<br>{0} &amp; {0} &amp; {g(-30)\approx 0} \<br>{0} &amp; {1} &amp; {g(-10)\approx 0} \<br>{1} &amp; {0} &amp; {g(-10)\approx 0} \<br>{1} &amp; {1} &amp; {g(30)\approx 1}<br>\end{array}<br>$$</p>
-<p>故而$h_\Theta(x) \approx x_1 \land x_2$</p>
-<h2 id="多类别分类"><a href="#多类别分类" class="headerlink" title="多类别分类"></a>多类别分类</h2><p>例如$h_\Theta(x) \in \mathbb{R}^4$，我们希望$h_\Theta(x) \approx \begin{pmatrix} 1\0\0\0 \end{pmatrix},\dots,\begin{pmatrix} 0\0\0\1 \end{pmatrix}$，这与逻辑回归相似，只不过有了4个类别.</p>
-<p>设训练集为$((x^{(1)},y^{(1)}),\dots,(x^{(m)},y^{(m)})$，其中<br>$y^{(i)}=<br>\begin{Bmatrix}<br>  \begin{pmatrix} 1\0\0\0 \end{pmatrix},<br>  \begin{pmatrix} 0\1\0\0 \end{pmatrix},<br>  \begin{pmatrix} 0\0\1\0 \end{pmatrix},<br>  \begin{pmatrix} 0\0\0\1 \end{pmatrix}<br>\end{Bmatrix}<br>$</p>
-<h2 id="Cost-Function"><a href="#Cost-Function" class="headerlink" title="Cost Function"></a>Cost Function</h2><p>用$l$表示层数，$s_l$表示第$l$层的单元个数.</p>
-<p>对于逻辑回归，有</p>
-<center><br>$$<br>J(\theta)=-\frac{1}{m}[\sum\limits_{i=1}\limits^{m} y^{(i)}\log h_\theta(x^{(i)}) + (1-y^{(i)})\log (1-h_\theta(x^{(i)}))] + \frac{\lambda}{2m} \sum\limits_{j=1}\limits^{n} \theta_j^2<br>$$<br></center>
-
-<p>对神经网络，有</p>
-<center><br>$$<br>h_\Theta(x) \in \mathbb{R}^K,(h_\Theta(x))<em>i=i^{th} \mathtt{output}<br>$$<br><br>$$<br>J(\Theta)=- \frac{1}{m}\left[\sum\limits</em>{i=1}\limits^{m} \sum\limits_{k=1}\limits^{K} y^{(i)}<em>k\log h</em>\Theta(x^{(i)})_k + (1-y^{(i)}<em>k)\log(1-h</em>\Theta(x^{(i)})<em>k)\right] + \frac{\lambda}{2m} \sum\limits</em>{l=1}\limits^{L-1} \sum\limits_{i=1}\limits^{s_l} \sum\limits_{j=1}\limits^{s_l+1} \left(\Theta^{(l)}_{j i}\right)^2<br>$$<br></center>
-
-<h2 id="Back-Propogation"><a href="#Back-Propogation" class="headerlink" title="Back Propogation"></a>Back Propogation</h2><p>我们希望获取$\Theta$使得$J(\Theta)$最小.为此，需要计算$J(\Theta)$和$\frac{\partial}{\partial\Theta^{(l)}_{i j}}J(\Theta)$.</p>
-<h3 id="偏导项的计算"><a href="#偏导项的计算" class="headerlink" title="偏导项的计算"></a>偏导项的计算</h3><p>假设有一个训练样本$(x,y)$，存在4层的神经网络，每个 Hidden Layer 有3个单元，$x \in \mathbb{R}^3$，$y \in \mathbb{R}^4$.</p>
-<p>使用前向传播算法计算如下.</p>
-<p>$$<br>\begin{align}<br>&amp; a^{(1)}=x \<br>&amp; z^{(2)}=\Theta^{(1)}a^{(1)},\ a^{(2)}=g(z^{(2)}) \<br>&amp; z^{(3)}=\Theta^{(2)}a^{(2)},\ a^{(3)}=g(z^{(3)}) \<br>&amp; z^{(4)}=\Theta^{(3)}a^{(3)},\ a^{(4)}=h_\Theta(x)=g(z^{(4)})<br>\end{align}<br>$$</p>
-<p>定义$\delta^{(l)}_j$为第$l$层第$j$个单元的“误差”，则$\delta^{(i)}$的计算方向与$z^{(l)}$、$a^{(l)}$相反.</p>
-<p>$$<br>\begin{align}<br>&amp; \delta^{(4)}=a^{(4)}-y \in \mathbb{R}^4 \<br>&amp; \delta^{(3)}=(\Theta^{(3)})^T\delta^{(4)} .<em> g’(z^{(3)}) \<br>&amp; \delta^{(2)}=(\Theta^{(2)})^T\delta^{(3)} .</em> g’(z^{(2)}) \<br>\end{align}<br>$$</p>
-<p>其中$g’(z^{(l)})$是对$g(z^{(l)})$的求导，$g’(z^{(l)})=a^{(l)}.*(1-a^{(l)})$.</p>
-<p>可以证明，忽略bias项时，有$\frac{\partial}{\partial\Theta^{(l)}_{ij}}J(\Theta)=a^{(l)}_j\delta^{(l+1)}_i$.</p>
-<h3 id="Back-Propogation-Algrithm"><a href="#Back-Propogation-Algrithm" class="headerlink" title="Back Propogation Algrithm"></a>Back Propogation Algrithm</h3><p>设训练集${(x^{(1)},y^{(1)}),\dots,(x^{(m)},y^{(m)})}$.</p>
-<p>置$\Delta^{(l)}_{i j} = 0,\ \mathrm{for\ all\ i,\ j,\ l}$.</p>
-<p>$$<br>\begin{align}<br>&amp; \mathrm{for\ i=1:m} \<br>&amp; \quad a^{(1)}:=x^{(i)} \<br>&amp; \quad 使用\mathrm{Foward\ Propogation}计算a^{(l)},l=2,3,\dots,L. \<br>&amp; \quad 利用y^{(i)}计算\delta^{(L)}=a^{(L)}-y^{(i)}. \<br>&amp; \quad 计算\delta^{(L-1)},\delta^{(L-2)},\dots,\delta^{(2)}. \<br>&amp; \quad \Delta^{(l)}<em>{i j} := \Delta^{(l)}</em>{i j} + a^{(l)}_j\delta^{(l+1)}<em>j \<br>&amp; \mathrm{end} \<br>&amp; D^{(l)}</em>{i j} := \frac{1}{m}\Delta^{(l)}<em>{i j} + \lambda\Theta^{(l)}</em>{i j},\ \mathrm{if}\ j \neq 0. \<br>&amp; D^{(l)}<em>{i 0} := \frac{1}{m}\Delta^{(l)}</em>{i j}<br>\end{align}<br>$$</p>
-<h2 id="Gradient-Checking"><a href="#Gradient-Checking" class="headerlink" title="Gradient Checking"></a>Gradient Checking</h2><p>当$\epsilon$很小时，$\frac{d}{d\theta}J(\theta) \approx \frac{J(\theta + \epsilon) - J(\theta - \epsilon)}{2\epsilon}$.</p>
-<p>对于神经网络，$\Theta \in \mathbb{R}^n$.</p>
-<p>$$<br>\begin{align}<br>&amp; \mathrm{for\ i = 1 : n} \<br>&amp; \quad \theta^+ = \theta;\ \theta^+(i) = \theta(i) + \epsilon; \<br>&amp; \quad \theta^- = \theta;\ \theta^-(i) = \theta(i) - \epsilon; \<br>&amp; \quad \frac{\partial}{\partial\theta(i)}J(\theta) = \frac{J(\theta^+) - J(\theta^-)}{2\epsilon} \<br>&amp; \mathrm{check\ that\ } \frac{\partial}{\partial\theta}J(\theta) \approx \mathrm{DVec}<br>\end{align}<br>$$</p>
-<p>在使用 gradient check 确认算法正确之后，由于其计算量大，不再使用，直接使用BP算法.</p>
-<h2 id="Random-Initialize"><a href="#Random-Initialize" class="headerlink" title="Random Initialize"></a>Random Initialize</h2><p>在神经网络中，将$\Theta$初始化为全0，会导致神经网络失去非对称性.随机初始化用于打破这种对称性.将$\Theta^{(l)}_{i j}$的值随机初始化为$[-\epsilon,\epsilon]$之间的一个数，其中$\epsilon$是个很小的正数.</p>
-<h2 id="Puting-It-Together"><a href="#Puting-It-Together" class="headerlink" title="Puting It Together"></a>Puting It Together</h2><h3 id="选择一个神经网络"><a href="#选择一个神经网络" class="headerlink" title="选择一个神经网络"></a>选择一个神经网络</h3><ul>
-<li>神经网络有几层，每层包含几个unit.</li>
-<li>特征$x^{(i)}$的维数.</li>
-<li>类别数（$y^{(i)}$的维数）.</li>
-</ul>
-<h3 id="训练神经网络"><a href="#训练神经网络" class="headerlink" title="训练神经网络"></a>训练神经网络</h3><ol>
-<li>随机初始化$\Theta^{(l)}_{i j}$.</li>
-<li>实现前向传播，利用$x^{(i)}$计算$h_\Theta(x^{(i)})$.</li>
-<li>计算 cost function $J(\Theta)$.</li>
-<li>利用反向传播算法计算$\frac{\partial}{\partial\Theta^{(l)}<em>{i j}}J(\Theta)$.<br>$$<br>\begin{align}<br>&amp; \mathrm{for}\ i = 1 : m \<br>&amp; \quad 对(x^{(i)},y{(i)})实现前向传播和反向传播 \<br>&amp; \quad 计算\Delta^{(l)} := \Delta^{(l)} + \delta^{(l+1)}\left(a^{(l)}\right)^T \<br>&amp; \mathrm{end} \<br>&amp; 计算 \frac{\partial}{\partial\Theta^{(l)}</em>{i j}}J(\Theta)<br>\end{align}<br>$$</li>
-<li>使用 Gradient Check 检验正确性.</li>
-<li>使用梯度下降或其他优化方法，最小化$J(\Theta)$.</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2177,7 +2151,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">16</span>
+                    <span class="site-state-item-count">17</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
