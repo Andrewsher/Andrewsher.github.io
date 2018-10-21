@@ -103,20 +103,25 @@
 
 
 
-  <meta property="og:type" content="website">
-<meta property="og:title" content="祁可翰的Blog">
-<meta property="og:url" content="https://andrewsher.github.io/archives/2018/03/index.html">
+  <meta name="description" content="线形支持向量机：给定线形不可分的数据集，求解如下的软间隔最大化问题： $$\min_{w, b, \xi} \frac{1}{2} ||w||^2 + C \sum\limits_{i=1}^N \xi_i$$ $$\mathbb{s.t.  }   y_i(w \cdot x_i + b) \ge 1 - \xi_i,  i=1,2,\dots,N \\\xi_i \ge 0, i =1,2,\">
+<meta name="keywords" content="Machine Learning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="线形支持向量机">
+<meta property="og:url" content="https://andrewsher.github.io/2018/10/21/线形支持向量机/index.html">
 <meta property="og:site_name" content="祁可翰的Blog">
+<meta property="og:description" content="线形支持向量机：给定线形不可分的数据集，求解如下的软间隔最大化问题： $$\min_{w, b, \xi} \frac{1}{2} ||w||^2 + C \sum\limits_{i=1}^N \xi_i$$ $$\mathbb{s.t.  }   y_i(w \cdot x_i + b) \ge 1 - \xi_i,  i=1,2,\dots,N \\\xi_i \ge 0, i =1,2,\">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-10-21T07:03:56.855Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="祁可翰的Blog">
+<meta name="twitter:title" content="线形支持向量机">
+<meta name="twitter:description" content="线形支持向量机：给定线形不可分的数据集，求解如下的软间隔最大化问题： $$\min_{w, b, \xi} \frac{1}{2} ||w||^2 + C \sum\limits_{i=1}^N \xi_i$$ $$\mathbb{s.t.  }   y_i(w \cdot x_i + b) \ge 1 - \xi_i,  i=1,2,\dots,N \\\xi_i \ge 0, i =1,2,\">
 
 
 
 
 
 
-  <link rel="canonical" href="https://andrewsher.github.io/archives/2018/03/"/>
+  <link rel="canonical" href="https://andrewsher.github.io/2018/10/21/线形支持向量机/"/>
 
 
 
@@ -126,7 +131,7 @@
   };
 </script>
 
-  <title>Archive | 祁可翰的Blog</title>
+  <title>线形支持向量机 | 祁可翰的Blog</title>
   
 
 
@@ -173,7 +178,7 @@
     
   
 
-  <div class="container sidebar-position-left page-archive">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -233,7 +238,7 @@
         
           
   
-  <li class="menu-item menu-item-archives menu-item-active">
+  <li class="menu-item menu-item-archives">
     <a href="/archives/" rel="section">
       <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
 </li>
@@ -268,174 +273,209 @@
           
             
 
-    
-    
-      
-      
-    
-      
-      
-    
-      
-      
-    
-    
-
-  
-
-
           
           <div id="content" class="content">
             
 
+  <div id="posts" class="posts-expand">
+    
+
+  
+
   
   
   
-  <div class="post-block archive">
-    <div id="posts" class="posts-collapse">
-      <span class="archive-move-on"></span>
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2018/10/21/线形支持向量机/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁可翰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="祁可翰的Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">线形支持向量机
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+                
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-10-21T13:29:39+08:00">2018-10-21</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
 
       
-      <span class="archive-page-counter">
+      
+
+      
+        <p>线形支持向量机：给定线形不可分的数据集，求解如下的软间隔最大化问题：</p>
+<p>$$<br>\min_{w, b, \xi} \frac{1}{2} ||w||^2 + C \sum\limits_{i=1}^N \xi_i<br>$$</p>
+<p>$$<br>\mathbb{s.t.  }   y_i(w \cdot x_i + b) \ge 1 - \xi_i,  i=1,2,\dots,N \\<br>\xi_i \ge 0, i =1,2,\dots,N<br>$$</p>
+<p>得到分类超平面：<br>$$<br>w^0 \cdot x + b^0 = 0<br>$$</p>
+<p>及相应的分类决策函数：<br>$$<br>f(x)=sign(w^0\cdot x+b^0)<br>$$</p>
+<p>上述问题的对偶问题为：</p>
+<p>$$<br>\min_\alpha \frac{1}{2} \sum\limits_{i=1}^{N} \sum\limits_{i=1}^{N} \alpha_i \alpha_j y_i y_j (x_i \cdot x_j) - \sum\limits_{i=1}^{N} \alpha_i \\<br>\mathbb{s.t.} \sum\limits_{i=1}^{N} \alpha_i y_i = 0 \\<br>0 \le \alpha_i \le C, i=1, \dots, N<br>$$</p>
+<p>原始最优化问题的拉格朗日函数：<br>$$<br>L(w,b,\xi,\alpha,\mu)=\frac{1}{2}||w|^2 + C\sum\limits_{i=1}^{N}\xi_i - \sum\limits_{i=1}^{N}\alpha_i(y_i(w \cdot x_i + b)-1+\xi_i) - \sum\limits_{i=1}^{N}\mu_i \xi_i<br>$$</p>
+<p>对偶问题是拉格朗日函数的极大极小问题。</p>
+<p>求$L(w,b,\xi,\alpha,\mu)$的极小：<br>$$<br>\begin{cases}<br>\nabla_w L(w,b,\xi,\alpha,\mu) = w-\sum\limits_{i=1}^{N} \alpha_i y_i x_i &amp;= 0 \\<br>\nabla_b L(w,b,\xi,\alpha,\mu) = -\sum\limits_{i=1}^{N} \alpha_i y_i &amp;= 0 \\<br>\nabla_{\xi_i} L(w,b,\xi,\alpha,\mu) = C-\alpha_i-\mu_i &amp;= 0<br>\end{cases}<br>$$</p>
+<p>$$<br>\Rightarrow<br>$$</p>
+<p>$$<br>\begin{cases}<br>w = \sum\limits_{i=1}^{N} \alpha_iy_ix_i \\<br>\sum\limits_{i=1}^{N} \alpha_i y_i = 0 \\<br>C - \alpha_i - \mu_i = 0<br>\end{cases}<br>$$</p>
+<p>于是：<br>$$<br>\min_{w,b,\xi} L(w,b,\xi,\alpha,\mu)=-\frac{1}{2}\sum\limits_{i=1}^{N} \sum\limits_{j=1}^{N} \alpha_j \alpha_i y_i y_j (x_i \cdot x_j) + \sum\limits_{i=1}^{N} \alpha_i<br>$$</p>
+<p>$$<br>s.t. \sum\limits_{i=1}^{N} \alpha_i y_i = 0 \\<br>C - \alpha_i - \mu_i = 0 \\<br>\alpha_i \ge 0 \\<br>\mu_i \ge 0<br>$$</p>
+<p>设$\alpha^0 = (\alpha_1^0, \dots, \alpha_N^0)^T$是对偶问题的一个解， 若存在$\alpha^0$的一个分量$\alpha_j^0$满足$0 \le \alpha_j^0 \le C$，则原始问题的解$w^0, b^0$为：<br>$$<br>w^0 = \sum\limits_{i=1}^{N} \alpha_i^0 y_i x_i<br>$$</p>
+<p>$$<br>b^0 = y_j - \sum\limits_{i=1}^{N} y_i\alpha_i^0 (x_i \cdot x_j)<br>$$</p>
+<p>此时的分离超平面：<br>$$<br>\sum\limits_{i=1}^{N} \alpha_i^0 y_i (x \cdot x_i) + b^0 = 0<br>$$</p>
+<p>分类决策函数：<br>$$<br>f(x) = sign(\sum\limits_{i=1}^{N} \alpha_i^0 y_i (x \cdot x_i) + b^0)<br>$$</p>
+<p>理论上$b^0$可不唯一，实际应用中往往只出现算法叙述的情况。</p>
+<p>线形不可分的情况下，对偶问题的解$\alpha^<em>$中对应于$\alpha_j^</em> \gt 0$的样本点$(x_j,y_j)$的实例$x_j$称为支持向量。</p>
+<p>线形支持向量机最优化问题<br>$$<br>\min_{w,b,\xi} \frac{1}{2} ||w||^2 + C\sum\limits_{i=1}^{N} \xi_i \\<br>\mathbb{s.t.} y_i(w \cdot x_i + b) \ge 1- \xi_i, i=1,2,\cdots, N \\<br>\xi_i \ge 0, i = 1,2,\cdots,N<br>$$</p>
+<p>等价于最优化问题：<br>$$<br>\min_{w,b} \sum\limits_{i=1}^{N} [1-y_i(w \cdot x_i + b)]_+ + \lambda ||w||^2<br>$$</p>
+<p>目标函数：<br>$$<br>\sum\limits_{i=1}^{N} [1-y_i(w\cdot x_i + b)]_+ + \lambda ||w||^2<br>$$</p>
+<p>$$L(y(w\cdot x+b))=[1-y(w\cdot x+b)]_+$$</p>
+<p>称为合页损失函数，其中<br>$$<br>[z]_+ =<br>\begin{cases}<br>z,  z \gt 0 \\<br>0,  z \le 0<br>\end{cases}<br>$$</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
         
+
         
+
         
           
-        
-        Um..! 18 posts in total. Keep on posting.
-      </span>
-      
-
-      
-
-        
-        
-        
-
-        
-          
-          <div class="collection-title">
-            <h1 class="archive-year" id="archive-year-2018">2018</h1>
+          <div id="needsharebutton-postbottom">
+            <span class="btn">
+              <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </span>
           </div>
         
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/03/09/阅读笔记 - 1/" itemprop="url">
-              
-                <span itemprop="name">阅读笔记 - 1</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-03-09T21:33:27+08:00"
-              content="2018-03-09" >
-          03-09
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
+        </div>
+      
       
 
-        
-        
-        
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/08/09/线形可分支持向量机/" rel="next" title="线形可分支持向量机">
+                <i class="fa fa-chevron-left"></i> 线形可分支持向量机
+              </a>
+            
+          </div>
 
-        
-        
+          <span class="post-nav-divider"></span>
 
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/03/03/随机二叉搜索树学习笔记/" itemprop="url">
-              
-                <span itemprop="name">随机二叉搜索树学习笔记</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-03-03T15:25:27+08:00"
-              content="2018-03-03" >
-          03-03
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
       
 
-        
-        
-        
-
-        
-        
-
-        
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-    <header class="post-header">
-
-      <h2 class="post-title">
-        
-            <a class="post-title-link" href="/2018/03/03/整数与浮点数的运算/" itemprop="url">
-              
-                <span itemprop="name">整数与浮点数的运算</span>
-              
-            </a>
-        
-      </h2>
-
-      <div class="post-meta">
-        <time class="post-time" itemprop="dateCreated"
-              datetime="2018-03-03T07:09:44+08:00"
-              content="2018-03-03" >
-          03-03
-        </time>
-      </div>
-
-    </header>
-  </article>
-
-
-
       
-
-    </div>
+      
+    </footer>
   </div>
   
   
   
+  </article>
 
-  
 
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
           
+
+  
+
+
 
         </div>
         
@@ -684,6 +724,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.1.0"></script>
+
+
 
   
 
@@ -737,6 +781,29 @@
   
   
 
+  
+    
+      <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+    
   
 
 

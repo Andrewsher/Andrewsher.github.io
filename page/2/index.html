@@ -289,6 +289,200 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2018/02/14/分治法学习笔记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁可翰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="祁可翰的Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/02/14/分治法学习笔记/" itemprop="url">
+                  分治法学习笔记
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+                
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-02-14T04:10:51+08:00">2018-02-14</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>MIT《算法导论》课程第3课《分治法》学习笔记.</p>
+<h2 id="分治法"><a href="#分治法" class="headerlink" title="分治法"></a>分治法</h2><ol>
+<li>Divide 分：将问题分为更小的子问题</li>
+<li>Conquer 治：递归地解决每一个子问题</li>
+<li>Combine</li>
+</ol>
+<p>归并排序</p>
+<ol>
+<li>分：将序列分为左边$[1, \frac{n}{2}]$和右边$[\frac{n+1}{2}, n]$两个区间</li>
+<li>治：递归地对两个区间分别排序</li>
+<li>合</li>
+</ol>
+<p>运行时间：</p>
+<center><br>$$<br>T(n)=2T(\frac{n}{2})+\Theta(n)$，由 Master Method 中的 Case 2 得知$T(n)=\Theta(n\log n)<br>$$<br></center>
+
+<p>二分查找</p>
+<ol>
+<li>将序列分为两部分</li>
+<li>递归地查找</li>
+<li>合</li>
+</ol>
+<p>运行时间：</p>
+<center><br>$$<br>T(n)=T(\frac{n}{2})+\Theta(1)<br>=O(\log n)<br>$$<br></center>
+
+<h2 id="Powering-a-number-乘方问题"><a href="#Powering-a-number-乘方问题" class="headerlink" title="Powering a number 乘方问题"></a>Powering a number 乘方问题</h2><p>给出一个数$x$，给出整数$n \ge 0$，计算$x^n$。</p>
+<h3 id="朴素算法"><a href="#朴素算法" class="headerlink" title="朴素算法"></a>朴素算法</h3><center><br>$$<br>x^n = x \times x \times x \times \dots \times x  （共有n个x）<br>$$<br></center>
+
+<p>运行时间复杂度$\Theta(n)$</p>
+<h3 id="分治方法"><a href="#分治方法" class="headerlink" title="分治方法"></a>分治方法</h3><center><br>$$<br>x^n=x^{n/2} \times x^{n/2}，如果n为偶数<br>$$<br><br>$$<br>x^n=x^{(n-1)/2} \times x^{(n-1)/2} \times x，如果n为奇数<br>$$<br><br>$$<br>\begin{align}<br>T(n)&amp;=T(\frac{n}{2})+\Theta(1)\<br>&amp;=\Theta(\log n)<br>\end{align}<br>$$<br></center>
+
+<h2 id="Fibonacci数列"><a href="#Fibonacci数列" class="headerlink" title="Fibonacci数列"></a>Fibonacci数列</h2><h3 id="递归方法"><a href="#递归方法" class="headerlink" title="递归方法"></a>递归方法</h3><p>递归地计算求解，时间复杂度$\Omega(\phi^n)$，其中$\phi=\frac{1 + \sqrt 5}{2}$。</p>
+<h3 id="自下而上的解决方法"><a href="#自下而上的解决方法" class="headerlink" title="自下而上的解决方法"></a>自下而上的解决方法</h3><p>依次计算$F_0, F_1, F_2, \dots， F_n$（动态规划的思想）</p>
+<p>时间复杂度$\Theta(n)$。</p>
+<h3 id="朴素递归分治"><a href="#朴素递归分治" class="headerlink" title="朴素递归分治"></a>朴素递归分治</h3><center><br>$$<br>F_n = \frac{\phi^n}{\sqrt 5}四舍五入取整<br>$$<br></center>
+
+<p>实际难以计算。</p>
+<h3 id="平方递归方法"><a href="#平方递归方法" class="headerlink" title="平方递归方法"></a>平方递归方法</h3><center><br>$$<br>\begin{bmatrix}<br>F_{n+1} &amp; F_n \<br>F_n     &amp; F_{n-1}<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>1 &amp; 1 \<br>1 &amp; 0<br>\end{bmatrix}<br> ^n<br>$$<br></center>
+
+<h4 id="证明"><a href="#证明" class="headerlink" title="证明"></a>证明</h4><ol>
+<li><center><br>$$<br>\begin{bmatrix}<br>1 &amp; 1 \<br>1 &amp; 0<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>F_{2} &amp; F_1 \<br>F_1     &amp; F_{0}<br>\end{bmatrix}<br>$$<br></center>
+</li>
+<li></li>
+</ol>
+<center><br>$$<br>\begin{bmatrix}<br>F_{n+1} &amp; F_n \<br>F_n     &amp; F_{n-1}<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>F_{n} &amp; F_{n-1} \<br>F_{n-1}     &amp; F_{n-2}<br>\end{bmatrix}<br>\times<br>\begin{bmatrix}<br>1 &amp; 1 \<br>1 &amp; 0<br>\end{bmatrix}<br>$$<br></center>
+
+<p>由1和2，有</p>
+<center><br>$$<br>\begin{bmatrix}<br>F_{n+1} &amp; F_n \<br>F_n     &amp; F_{n-1}<br>\end{bmatrix}<br>=<br>\begin{bmatrix}<br>1 &amp; 1 \<br>1 &amp; 0<br>\end{bmatrix}<br> ^n<br>$$<br></center>
+
+<h2 id="矩阵乘法"><a href="#矩阵乘法" class="headerlink" title="矩阵乘法"></a>矩阵乘法</h2><p>输入：$A={a_{ij}},B={b_{ij}},i,j=1,2,\dots,n$</p>
+<p>输出：$C={c_{ij}}=A \cdot B$，<br>$<br>c_{ij}=\sum\limits_{k=1}\limits^{n} a_{ik}b_{kj}<br>$</p>
+<h3 id="标准方法：直接计算"><a href="#标准方法：直接计算" class="headerlink" title="标准方法：直接计算"></a>标准方法：直接计算</h3><p>时间复杂度$\Theta(n^3)$</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> <span class="built_in">i</span> = <span class="number">1</span> : n</span><br><span class="line">  <span class="keyword">for</span> <span class="built_in">j</span> = <span class="number">1</span> : n</span><br><span class="line">    c_ij=<span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span> k = <span class="number">1</span> : n</span><br><span class="line">      c_ij += a_ik * b_kj</span><br></pre></td></tr></table></figure>
+<h3 id="矩阵分块"><a href="#矩阵分块" class="headerlink" title="矩阵分块"></a>矩阵分块</h3><p>$n \times n$阵划分为$2 \times 2$阵，其中每个元素都是$\frac{n}{2} \times \frac{n}{2}$阵。</p>
+<p>于是</p>
+<center><br>$$<br>C =<br>\begin{bmatrix}<br>r &amp; s \<br>t &amp; u<br>\end{bmatrix}<br>=<br>{<br>\begin{bmatrix}<br>a &amp; b \<br>c &amp; d<br>\end{bmatrix}<br>}<br>\cdot<br>{<br>\begin{bmatrix}<br>e &amp; f \<br>g &amp; h<br>\end{bmatrix}<br>}<br>$$<br><br>$$<br>r = ae + bg<br>$$<br><br>$$<br>s = af + bh<br>$$<br><br>$$<br>t = ce + dg<br>$$<br><br>$$<br>u = cf + dh<br>$$<br></center>
+
+<p>需要8次递归相乘，4次递归相加。</p>
+<p>于是</p>
+<center><br>$$<br>\begin{align}<br>T(n) &amp; = 8 \cdot T(\frac{n}{2}) + \Theta(n^2) \<br> &amp; = Theta(n^3)<br>\end{align}<br>$$<br></center>
+
+<h2 id="Strassen’s-Algorithm"><a href="#Strassen’s-Algorithm" class="headerlink" title="Strassen’s Algorithm"></a><a href="https://en.wikipedia.org/wiki/Strassen_algorithm" target="_blank" rel="noopener">Strassen’s Algorithm</a></h2><p>与矩阵分块相比，减少递归乘法的次数。</p>
+<p>时间复杂度为</p>
+<center><br>$$<br>\begin{align}<br>T(n) &amp;= 7 \cdot T(\frac{n}{2}) + \Theta(n^2) \<br> &amp;= \Theta(n^{\lg 7}) \<br> &amp;= O(n^{2.81})<br>\end{align}<br>$$<br></center>
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2017/10/10/神经网络学习笔记/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1505,7 +1699,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">17</span>
+                    <span class="site-state-item-count">18</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -1786,6 +1980,8 @@
     
       
     
+      
+    
   
 
   
@@ -1808,7 +2004,7 @@
         }
     });
 </script>
-<script type="text/javascript" src="//cdn.jsdelivr.net/npm/mathjax@2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 
     
   
