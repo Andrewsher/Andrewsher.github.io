@@ -111,7 +111,7 @@
 <meta property="og:site_name" content="祁可翰的Blog">
 <meta property="og:description" content="线形支持向量机：给定线形不可分的数据集，求解如下的软间隔最大化问题： $$\min_{w, b, \xi} \frac{1}{2} ||w||^2 + C \sum\limits_{i=1}^N \xi_i$$ $$\mathbb{s.t.  }   y_i(w \cdot x_i + b) \ge 1 - \xi_i,  i=1,2,\dots,N \\\xi_i \ge 0, i =1,2,\">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-10-21T07:03:56.855Z">
+<meta property="og:updated_time" content="2018-11-10T06:39:08.800Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="线形支持向量机">
 <meta name="twitter:description" content="线形支持向量机：给定线形不可分的数据集，求解如下的软间隔最大化问题： $$\min_{w, b, \xi} \frac{1}{2} ||w||^2 + C \sum\limits_{i=1}^N \xi_i$$ $$\mathbb{s.t.  }   y_i(w \cdot x_i + b) \ge 1 - \xi_i,  i=1,2,\dots,N \\\xi_i \ge 0, i =1,2,\">
@@ -385,7 +385,7 @@
 <p>此时的分离超平面：<br>$$<br>\sum\limits_{i=1}^{N} \alpha_i^0 y_i (x \cdot x_i) + b^0 = 0<br>$$</p>
 <p>分类决策函数：<br>$$<br>f(x) = sign(\sum\limits_{i=1}^{N} \alpha_i^0 y_i (x \cdot x_i) + b^0)<br>$$</p>
 <p>理论上$b^0$可不唯一，实际应用中往往只出现算法叙述的情况。</p>
-<p>线形不可分的情况下，对偶问题的解$\alpha^<em>$中对应于$\alpha_j^</em> \gt 0$的样本点$(x_j,y_j)$的实例$x_j$称为支持向量。</p>
+<p>线形不可分的情况下，对偶问题的解$\alpha^0$中对应于$\alpha_j^0 \gt 0$的样本点$(x_j,y_j)$的实例$x_j$称为支持向量。</p>
 <p>线形支持向量机最优化问题<br>$$<br>\min_{w,b,\xi} \frac{1}{2} ||w||^2 + C\sum\limits_{i=1}^{N} \xi_i \\<br>\mathbb{s.t.} y_i(w \cdot x_i + b) \ge 1- \xi_i, i=1,2,\cdots, N \\<br>\xi_i \ge 0, i = 1,2,\cdots,N<br>$$</p>
 <p>等价于最优化问题：<br>$$<br>\min_{w,b} \sum\limits_{i=1}^{N} [1-y_i(w \cdot x_i + b)]_+ + \lambda ||w||^2<br>$$</p>
 <p>目标函数：<br>$$<br>\sum\limits_{i=1}^{N} [1-y_i(w\cdot x_i + b)]_+ + \lambda ||w||^2<br>$$</p>

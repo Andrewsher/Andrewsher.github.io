@@ -387,7 +387,7 @@
 <p>此时的分离超平面：<br>$$<br>\sum\limits_{i=1}^{N} \alpha_i^0 y_i (x \cdot x_i) + b^0 = 0<br>$$</p>
 <p>分类决策函数：<br>$$<br>f(x) = sign(\sum\limits_{i=1}^{N} \alpha_i^0 y_i (x \cdot x_i) + b^0)<br>$$</p>
 <p>理论上$b^0$可不唯一，实际应用中往往只出现算法叙述的情况。</p>
-<p>线形不可分的情况下，对偶问题的解$\alpha^<em>$中对应于$\alpha_j^</em> \gt 0$的样本点$(x_j,y_j)$的实例$x_j$称为支持向量。</p>
+<p>线形不可分的情况下，对偶问题的解$\alpha^0$中对应于$\alpha_j^0 \gt 0$的样本点$(x_j,y_j)$的实例$x_j$称为支持向量。</p>
 <p>线形支持向量机最优化问题<br>$$<br>\min_{w,b,\xi} \frac{1}{2} ||w||^2 + C\sum\limits_{i=1}^{N} \xi_i \\<br>\mathbb{s.t.} y_i(w \cdot x_i + b) \ge 1- \xi_i, i=1,2,\cdots, N \\<br>\xi_i \ge 0, i = 1,2,\cdots,N<br>$$</p>
 <p>等价于最优化问题：<br>$$<br>\min_{w,b} \sum\limits_{i=1}^{N} [1-y_i(w \cdot x_i + b)]_+ + \lambda ||w||^2<br>$$</p>
 <p>目标函数：<br>$$<br>\sum\limits_{i=1}^{N} [1-y_i(w\cdot x_i + b)]_+ + \lambda ||w||^2<br>$$</p>
@@ -706,14 +706,19 @@
 <p>其中$M$是误分类点的集合。</p>
 <h1 id="优化过程"><a href="#优化过程" class="headerlink" title="优化过程"></a>优化过程</h1><p>$$<br>\min \limits_{w, b} -\sum\limits_{x_i \in M} y_i(w\cdot x_i + b)<br>$$</p>
 <p>while 存在误分类点:<br>  随机选择误分类点$(x_i, y_i)$<br>  $w$ := $w + \eta y_ix_i$<br>  $b$ := $b + \eta y_i$</p>
-<h1 id="Novikoff定理"><a href="#Novikoff定理" class="headerlink" title="Novikoff定理"></a>Novikoff定理</h1><p>（1）$\exists || \hat{w}<em>{opt} ||= 1$的超平面$\hat{w}</em>{opt} \cdot \hat{x} + \hat{b}_{opt} = 0$，将线形可分的数据集$T$完全正确地分开；且$\exists \gamma \gt 0, \forall i = 1, 2, \dots, N$，有<br>$$<br>y_i(\hat{w}_{opt} \cdot \hat{x}_i) = y_i(w_{opt}\cdot x_i + b_{opt}) \ge \gamma<br>$$</p>
+<h1 id="Novikoff定理"><a href="#Novikoff定理" class="headerlink" title="Novikoff定理"></a>Novikoff定理</h1><p>（1）$\exists || \hat w _{opt} ||= 1$的超平面</p>
+<p>$$<br>\hat w_{opt} \cdot \hat{x} + \hat{b}_{opt} = 0<br>$$</p>
+<p>将线形可分的数据集$T$完全正确地分开；且</p>
+<p>$$<br>\exists \gamma \gt 0, \forall i = 1, 2, \dots, N<br>$$</p>
+<p>，有$y_i(\hat{w}_{opt} \cdot \hat{x}_i) = y_i(w_{opt}\cdot x_i + b_{opt}) \ge \gamma$</p>
 <p>（2）令$R = \max \limits_{1 \le i \le N} || \hat{x}_i||$，则感知机算法原始形式在$T$上的误分类次数$k \le \left( \frac{R}{\gamma} \right)^2$</p>
 <h1 id="感知机学习算法的对偶形式"><a href="#感知机学习算法的对偶形式" class="headerlink" title="感知机学习算法的对偶形式"></a>感知机学习算法的对偶形式</h1><p>感知机模型：$f(x) = sign \left(\sum \limits_{j=1} ^{N} \alpha_j y_j x_j \cdot x + b\right)$，其中$\alpha = (\alpha_1, \alpha_2, \dots, \alpha_n)^T$。</p>
 <p>（1）$\alpha := 0, b := 0$</p>
 <p>（2）若存在误分类的$(x_i, y_i)$，则$\alpha_i := \alpha_i + \eta$，$b := b + \eta y_i$。</p>
 <p>（3）重复（2），直到没有误分类。</p>
 <h1 id="证明：样本集-T-线形可分的充要条件是正实例的凸壳与负实例的凸壳互不相交"><a href="#证明：样本集-T-线形可分的充要条件是正实例的凸壳与负实例的凸壳互不相交" class="headerlink" title="证明：样本集$T$线形可分的充要条件是正实例的凸壳与负实例的凸壳互不相交"></a>证明：样本集$T$线形可分的充要条件是正实例的凸壳与负实例的凸壳互不相交</h1><p>$S={x_1, x_2, \dots, x_k} \subset R^n$</p>
-<p>$S$的凸壳$conv(S) = \left{  x = \sum\limits_{i=1}^{k} \lambda_ix_i \mid \sum\limits_{i=1}^{k}\lambda_i = 1, \lambda_i \ge 0, i = 1, 2, \dots, k \right}$</p>
+<p>$S$的凸壳</p>
+<p>$$<br>conv(S) = \left\{  x = \sum\limits_{i=1}^k \lambda_ix_i | \sum\limits_{i=1}^k\lambda_i = 1, \lambda_i \ge 0, i = 1, 2, \dots, k \right\}<br>$$</p>
 <p>证明：分$T$为正实例$T_+$和负实例$T_-$，对应的凸壳分别为$conv(T_+)$和$conv(T_-)$。</p>
 <p>(1) 若$T$线形可分，则有超平面$wx+b=0$满足条件。</p>
 <p>对于$T_+$中的$x_i$，有</p>
