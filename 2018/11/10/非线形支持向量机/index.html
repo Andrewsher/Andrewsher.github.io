@@ -103,25 +103,25 @@
 
 
 
-  <meta name="description" content="QuestionAssume an Slist L, with a data structure of each node as following: 12345struct node&amp;#123;    int num;    node* next;&amp;#125;; Complete the function as following, where for each ordinal sublist">
-<meta name="keywords" content="Data Structure">
+  <meta name="description" content="核函数设$X$是输入空间（欧氏空间$R^n$的子集或离散集合），又设$H$为特征空间（希尔伯特空间），如果存在一个从$X$到$H$的映射： $$\phi(x): X \rightarrow H$$ 使得对所有的$x,z \in X$，函数$K(x,z)$满足条件： $$K(x,z) = \phi (x) \cdot \phi (z)$$ 则称$K(x,z)$为核函数，$\phi (z)$为映射函数">
+<meta name="keywords" content="Machine Learning">
 <meta property="og:type" content="article">
-<meta property="og:title" content="A Solution of A Written Question in An Examination (1)">
-<meta property="og:url" content="https://andrewsher.github.io/2017/07/25/A-Solution-of-a-Written-Examination-Question-1/index.html">
+<meta property="og:title" content="非线形支持向量机">
+<meta property="og:url" content="https://andrewsher.github.io/2018/11/10/非线形支持向量机/index.html">
 <meta property="og:site_name" content="祁可翰的Blog">
-<meta property="og:description" content="QuestionAssume an Slist L, with a data structure of each node as following: 12345struct node&amp;#123;    int num;    node* next;&amp;#125;; Complete the function as following, where for each ordinal sublist">
+<meta property="og:description" content="核函数设$X$是输入空间（欧氏空间$R^n$的子集或离散集合），又设$H$为特征空间（希尔伯特空间），如果存在一个从$X$到$H$的映射： $$\phi(x): X \rightarrow H$$ 使得对所有的$x,z \in X$，函数$K(x,z)$满足条件： $$K(x,z) = \phi (x) \cdot \phi (z)$$ 则称$K(x,z)$为核函数，$\phi (z)$为映射函数">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2017-08-29T13:19:15.382Z">
+<meta property="og:updated_time" content="2018-11-10T08:25:50.969Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="A Solution of A Written Question in An Examination (1)">
-<meta name="twitter:description" content="QuestionAssume an Slist L, with a data structure of each node as following: 12345struct node&amp;#123;    int num;    node* next;&amp;#125;; Complete the function as following, where for each ordinal sublist">
+<meta name="twitter:title" content="非线形支持向量机">
+<meta name="twitter:description" content="核函数设$X$是输入空间（欧氏空间$R^n$的子集或离散集合），又设$H$为特征空间（希尔伯特空间），如果存在一个从$X$到$H$的映射： $$\phi(x): X \rightarrow H$$ 使得对所有的$x,z \in X$，函数$K(x,z)$满足条件： $$K(x,z) = \phi (x) \cdot \phi (z)$$ 则称$K(x,z)$为核函数，$\phi (z)$为映射函数">
 
 
 
 
 
 
-  <link rel="canonical" href="https://andrewsher.github.io/2017/07/25/A-Solution-of-a-Written-Examination-Question-1/"/>
+  <link rel="canonical" href="https://andrewsher.github.io/2018/11/10/非线形支持向量机/"/>
 
 
 
@@ -131,7 +131,7 @@
   };
 </script>
 
-  <title>A Solution of A Written Question in An Examination (1) | 祁可翰的Blog</title>
+  <title>非线形支持向量机 | 祁可翰的Blog</title>
   
 
 
@@ -293,7 +293,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2017/07/25/A-Solution-of-a-Written-Examination-Question-1/">
+    <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2018/11/10/非线形支持向量机/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="祁可翰">
@@ -310,7 +310,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">A Solution of A Written Question in An Examination (1)
+          <h1 class="post-title" itemprop="name headline">非线形支持向量机
               
             
           </h1>
@@ -329,7 +329,7 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-25T23:18:14+08:00">2017-07-25</time>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-11-10T15:06:08+08:00">2018-11-10</time>
             
 
             
@@ -366,14 +366,74 @@
       
 
       
-        <h2 id="Question"><a href="#Question" class="headerlink" title="Question"></a>Question</h2><p>Assume an Slist L, with a data structure of each node as following:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">node</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> num;</span><br><span class="line">    node* next;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>Complete the function as following, where for each ordinal sublist with n nodes, the function is able to reserve its order, and return the new head of the list. For the last sublist, do not reserve its order if the number of nodes is less than n.</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">node* <span class="title">f</span><span class="params">(node* head, <span class="keyword">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">/****************************/</span></span><br><span class="line">    <span class="comment">/* Add your code here. */</span></span><br><span class="line">    <span class="comment">/****************************/</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>Feature <em>head</em> is the first node of the slist, n is the given number. This function will return the first node of the list.</p>
-<h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h2><p>Assume that we have a list of the length 3, thus we can complete the code as following.<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">node* <span class="title">f</span><span class="params">(node* head)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    node* former(head-&gt;next), temp(head-&gt;next-&gt;next), letter(head-&gt;next-&gt;next-&gt;next);</span><br><span class="line">    former-&gt;next = head;</span><br><span class="line">    temp-&gt;next = former;</span><br><span class="line">    letter-&gt;next = temp;</span><br><span class="line">    <span class="keyword">return</span> head;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>For the list L with the length n(n &gt;= 3), we can saberate it as n lists, each of which has one node that needs transforming.<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">node* <span class="title">f</span><span class="params">(node* head, <span class="keyword">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="function">node* <span class="title">former</span><span class="params">(head-&gt;next)</span></span>;</span><br><span class="line">    <span class="function">node* <span class="title">temp</span><span class="params">(head-&gt;next-&gt;next)</span></span>;</span><br><span class="line">    <span class="function">node* <span class="title">letter</span><span class="params">(head-&gt;next-&gt;next-&gt;next)</span></span>;</span><br><span class="line">    former-&gt;next = head;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        temp-&gt;next = former;</span><br><span class="line">        former = temp;</span><br><span class="line">        temp = letter;</span><br><span class="line">        letter = letter-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">    temp-&gt;next = former;</span><br><span class="line">    <span class="keyword">return</span> temp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>With the combination of the algorithm shown and the considerition of that it is used in a sublist with the length n, we can complete the solution of this problem as following consequently.<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">node* <span class="title">f</span><span class="params">(node* head, <span class="keyword">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="function">node* <span class="title">former</span><span class="params">(head-&gt;next)</span></span>;</span><br><span class="line">    <span class="function">node* <span class="title">temp</span><span class="params">(head-&gt;next-&gt;next)</span></span>;</span><br><span class="line">    <span class="function">node* <span class="title">letter</span><span class="params">(head-&gt;next-&gt;next-&gt;next)</span></span>;</span><br><span class="line">    <span class="function">node* <span class="title">header</span><span class="params">(head)</span></span>; <span class="comment">// The node before the first one</span></span><br><span class="line">    <span class="function">node* <span class="title">header_temp</span><span class="params">(head)</span></span>;</span><br><span class="line">    <span class="function">node* <span class="title">tail</span><span class="params">(head)</span></span>;   <span class="comment">// The node after the last one</span></span><br><span class="line">    <span class="keyword">do</span></span><br><span class="line">    &#123;   </span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n || !tail; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            tail = tail-&gt;next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(!tail) <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            tail = tail-&gt;next;</span><br><span class="line">            former-&gt;next = tail;</span><br><span class="line">            header_temp = former;   <span class="comment">// Save the node as the one before the first node of the next group of nodes</span></span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n; i++)</span><br><span class="line">            &#123;</span><br><span class="line">                temp-&gt;next = former;</span><br><span class="line">                former = temp;</span><br><span class="line">                temp = letter;</span><br><span class="line">                letter = letter-&gt;next;</span><br><span class="line">            &#125;</span><br><span class="line">            temp-&gt;next = former;</span><br><span class="line">            header-&gt;next = temp;</span><br><span class="line">            header = header_temp;   <span class="comment">// Refresh header</span></span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;<span class="keyword">while</span>(<span class="number">1</span>);  <span class="comment">// while</span></span><br><span class="line">    <span class="keyword">return</span> head;</span><br><span class="line">&#125;   <span class="comment">// f</span></span><br></pre></td></tr></table></figure></p>
+        <h1 id="核函数"><a href="#核函数" class="headerlink" title="核函数"></a>核函数</h1><p>设$X$是输入空间（欧氏空间$R^n$的子集或离散集合），又设$H$为特征空间（希尔伯特空间），如果存在一个从$X$到$H$的映射：</p>
+<p>$$<br>\phi(x): X \rightarrow H<br>$$</p>
+<p>使得对所有的$x,z \in X$，函数$K(x,z)$满足条件：</p>
+<p>$$<br>K(x,z) = \phi (x) \cdot \phi (z)<br>$$</p>
+<p>则称$K(x,z)$为核函数，$\phi (z)$为映射函数。式中$\phi (x) \cdot \phi (z)$为$phi (x)$和$\phi (z)$的内积。</p>
+<h1 id="使用核函数的乘积代替向量内积"><a href="#使用核函数的乘积代替向量内积" class="headerlink" title="使用核函数的乘积代替向量内积"></a>使用核函数的乘积代替向量内积</h1><p>$$<br>W(\alpha) = \frac{1}{2} \sum\limits_{i=1}^N \sum\limits_{j=1}^N \alpha_i \alpha_j y_i y_j K(x_i,x_j) - \sum\limits_{i=1}^N \alpha_i<br>$$</p>
+<p>$$<br>f(x)=sign \left(\sum\limits_{i=1}^{N_s} \alpha_i^0 y_i K(x_i,x) + b^0\right)<br>$$</p>
+<h2 id="定义映射和线性组合"><a href="#定义映射和线性组合" class="headerlink" title="定义映射和线性组合"></a>定义映射和线性组合</h2><p>定义映射：</p>
+<p>$$<br>\phi : x \rightarrow K(\cdot, x)<br>$$</p>
+<p>定义线性组合：</p>
+<p>$$<br>f(\cdot) = \sum\limits_{i=1}^m \alpha_i K(\cdot, x_i)<br>$$</p>
+<p>考虑由线性组合为元素的集合$S$，它构成一个向量空间。</p>
+<h2 id="求内积"><a href="#求内积" class="headerlink" title="求内积"></a>求内积</h2><p>对任意的$f,g \in S$，</p>
+<p>$$<br>f(\cdot) = \sum\limits_{i=1}^m \alpha_i K(\cdot, x_i)<br>$$</p>
+<p>$$<br>g(\cdot) = \sum\limits_{j=1}^m \beta_j K(\cdot, z_j)<br>$$</p>
+<p>定义运算 $*$</p>
+<p>$$<br>f * g = \sum\limits_{i=1}^m \sum\limits_{j=1}^l \alpha_i \beta_j K(x_i, z_j) \label{1}<br>$$</p>
+<p>易知</p>
+<p>$$<br>(cf) * g = c(f * g) \label{2}<br>$$</p>
+<p>$$<br>(f+g) * h = f * h + g * h \label{3}<br>$$</p>
+<p>$$<br>f * g = g * f \label{4}<br>$$</p>
+<p>$$<br>f * f \ge 0 \label{5}<br>$$</p>
+<p>下面证明$f * f = 0 \Rightarrow f = 0 \label{6}$<br>构造关于$\lambda$的二次式：</p>
+<p>$$<br>(f + \lambda g) * (f + \lambda g) \ge 0 恒成立<br>$$</p>
+<p>$$<br>(g * g) \lambda^2 + 2 \lambda (f * g) + f * f \ge 0 恒成立<br>$$</p>
+<p>$$<br>\Delta = 4 [(f * g)^2 - (f * f)(g * g)] \lt 0<br>$$</p>
+<p>于是</p>
+<p>$$<br>|f * g| ^2 \le (f * f) \cdot (g * g)<br>$$</p>
+<p>易知</p>
+<p>$$<br>K(\cdot, x) * f = \sum\limits_{i=1}^m \alpha_i K(x, x_i) = f(x)<br>$$</p>
+<p>于是</p>
+<p>$$<br>\begin{split}<br>|f(x)|^2<br>&amp; = |K(\cdot, x) * f | ^2 \<br>&amp; \le (K * K) \cdot (f * f) \<br>&amp; = K(x, x) \cdot (f * f)<br>\end{split}<br>$$</p>
+<p>当$f * f = 0$时， 有：</p>
+<p>$$<br>|f(x)|^2 \le K(x, x) \cdot (f * f) \le 0<br>$$</p>
+<p>于是$f = 0$，证毕。</p>
+<p>易知$f = 0 \Rightarrow f * f = 0 \label{7}$</p>
+<p>由以上7式，$*$是$S$的内积，可用$\cdot$表示。</p>
+<h2 id="内积空间完备化"><a href="#内积空间完备化" class="headerlink" title="内积空间完备化"></a>内积空间完备化</h2><p>范数：</p>
+<p>$$<br>||f|| = \sqrt{f \cdot f}<br>$$</p>
+<p>因此$S$是一个赋凡向量空间，完备化得到赋范向量空间$H$。</p>
+<h2 id="正定核的充要条件"><a href="#正定核的充要条件" class="headerlink" title="正定核的充要条件"></a>正定核的充要条件</h2><p>设$K: X \times X \rightarrow R$ 是对称函数，则$K(x,z)$为正定核的充要条件是：</p>
+<p>$$<br>\forall x_i \in X,i=1,2,\dots,m<br>$$</p>
+<p>$K(x,z)$对应的Gram矩阵：</p>
+<p>$$<br>K = [K(x_i, x_j)]_{m \times m}<br>$$</p>
+<p>是半正定矩阵。</p>
+<h2 id="正定核的等价意义"><a href="#正定核的等价意义" class="headerlink" title="正定核的等价意义"></a>正定核的等价意义</h2><p>设$X \subseteq R^n$， $K(x,z)$是定义在$X \times X$ 上的对称函数，如果对任意的$x_i \in X, i=1, 2, \dots,m$，$K(x,z)$对应的Gram矩阵</p>
+<p>$$<br>K=[K(x_i,x_j)]_{m \times m}<br>$$</p>
+<p>是半正定矩阵，则称$K(x,z)$是正定核。</p>
+<h1 id="常用核函数"><a href="#常用核函数" class="headerlink" title="常用核函数"></a>常用核函数</h1><p>##多项式核函数</p>
+<p>$$<br>K(x, z) = (x \cdot z + 1) ^p<br>$$</p>
+<p>$$<br>f(x) = sign \left(\sum\limits_{i=1}^{N_s} \alpha_i^0 y_i (x_i + x + 1) ^p + b^0\right)<br>$$</p>
+<h2 id="高斯核函数"><a href="#高斯核函数" class="headerlink" title="高斯核函数"></a>高斯核函数</h2><p>$$<br>K(x,z) = \exp \left(  - \frac{||x - z ||^2}{2 \sigma ^2} \right)<br>$$</p>
+<p>$$<br>f(x) = sign \left(\sum\limits_{i=1}^{N_s} \alpha_i^0 y_i \exp\left(- \frac{||x - z||^2}{2\sigma^2}\right) + b^0 \right)<br>$$</p>
+<h2 id="字符串核函数"><a href="#字符串核函数" class="headerlink" title="字符串核函数"></a>字符串核函数</h2><p>两个字符串s和t上的字符串核函数是基于映射$\phi _n$的特征空间中的内积。</p>
+<p>$$<br>K_n(s,t)<br>= \sum\limits_{u \in {\Sigma ^n}} [\phi_n (s)]_u [\phi_n (t)]_u<br>$$</p>
+<p>$$<br>= \sum\limits_{u \in \Sigma^n} \sum\limits_{(i,j) : s(i) = t(j) = u} \lambda^{l(i)} \lambda^{l(j)}<br>$$</p>
+<p>$0 \lt \lambda \le 1$ 是衰减参数，$l(i)$表示字符串$i$的长度。</p>
+<h1 id="非线形支持向量机学习算法"><a href="#非线形支持向量机学习算法" class="headerlink" title="非线形支持向量机学习算法"></a>非线形支持向量机学习算法</h1><p>输入：训练数据集$T = \{  (x_1,y_1), \dots, (x_N,y_N) \}$，其中$x_i \in X = R^n,y_i \in Y = \{-1, 1\}, i=1, 2, \dots, N$</p>
+<p>输出：分类决策函数</p>
+<p>（1）选取适当的核函数$K(x,z)$和适当的参数$C$，构造并求解最优化问题：</p>
+<p>$$<br>\min \limits_\alpha \frac{1}{2} \sum\limits_{i=1}^N \sum\limits_{j=1}^N \alpha_i \alpha_j y_i y_j K(x_i, x_j) - \sum\limits_{i=1}^N \alpha_i<br>$$</p>
+<p>$$<br>\begin{split}<br>s.t. &amp; \sum\limits_{i=1}^N \alpha_i y_i = 0 \\<br>     &amp; 0 \le \alpha_i \le C, i=1, 2, \dots, N<br>\end{split}<br>$$</p>
+<p>求解得到最优解$\alpha^0 = (\alpha_1^0, \dots, \alpha_N^0)^T$</p>
+<p>（2）选择$\alpha^0$的一个正分量$0 \lt \alpha_j^0 \lt C$，</p>
+<p>$$<br>b^0 = y_j - \sum\limits_{i=1}^N \alpha_i^0 y_i K(x_i, x_j)<br>$$</p>
+<p>（3）决策函数：</p>
+<p>$$<br>f(x) = sign\left(\sum\limits_{i=1}^N \alpha_i^0 y_i K(x, x_i) + b^0\right)<br>$$</p>
+<p>当$K(x,z)$是正定函数时，最优化问题是凸二次规划问题。</p>
 
       
     </div>
@@ -394,7 +454,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Data-Structure/" rel="tag"># Data Structure</a>
+            <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
           
         </div>
       
@@ -422,8 +482,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/07/24/Curriculum-Vitae/" rel="next" title="Curriculum Vitae">
-                <i class="fa fa-chevron-left"></i> Curriculum Vitae
+              <a href="/2018/10/21/线形支持向量机/" rel="next" title="线形支持向量机">
+                <i class="fa fa-chevron-left"></i> 线形支持向量机
               </a>
             
           </div>
@@ -431,10 +491,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/08/29/A-Solution-of-A-Written-Question-in-An-Examination-2/" rel="prev" title="A Solution of A Written Question in An Examination (2)">
-                A Solution of A Written Question in An Examination (2) <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -581,7 +637,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Question"><span class="nav-number">1.</span> <span class="nav-text">Question</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Solution"><span class="nav-number">2.</span> <span class="nav-text">Solution</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#核函数"><span class="nav-number">1.</span> <span class="nav-text">核函数</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用核函数的乘积代替向量内积"><span class="nav-number">2.</span> <span class="nav-text">使用核函数的乘积代替向量内积</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#定义映射和线性组合"><span class="nav-number">2.1.</span> <span class="nav-text">定义映射和线性组合</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#求内积"><span class="nav-number">2.2.</span> <span class="nav-text">求内积</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内积空间完备化"><span class="nav-number">2.3.</span> <span class="nav-text">内积空间完备化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#正定核的充要条件"><span class="nav-number">2.4.</span> <span class="nav-text">正定核的充要条件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#正定核的等价意义"><span class="nav-number">2.5.</span> <span class="nav-text">正定核的等价意义</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#常用核函数"><span class="nav-number">3.</span> <span class="nav-text">常用核函数</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#高斯核函数"><span class="nav-number">3.1.</span> <span class="nav-text">高斯核函数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字符串核函数"><span class="nav-number">3.2.</span> <span class="nav-text">字符串核函数</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#非线形支持向量机学习算法"><span class="nav-number">4.</span> <span class="nav-text">非线形支持向量机学习算法</span></a></li></ol></div>
             
 
           </div>
@@ -793,6 +849,29 @@
   
   
 
+  
+    
+      <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+    
   
 
 

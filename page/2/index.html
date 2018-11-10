@@ -289,6 +289,187 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2018/02/14/顺序统计与中值学习笔记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁可翰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="祁可翰的Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/02/14/顺序统计与中值学习笔记/" itemprop="url">
+                  顺序统计与中值学习笔记
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+                
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-02-14T10:53:14+08:00">2018-02-14</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>MIT《算法导论》课程第6课《顺序统计与中值》学习笔记.</p>
+<p>给出一些无序的元素，找到第k小的元素。</p>
+<h2 id="原始方法"><a href="#原始方法" class="headerlink" title="原始方法"></a>原始方法</h2><p>排序，并返回A[k]。当k=1时，相当于找最小值；当k=n时，相当于找最大值；当k=$\lfloor \frac{n+1}{2} \rfloor$或$\lceil \frac{n-1}{2}\rceil$时，相当于找中值。</p>
+<h2 id="随机的分治算法"><a href="#随机的分治算法" class="headerlink" title="随机的分治算法"></a>随机的分治算法</h2><p>参数A, p, q, i</p>
+<p>在A[p..q]中找到第i小的元素</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">RandSelect</span><span class="params">(A, p, q, i)</span>:</span></span><br><span class="line">  <span class="keyword">if</span> p == q:</span><br><span class="line">    <span class="keyword">return</span> A[p]</span><br><span class="line">  r = RandPartition(A, p, q) <span class="comment"># 随机分治</span></span><br><span class="line">  k = r - p +<span class="number">1</span>               <span class="comment"># k是划分元素的序号</span></span><br><span class="line">  <span class="keyword">if</span> i == k:                 <span class="comment"># k是要找的序号</span></span><br><span class="line">    <span class="keyword">return</span> A[r]     </span><br><span class="line">  <span class="keyword">if</span> i &lt; k:</span><br><span class="line">    <span class="keyword">return</span> RandSelect(A, p, r - <span class="number">1</span>, i) <span class="comment"># 在左边找</span></span><br><span class="line">  <span class="keyword">else</span>:</span><br><span class="line">    <span class="keyword">return</span> RandSelect(A, r + <span class="number">1</span>, q, i - k) <span class="comment"># 在右边找</span></span><br></pre></td></tr></table></figure>
+<h3 id="随机分治分析"><a href="#随机分治分析" class="headerlink" title="随机分治分析"></a>随机分治分析</h3><p>假设所有元素互不相等。</p>
+<p>幸运的情况：将所有元素按$\frac{1}{10}$，$\frac{9}{10}$划分，则</p>
+<p>$$<br>\begin{align}<br>T(n) &amp; \le T(\frac{9}{10} n) + \Theta(n) \<br> &amp; = \Theta(n) \<br>\end{align} \<br>（由于n^{\log <em>b a} = n^{\log</em>{9/10} 1} = n^0 = 1）<br>$$</p>
+<p>不幸运的情况：将所有元素按照$0,n-1$划分，则</p>
+<p>$$<br>\begin{align}<br>T(n) &amp;= T(n-1) +\Theta(n) \<br> &amp;= \Theta(n^2)<br>\end{align}<br>$$</p>
+<h3 id="随机分治的预期结果分析"><a href="#随机分治的预期结果分析" class="headerlink" title="随机分治的预期结果分析"></a>随机分治的预期结果分析</h3><p>共有n种划分的情况。</p>
+<p>令$T(n)$为随机变量，使用指示器随机变量(Indicate Random Variable)定义$X[k],k=0,1,2,\dots,n-1$。</p>
+<p>$$<br>X[k]=\begin{cases}<br>&amp;1, &amp;分割为k和n-k+1两段 \<br>&amp;0, &amp;其他<br>\end{cases}<br>$$</p>
+<p>每一种划分对应一个$X[k]$。</p>
+<p>$$<br>\begin{align}<br>T(n) &amp; \le \begin{cases}<br>T(\mathtt{max} { 0,n-1 })+ \Theta(n), &amp;如果以0,n-1划分 \<br>T(\mathtt{max} { 1,n-2 })+ \Theta(n), &amp;如果以1,n-2划分 \<br>\vdots \<br>T(\mathtt{max} { n-1,0 })+ \Theta(n), &amp;如果以n-1,0划分 \<br>\end{cases} \<br> &amp; = \sum \limits_{k=0}\limits^{n-1} X_k \left( T(\mathtt{max}{k,n-k-1}) + \Theta(n)\right)<br>\end{align}<br>$$</p>
+<p>$$<br>\begin{align}<br>E[T(n)] &amp;= E\left[\sum \limits_{k=0} \limits^{n-1} (T(\mathtt{max}{k,n-k-1})+\Theta(n))\right] \<br> &amp;= \sum\limits_{k=0} \limits^{n-1} E \left[  X_k(T(\mathtt{max}{k,n-k-1})+\Theta(n) \right] \<br> &amp;= \sum\limits_{k=0} \limits^{n-1} E[X_k] \cdot E[T(\mathtt{max}{k,n-k-1})+\Theta(n)] \<br> &amp;= \frac{1}{n}\sum\limits_{k=0}\limits^{n-1}E[T(\mathtt{max}{k,n-k-1})]+\frac{1}{n}\sum\limits_{k=0}\limits^{n-1}\Theta(n) \<br> &amp; \le \frac{2}{n}\sum\limits_{k=\lfloor n/2 \rfloor} \limits^{n-1} E[T(k)] + \Theta(n)<br>\end{align}<br>$$</p>
+<p>下面使用替代法证明上式为$O(n)$。</p>
+<p>假设：<br>$E(T(n)) \le c \cdot n $ 对足够大的常数$c \gt 0$ 成立。</p>
+<p>证明：<br>设$n \le 140$（这是一个魔幻的数）时，$E(T(n)) \le c \cdot n$。</p>
+<p>$$<br>\begin{align}<br>E[T(n)] &amp;= \frac{2}{n} \sum \limits_{k=\lfloor n/2 \rfloor} \limits^{n-1} E[T(k)] + \Theta(n) \<br> &amp; \le \frac{2}{n} \sum\limits_{k=\lfloor n/2 \rfloor} \limits^{n-1} c \cdot k + \Theta(n) \<br> &amp;= \frac{2c}{n} \sum\limits_{k=\lfloor n/2 \rfloor} \limits^{n-1} k + \Theta(n) \<br> &amp; \le \frac{2c}{n} \cdot \frac{3}{8}n^2 + \Theta(n) \<br> &amp;= c \cdot n - \left( \frac{1}{4}cn - \Theta(n)\right) \<br> &amp; \le c \cdot n， 当c足够大时<br>\end{align}<br>$$</p>
+<p>于是随机选择算法具有$\Theta(n)$的平均时间复杂度，只有在非常不幸运的情况下才会达到$\Theta(n^2)$的时间复杂度。</p>
+<h2 id="线性的最坏时间复杂度"><a href="#线性的最坏时间复杂度" class="headerlink" title="线性的最坏时间复杂度"></a>线性的最坏时间复杂度</h2><p>关键在于选择一个好的主元(pivot)用于划分。我们可以递归地产生主元。</p>
+<ul>
+<li>Step 1 </li>
+</ul>
+<p>将元素分为$5 \times \frac{n}{5}$的网络，共$\frac{n}{5}$组，每组5个。（假设恰好够划分，没有多余。）找出每一组元素的中值。这一步用时$O(n)$。</p>
+<ul>
+<li>Step 2</li>
+</ul>
+<p>递归地选择$\lfloor n/5 \rfloor$个中值的中值，记为$x$。这一步用时$T(\lfloor n/5 \rfloor)$。</p>
+<ul>
+<li>Step 3</li>
+</ul>
+<p>以$x$作为划分的主元进行划分，记$x$的排序号为$k$，即$k= \mathtt{rank} (x)$。</p>
+<ul>
+<li>Step 4</li>
+</ul>
+<p>假设我们要找的是第$i$小的元素。</p>
+<p>若$i=k$，返回$x$。</p>
+<p>若$i \lt k$，递归地在数组的小值区域选择第$k$小的值。</p>
+<p>若$i \lt k$，递归地在数组的大值区域选择第$i-k$小的值。</p>
+<h3 id="证明它具有线性的最坏时间复杂度"><a href="#证明它具有线性的最坏时间复杂度" class="headerlink" title="证明它具有线性的最坏时间复杂度"></a>证明它具有线性的最坏时间复杂度</h3><p>我们不妨设$n \lt 50$时，$T(n) = O(1)$。</p>
+<p>对于$n \le 50$，有$3\lfloor n/10 \rfloor \ge \lfloor n/4 \rfloor$。</p>
+<p>于是$T(n) \le T(\frac{n}{5}) + T(\frac{3n}{4} + \Theta(n)$。</p>
+<p>下面使用替代法证明之。</p>
+<p>设$T(n) \le c \cdot n$</p>
+<p>则<br>$$<br>\begin{align}<br>T(n) &amp; \le \frac{c}{5}n + \frac{3c}{4}n + \Theta(n) \<br> &amp;= \frac{19}{20}c \cdot n + \Theta(n) \<br> &amp;= c \cdot n - \left(\frac{1}{20}cn - \Theta(n)\right) \<br> &amp;= O(n)，如果c足够大<br>\end{align}<br>$$</p>
+<p>证毕。</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2018/02/14/分治法学习笔记/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1699,7 +1880,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">18</span>
+                    <span class="site-state-item-count">19</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -1966,6 +2147,8 @@
     
       
         
+      
+    
       
     
       
