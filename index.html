@@ -289,6 +289,252 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2018/12/10/EM算法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁可翰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="祁可翰的Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/10/EM算法/" itemprop="url">
+                  EM算法
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+                
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-12-10T20:16:06+08:00">2018-12-10</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="EM算法引入"><a href="#EM算法引入" class="headerlink" title="EM算法引入"></a>EM算法引入</h1><p>EM算法：含有隐变量的概率模型参数的极大似然估计，或极大后验概率估计法。</p>
+<p>假设有3枚硬币A，B和C，正面出现的概率分别为$\pi$，$p$和$q$。进行如下的掷币实验：先掷硬币A，根据结果选出硬币B或C，正面选B，反面选C；然后掷选出的硬币，掷硬币的结果，出现正面记作1，出现反面记作0；独立地重复$n$次实验($n=10$)，观测结果如下：</p>
+<p>$$<br>1,1,0,1,0,0,1,0,1,1<br>$$</p>
+<p>设随机变量$y$为观测变量，表示一次实验的观测结果是0或1,；随机变量$z$是隐变量，表示未观测到的掷硬币A的结果；$\theta=(\pi, p, q)$是模型参数。</p>
+<p>三硬币模型可以写作：</p>
+<p>$$<br>P(y|\theta) = \sum\limits_z P(y,z|\theta)<br>= \sum\limits_z P(z|\theta) P(y|\theta, z)<br>=\pi p^y (1-p)^{1-y} + (1-\pi) q^y (1-q)^{1-y}<br>$$</p>
+<p>类似的，如果将观测数据写作$Y=(Y_1, \dots, Y_n)^T$，未观测数据写作$Z=(Z_1, \dots, Z_n)^T$，则观测数据的似然函数是：</p>
+<p>$$<br>P(Y|\theta)=\sum\limits_Z P(Z|\theta) P(Y|Z, \theta)<br>$$</p>
+<p>即：</p>
+<p>$$<br>P(Y|\theta) = \prod \limits_{j=1}^n \left[ \pi p^{y_j} (1-p)^{1-y_j} + (1-\pi) q ^{y_j} (1-q) ^{1-y_j} \right]<br>$$</p>
+<p>求$\theta$的极大似然估计，即</p>
+<p>$$<br>\hat\theta = \arg \max\limits_\theta \log P(Y|\theta)<br>$$</p>
+<p>E步：计算模型参数$\pi^{(i)},p^{(i)},\epsilon^{(i)}$下观测数据来自掷硬币B的概率：</p>
+<p>$$<br>\mu^{(i+1)}_j = \frac{\pi^{(i)} (p^{(i)})^{y_j}(1-p^{(i)})^{1-y_j}}{\pi^{(i)} (p^{(i)})^{1-y_j} + (1-\pi^{(i)}) (q^{(i)})^{y_j} (1-q^{(i)}) ^ {1-y_j}}<br>$$</p>
+<p>M步：更新模型参数的估计值</p>
+<p>$$<br>\pi^{(i+1)} = \frac{1}{n} \sum\limits_{j=1}^n \mu_j^{i+1}<br>$$</p>
+<p>$$<br>p^{(i+1)} = \frac{ \sum\limits_{j=1}^n \mu_j^{(i+1)} y_j }{ \sum\limits_{j=1}^n \mu_j^{(i+1)} }<br>$$</p>
+<p>$$<br>q^{(i+1)} = \frac {\sum\limits_{j=1}^n \left( 1-\mu_j^{(i+1)} \right) y_j} {\sum\limits_{j=1}^n \left(  1-\mu_j^{(i+1)} \right)}<br>$$</p>
+<h1 id="EM算法"><a href="#EM算法" class="headerlink" title="EM算法"></a>EM算法</h1><p>输入：观测变量数据$Y$，隐变量数据$Z$，联合分布$P(Y,Z|\theta)$，条件分布$P(Z|Y,\theta)$</p>
+<p>输出：模型参数$\theta$</p>
+<p>（1）选择参数的初值$\theta^{(0)}$，开始迭代。</p>
+<p>（2）E步：记$\theta^{(i)}$为第$i$次迭代参数$\theta$的估计值，在第$i+1$步迭代的E步，计算：</p>
+<p>$$<br>Q(\theta, \theta^{(i+1)}) = E_Z \left[ \log P(Y,Z|\theta) | Y, \theta^{(i)} \right]<br>= \sum\limits_Z \log P(Y,Z|\theta) P(Z|Y, \theta^{(i)})<br>$$</p>
+<p>这里，$P(Z|Y, \theta^{(i)})$是在给定观测数据$Y$和当前的参数估计$\theta^{(i)}$下隐变量数据$Z$的条件概率分布。</p>
+<p>（3）M步：求使$Q(\theta, \theta^{(i)})$极大化的$\theta$，确定第$i+1$次迭代的参数的估计值。</p>
+<p>$$<br>\theta^{(i+1)} = \arg \max \limits_\theta Q(\theta, \theta^{(i)})<br>$$</p>
+<p>（4）重复第（2）和（3）步，直到收敛。</p>
+<p>上述算法中的函数$Q(\theta, \theta^{(i)})$是EM算法的核心，称为Q函数。</p>
+<p>Q函数：完全数据的对数似然函数$\log P(Y, Z|\theta)$关于在给定观测数据$Y$和当前参数$\theta^{(i)}$下对未观测数据$Z$的条件概率分布$P(Z | Y, \theta^{(i)})$的期望，即</p>
+<p>$$<br>Q(\theta, \theta^{(i+1)}) = E_Z \left[ \log P(Y,Z|\theta) | Y, \theta^{(i)} \right]<br>$$</p>
+<p>说明：</p>
+<ol>
+<li>参数$\theta$的初值$\theta^{(0)}$可随意选取，但EM算法对初值敏感。</li>
+<li>E步求$Q(\theta, \theta^{(i)})$，Q函数式中$Z$是未观测数据，$Y$是观测数据，$\theta$是要极大化的参数，$\theta^{(i)}$是参数的当前估计值。每次迭代求Q及其极大。</li>
+<li>M步求Q的极大化得到$\theta^{(i+1)}$，完成一次迭代$\theta^{(i)} \rightarrow \theta^{(i+1)}$。</li>
+<li>停止迭代的条件，一般是对较小的正数$\epsilon_1, \epsilon_2$，满足：</li>
+</ol>
+<p>$$<br>||\theta^{(i+1)} - \theta^{(i)} || \lt \epsilon_1<br>$$</p>
+<p>或</p>
+<p>$$<br>|| Q(\theta^{(i+1)}, \theta^{(i+1)}) - Q(\theta^{(i)}, \theta^{(i+1)}) || \lt \epsilon_2<br>$$</p>
+<h1 id="EM算法的导出"><a href="#EM算法的导出" class="headerlink" title="EM算法的导出"></a>EM算法的导出</h1><p>目标是极大化观测数据$Y$关于参数$\theta$的对数似然函数，即极大化</p>
+<p>$$<br>\begin {split}<br>L(\theta) &amp;= \log P(Y|\theta) \\<br>  &amp;= \log \sum\limits_Z P(Y,Z|\theta) \\<br>  &amp;= \log \left( \sum\limits_Z P(Y|Z, \theta) P(Z|\theta) \right)<br>\end {split}<br>$$</p>
+<p>极大化上式的困难在于含有未观测数据$Z$及和的对数。</p>
+<p>我们希望通过迭代的方式逐步近似地去极大化$L(\theta)$，即经过一次迭代$\theta^{(i)} \rightarrow \theta^{(i+1)}$后，$L(\theta)$能够增加，即$L(\theta) \gt L(\theta^{(i)})$。</p>
+<p>考虑两者的差，</p>
+<p>$$<br>L(\theta) - L(\theta^{(i)}) = \log \left( \sum\limits_Z P(Y|Z, \theta) P(Z|\theta) \right) - \log P(Y|\theta^{(i)})<br>$$</p>
+<p>利用Jensen不等式：</p>
+<p>$$<br>\log \sum\limits_j \lambda_j y_j \ge \sum\limits_j \lambda_j \log y_j, \lambda_j \ge 0, \sum\limits_j \lambda_j = 1<br>$$</p>
+<p>得到上式的下届：</p>
+<p>$$<br>\begin {split}<br>L(\theta) - L(\theta^{(i)}) &amp;= \log( \sum\limits_Z P(Y|Z, \theta^{(i)}) \frac{P(Y|Z, \theta)P(Z|\theta)}{ P(Y|Z, \theta^{(i)}) } ) - \log P(Y|\theta^{(i)}) \\<br>&amp; \ge \sum\limits_Z P(Z|Y, \theta^{(i)}) \log \frac{ P(Y|Z, \theta)P(Z|\theta) }{ P(Y|Z, \theta^{(i)}) } - \log P(Y|\theta^{(i)}) \\<br>&amp; = \sum\limits_Z P(Z|Y, \theta^{(i)}) \log \frac {P(Y|Z, \theta) P(Z, \theta)} { P(Y|Z, \theta^{(i)}) P(Y|\theta^{(i)}) }<br>\end{split}<br>$$</p>
+<p>令</p>
+<p>$$<br>B(\theta, \theta^{(i)}) = L(\theta^{(i)}) + \sum\limits_Z P(Z|Y, \theta^{(i)}) \log \frac {P(Y|Z, \theta) P(Z, \theta)} {P(Y|Z, \theta^{(i)}) P(Y|\theta^{(i)})}<br>$$</p>
+<p>则有$L(\theta) \ge B(\theta, \theta^{(i)})$， 且有$L(\theta^{(i)}) = B(\theta^{(i)}, \theta^{(i)})$。</p>
+<p>因此，任何可以使$B(\theta, \theta^{(i)})$增大的$\theta$，也可以使$L(\theta)$增大。为了使$L(\theta)$尽可能增大，选择$\theta^{(i+1)}$使$B(\theta, \theta^{(i)})$达到极大，即</p>
+<p>$$<br>\begin{split}<br>\theta^{(i+1)} &amp;= \arg \max \limits_\theta B(\theta, \theta^{(i)}) \\<br>&amp;= \arg \max \limits_\theta \left( L(\theta^{(i)}) + \sum\limits_Z P(Z|Y, \theta^{(i)}) \log \frac {P(Y|Z, \theta) P(Z, \theta)} {P(Y|Z, \theta^{(i)}) P(Y|\theta^{(i)})}  \right) \\<br>&amp;= \arg \max \limits_\theta \left( \sum\limits_Z P(Z|Y,\theta^{(i)}) \log (P(Y|Z,\theta)P(Z|\theta)) \right) \\<br>&amp;= \arg \max \limits_\theta \left( \sum\limits_Z P(Z|Y, \theta^{(i)}) \log P(Y, Z|\theta) \right) \\<br>&amp;= \arg \max \limits_\theta Q(\theta, \theta^{(i)})<br>\end{split}<br>$$</p>
+<h1 id="EM算法的收敛性"><a href="#EM算法的收敛性" class="headerlink" title="EM算法的收敛性"></a>EM算法的收敛性</h1><p>定理：设$P(Y,\theta)$为观测数据的似然函数，$\theta^{(i)}(i=1,2,\dots)$为EM算法得到的参数估计序列，$P(Y|\theta^{(i)})(i=1,2,\dots)$为对应的似然函数序列，则$P(Y|\theta^{(i)})$是递增的，即</p>
+<p>$$<br>P(Y|\theta^{(i)}) \ge P(Y|\theta^{(i)})<br>$$</p>
+<p>证明：</p>
+<p>由于$P(Y|\theta)=\frac {P(Y,Z|\theta)} {P(Z|Y, \theta)}$</p>
+<p>取对数有：</p>
+<p>$$<br>\log P(Y|\theta) = \log P(Y,Z|\theta) - \log P(Z|Y,\theta)<br>$$</p>
+<p>由于：</p>
+<p>$$<br>Q(\theta, \theta^{(i)})= \sum\limits_Z \log P(Y, Z|\theta) P(Z|Y, \theta^{(i)})<br>$$</p>
+<p>令：</p>
+<p>$$<br>H(\theta, \theta^{(i)}) = \sum\limits_Z \log P(Y, Z|\theta) P(Z|Y, \theta^{(i)})<br>$$</p>
+<p>于是对数似然函数可以写成：</p>
+<p>$$<br>\log P(Y|\theta) = Q(\theta, \theta^{(i)}) - H(\theta, \theta^{(i)})<br>$$</p>
+<p>上式的$\theta$分别取$\theta^{(i+1)}$和$\theta^{(i)}$并相减，有</p>
+<p>$$<br>\begin{split}<br>&amp; \log P(Y|\theta^{(i+1)}) - \log P(Y|\theta^{(i)}) \\<br>=&amp; \left[Q(\theta^{(i+1)}, \theta^{(i)}) - Q(\theta^{(i)}, \theta^{(i)}) \right] - \left[ H(\theta^{(i+1)}, \theta^{(i)}) - H(\theta^{(i)}, \theta^{(i)}) \right]<br>\end{split}<br>$$</p>
+<p>由于$\theta^{(i+1)}$使$Q(\theta, \theta^{(i)})$达到最大，于是有</p>
+<p>$$<br>Q(\theta^{(i+1)}, \theta^{(i)}) - Q(\theta^{(i)}, \theta^{(i)}) \ge 0<br>$$</p>
+<p>而</p>
+<p>$$<br>\begin{split}<br>&amp; H(\theta^{(i+1)}, \theta^{(i)}) - H(\theta^{(i)}, \theta^{(i)}) \\<br>=&amp; \sum\limits_Z \left( \log \frac{P(Z|Y,\theta^{(i+1)})} {P(Z|Y,\theta^{(i)})} \right)P(Z|Y,\theta^{(i)}) \\<br>\le &amp; \log \left(  \sum\limits_Z \frac{P(Z|Y, \theta^{(i+1)})} {P(Z|Y, \theta^{(i)})}  P(Z|Y, \theta^{(i)}) \right) （Jensen不等式） \\<br>=&amp; \log \left(  \sum\limits_Z P(Z|Y, \theta^{(i+1)})  \right) \\<br>=&amp; 0<br>\end{split}<br>$$</p>
+<p>于是有$\log P(Y|\theta^{(i+1)}) - \log P(Y|\theta^{(i)}) \le 0$，证毕。</p>
+<h1 id="EM算法在高斯混合模型中的应用"><a href="#EM算法在高斯混合模型中的应用" class="headerlink" title="EM算法在高斯混合模型中的应用"></a>EM算法在高斯混合模型中的应用</h1><h2 id="高斯混合模型的定义"><a href="#高斯混合模型的定义" class="headerlink" title="高斯混合模型的定义"></a>高斯混合模型的定义</h2><p>具有如下形式的概率分布模型：</p>
+<p>$$<br>P(y|\theta)=\sum\limits_{k=1}^K \alpha_k \phi(y|\theta_k)<br>$$</p>
+<p>其中，$\alpha_k$是系数，$\alpha_k \gt 0$，$\sum\limits_{k=1}^K \alpha_k = 1$。</p>
+<p>$\phi(u|\theta_k)$是高斯分布密度，$\theta_k=(\mu_k, \sigma_k^2)$，</p>
+<p>$$<br>\phi(y|\theta_k)=\frac{1}{\sqrt{2\pi}\sigma_k} \exp \left(- \frac{(y-\mu_k)^2}{2\sigma_k^2}\right)<br>$$</p>
+<p>称为第$k$个分模型。</p>
+<p>一般混合模型可以由任意概率分布密度代替上式中的高斯分布密度。</p>
+<h2 id="高斯混合模型参数估计中的EM算法"><a href="#高斯混合模型参数估计中的EM算法" class="headerlink" title="高斯混合模型参数估计中的EM算法"></a>高斯混合模型参数估计中的EM算法</h2><p>假设观测数据$y_1, y_2, \dots, y_N$由高斯混合模型生成：</p>
+<p>$$<br>P(y|\theta)=\sum\limits_{k=1}^K \alpha_k \phi(y|\theta_k)<br>$$</p>
+<p>其中，$\theta=(\alpha_1, \alpha_2, \dots, \alpha_K; \theta_1, \theta_2, \dots, \theta_K)$。</p>
+<p>下面用EM算法估计高斯混合模型的参数$\theta$。</p>
+<ul>
+<li>1 明确隐变量，写出完全数据的对数似然函数。</li>
+</ul>
+<p>设隐变量$\gamma_{jk}$反映观测数据$y_j$来自第$k$个分模型。</p>
+<p>$$<br>\gamma_{jk} =<br>\begin{cases}<br>1, 第j个观测数据来自第k个分模型 \\<br>0, 否则<br>\end{cases}<br>$$</p>
+<p>$\gamma$是$0-1$随机变量。</p>
+<p>有了观测数据$y_j$以及未观测数据$\gamma_{jk}$，那么完全数据是</p>
+<p>$$<br>(y_j, \gamma_{j1}, \gamma_{j2}, \dots, \gamma_{jk}), j=1,2,\dots,N<br>$$</p>
+<p>于是可以写出完全数据的似然函数：</p>
+<p>$$<br>\begin{split}<br> P(y, \gamma | \theta)  =&amp; \prod \limits_{j=1}^N P(y_j, \gamma_{j1}, \gamma_{j2}, \dots, \gamma_{jk} | \theta) \\<br>=&amp; \prod \limits_{k=1}^K \prod\limits_{j=1}^N \left[\alpha_k \phi (j_j|\theta_k) \right] ^ { \gamma _ {jk} } \\<br>=&amp; \prod \limits_{k=1}^{K} \alpha_{k}^{n_k} \prod \limits_{j=1}^N \left[ \phi(y_j|\theta_k) \right]^{\gamma_jk} \\<br>=&amp; \prod \limits_{k=1}^{K} \alpha_{k}^{n_k} \prod \limits_{j=1}^N \left[ \frac{1}{\sqrt{2\pi}\sigma_k} \exp \left(- \frac{(y_j-\mu_k)^2}{2\sigma_k^2}\right) \right]^{\gamma_{jk}}<br>\end{split}<br>$$</p>
+<p>其中$n_k = \sum\limits_{j=1}^N \gamma_{jk}$， $\sum\limits_{k=1}^K n_k = N$。</p>
+<p>于是，完全数据的对数似然函数为：</p>
+<p>$$<br>\log P(y, \gamma |\theta) = \sum\limits_{k=1}^K \left( n_k \log \alpha_k + \sum\limits_{j=1}^N \gamma_{jk} \left[\log (\frac{1}{\sqrt{2\pi}}) - \log \sigma_k - \frac{1}{2\sigma_k^2} (y_j - \mu_k)^2\right] \right)<br>$$</p>
+<ul>
+<li>2 E步：确定Q函数。</li>
+</ul>
+<p>$$<br>\begin{split}<br>Q(\theta, \theta^{(i)}) =&amp; E[\log P(y, \gamma | \theta) | y, \theta^{(i)}] \\<br>=&amp;  \sum\limits_{k=1}^K \left( n_k \log \alpha_k + \sum\limits_{j=1}^N \gamma_{jk} \left[\log (\frac{1}{\sqrt{2\pi}}) - \log \sigma_k - \frac{1}{2\sigma_k^2} (y_j - \mu_k)^2\right] \right) \\<br>=&amp; \sum\limits_{k=1}^K  \left(  \sum\limits_{j=1}^N (E\gamma_{jk})\log\alpha_k + \sum\limits_{j=1}^N(E\gamma_{jk})\left(  \log(\frac{1}{\sqrt{2\pi}}) - \log\sigma_k - \frac{(y_j-\mu_k)^2}{2\sigma^2}  \right)  \right)<br>\end {split}<br>$$</p>
+<p>这里需要计算$E(\gamma_{jk} | y,\theta)$，记为$\hat\gamma_{jk}$。</p>
+<p>$$<br>\begin{split}<br>\hat\gamma_{jk} =&amp; E(\gamma_{jk} | y,\theta) \\<br>=&amp; P(\gamma_{jk}=1|y,\theta) \\<br>=&amp; \frac {P(\gamma_{jk}=1,y_j|\theta)} {\sum\limits_{k=1}^K P(\gamma_{jk}=1,y_j | \theta)} \\<br>=&amp; \frac {P(y_j|\gamma_{jk}=1,\theta) P(\gamma_{jk}=1|\theta)} {\sum\limits_{k=1}^K P(y_j | \gamma_{jk}=1,\theta)P(\gamma_{jk}=1|\theta)} \\<br>=&amp; \frac{\alpha_k \phi(y_j | \theta_k)} {\sum\limits_{k=1}^K \alpha_k \phi(y_j | \theta_k)} , j=1,2,\dots,N;k=1,2,\dots,K<br>\end {split}<br>$$</p>
+<p>$\hat\gamma_{jk}$是当前模型参数下第$j$个观测数据来自第$k$个分模型的概率，称为分模型$k$对观测数据$y_j$的响应度。</p>
+<p>由$\hat\gamma_{jk}=E(\gamma_{jk})$及$n_k = \sum\limits_{j=1}^N \gamma_{jk}$，有</p>
+<p>$$<br>Q(\theta, \theta^{(i)}) = \sum\limits_{k=1}^K \left( n_k \log \alpha_k + \sum\limits_{j=1}^N \left[\log (\frac{1}{\sqrt{2\pi}}) - \log \sigma_k - \frac{1}{2\sigma_k^2} (y_j - \mu_k)^2\right] \right)<br>$$</p>
+<ul>
+<li>3 M步，求Q函数对$\theta$的极大值。</li>
+</ul>
+<p>用$\hat\mu_k$，$\hat\sigma_k^2$及$\hat\alpha_k,k=1,2,\dots,K$表示$\theta^{(i+1)}$的各参数。求$\hat\mu_k,\hat\sigma_k^2$只需对上式求偏导令为0；求$\hat\alpha_k$是在$\sum\limits_{k=1}^K \alpha_k=1$的条件下求偏导令等于0.</p>
+<p>于是：</p>
+<p>$$<br>\begin{split}<br>\hat\mu_k &amp;= \frac{\sum\limits_{j=1}^N \hat\gamma_{jk} y_j} {\sum\limits_{j=1}^N \hat\gamma_{jk}} \\<br>\sigma_k^2 &amp;= \frac{\sum\limits_{j=1}^N \hat\gamma_{jk} (y_j - \mu_k)^2} { \sum\limits_{j=1}^N \hat\gamma_{jk}} \\<br>\hat\alpha_k &amp;= \frac{n_k}{N} = \frac {\sum\limits_{j=1}^N \gamma_{jk}} {N} \\<br>k &amp;= 1,2,\dots,K<br>\end{split}<br>$$</p>
+<p>重复以上计算，直到对数似然函数不再有明显变化为止。</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2018/11/10/非线形支持向量机/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1903,194 +2149,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2018/02/17/哈希表学习笔记/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="祁可翰">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="祁可翰的Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/02/17/哈希表学习笔记/" itemprop="url">
-                  哈希表学习笔记
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-                
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-02-17T08:59:43+08:00">2018-02-17</time>
-            
-
-            
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>MIT《算法导论》课程第7课《哈希表》学习笔记.</p>
-<h2 id="哈希表"><a href="#哈希表" class="headerlink" title="哈希表"></a>哈希表</h2><ol>
-<li><p>用于解决Symbol-table问题</p>
-</li>
-<li><p>设表S有n条记录，每条记录为x，包含键key和值value。</p>
-</li>
-</ol>
-<h3 id="在哈希表上的操作"><a href="#在哈希表上的操作" class="headerlink" title="在哈希表上的操作"></a>在哈希表上的操作</h3><p><code>Insert(S, x)</code>用于在哈希表S中插入一条记录x，<code>Delete(S, x)</code>用于在S中删除一条记录x，<code>Search(S, k)</code>在S中搜索以k为键值的记录，如果找到的返回该记录，如果没有找到则返回空。</p>
-<h3 id="直接映射法"><a href="#直接映射法" class="headerlink" title="直接映射法"></a>直接映射法</h3><p>假设key来自一个含有m个元素的集合$U={0, 1, 2, \dots,m-1}$，设这些键值相互独立。</p>
-<p>建立一个从0到m-1的数组$T[0\cdots m-1]$来表示S。</p>
-<p>$$<br>T[k]=<br>\begin{cases}<br>x,&amp;\mathtt{if}&amp;x\in S &amp; \mathtt{and} &amp; \mathtt{key}[x]=k \<br>\mathtt{nil},&amp;其他<br>\end{cases}<br>$$</p>
-<p>时间复杂度$O(1)$</p>
-<h3 id="哈希法"><a href="#哈希法" class="headerlink" title="哈希法"></a>哈希法</h3><p>运用一个哈希函数$H$来“随机地”将键(key)映射到槽(slot)。当一个键被映射到一个已经存在记录的槽时，碰撞(collision)就发生了。</p>
-<h2 id="链接法"><a href="#链接法" class="headerlink" title="链接法"></a>链接法</h2><p>把映射到同一槽的键值保存在链表中。</p>
-<h3 id="分析"><a href="#分析" class="headerlink" title="分析"></a>分析</h3><p>最坏情况：S中所有键映射到同一个槽，此时的时间复杂度$\Theta(n)$，其中$n=|S|$。</p>
-<p>平均情况：假设S中的每一个键有同样的概率被映射到任意一个槽中。定义一个存放n个键、映射到m个槽的哈希表，其装载因子$\alpha=\frac{n}{m}$（平均每个槽里键的数量）。</p>
-<p>预期的失败搜索次数$=\Theta(1+\alpha)$</p>
-<p>当$\alpha = \Theta(1)$，即$n=O(m)$时，预期的搜索次数为$\Theta(1)$。</p>
-<h2 id="选择一个哈希函数"><a href="#选择一个哈希函数" class="headerlink" title="选择一个哈希函数"></a>选择一个哈希函数</h2><p>我们期望选择这样的哈希函数，它能够把键(key)均匀地映射到槽(slot)里，而键本身的一些分布的特性不会影响它在哈希表中的均匀性。</p>
-<h3 id="除法哈希法-Division-method"><a href="#除法哈希法-Division-method" class="headerlink" title="除法哈希法(Division method)"></a>除法哈希法(Division method)</h3><p>$$<br>h(k) = k \pmod m，其中m是槽的数量<br>$$</p>
-<p>注意不要选择太小的$m$值作为除数。如当除数=2，key都为偶数时，永远用不到奇数槽。</p>
-<p>当$m=2^r$时，哈希表取决于k的二进制的某些位，而同类数据的二进制形式常常存在某种规律性（“随机性”不好），这样的哈希函数就不好。</p>
-<p>好的方法是选取指数作为除数，不要太接近2的幂或10的幂。</p>
-<h3 id="乘法哈希法-Multiplication-method"><a href="#乘法哈希法-Multiplication-method" class="headerlink" title="乘法哈希法 Multiplication method"></a>乘法哈希法 Multiplication method</h3><p>设槽的数量$m=2^r$，计算机的字长为$w$。选取如下的哈希函数：</p>
-<p>$$<br>h(k)=(A \cdot k \pmod {2^w}) \mathtt{rsh}(w-r)<br>$$</p>
-<p>其中A是一个奇数，且$2^{w-r} \lt A \lt 2^w$，“rsh”表示二进制右移运算。A的取值不能太接近$2^{w-r}$或$2^w$。</p>
-<p>对于计算机来说，先乘以$A$再对$2^w$取余比直接取余快。</p>
-<p>如，取$m=8=2^3，w=7，A=(1011001)_2$。</p>
-<center><br>$$<br>A \cdot k = (10010100110011)_2<br>$$<br></center>
-
-<p>对$2^w$取模，即取二进制的后$w$位，得到</p>
-<center><br>$$<br>(0110011)_2<br>$$<br></center>
-
-<p>右移$w-r=7-3=4$位，得到</p>
-<center><br>$$<br>(011)_2<br>$$<br></center>
-
-<p>于是$h(k)=(011)_2$</p>
-<h2 id="开放寻址法-Open-addressing"><a href="#开放寻址法-Open-addressing" class="headerlink" title="开放寻址法 Open addressing"></a>开放寻址法 Open addressing</h2><p>在这种方法里，没有链表。这种方法要求系统地探查哈希表，直到找到一个空的槽为止。</p>
-<h3 id="探查方法"><a href="#探查方法" class="headerlink" title="探查方法"></a>探查方法</h3><p>线性探查：</p>
-<p>$$<br>h(k,i)=(h(k,0)+i) \pmod m<br>$$</p>
-<p>这种方法会遇到“一次集群”的问题，即一段区域内的槽都被占满。</p>
-<p>二次哈希：</p>
-<p>$$<br>h(k,i)=[h_1(k)+i\cdot h_2(k)] \pmod m<br>$$</p>
-<p>通常选择$m=w^r$，且$h_2(k)$总为奇数。</p>
-<h3 id="开放探查的分析"><a href="#开放探查的分析" class="headerlink" title="开放探查的分析"></a>开放探查的分析</h3><p>假设“均匀哈希”，即所有键都均等地有$m!$种探查序列，且每个键都相互独立。</p>
-<p>如果$\alpha \lt 1$（即$n \lt m$），则预期的探查次数$\le \frac{1}{1-\alpha}$。</p>
-<p>证明：</p>
-<p>假设一个失败的探查案例，一次的探查是必须的，发生碰撞的概率是$\frac{n}{m}$。第二次探查是必须的，发生碰撞的概率是$\frac{n-1}{m-1}$。第三次的探查是必须的，发生碰撞的概率是$\frac{n-2}{m-2}$。</p>
-<p>注意到$\frac{n-i}{m-i} \lt \frac{n}{m} = \alpha$, for $i$ = $1,2,\dots,n-1$。</p>
-<p>那么，预期的探查次数为：</p>
-<p>$$<br>\begin{align}<br>&amp; 1+\frac{n}{m}(1+\frac{n-1}{m-1}(1+\frac{n-2}{m-2}(\dots (1+\frac{1}{m-n})\dots))) \<br>\le &amp; 1+\alpha(1+\alpha(1+\alpha(\dots(1+\alpha)\dots))) \<br>\le &amp; 1+\alpha + \alpha^2 + \alpha^3 + \dots \<br>= &amp; \sum \limits_{i=0} \limits^{\infty} \alpha^i \<br>= &amp; \frac{1}{1-\alpha}<br>\end{align}<br>$$</p>
-<p>证毕。</p>
-<p>$\alpha \lt 1$为常数，平均需要$\Theta(1)$次探查。</p>
-<p>$\alpha=0.5$，表示哈希表有50%为空，平均需要2次探查。</p>
-<p>$\alpha = 0.1$，平均需要10次探查。</p>
-<p>如果$\alpha = 1$，哈希表的利用率为100%，理论上的平均探查次数为$\infty$。</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2138,7 +2196,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">19</span>
+                    <span class="site-state-item-count">20</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -2150,7 +2208,7 @@
                 
                 
                 <div class="site-state-item site-state-tags">
-                  
+                  <a href="/tags/index.html">
                     
                     
                       
@@ -2163,7 +2221,7 @@
                     
                     <span class="site-state-item-count">4</span>
                     <span class="site-state-item-name">tags</span>
-                  
+                  </a>
                 </div>
               
             </nav>
