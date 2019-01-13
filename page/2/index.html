@@ -289,6 +289,219 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2018/02/18/全域哈希与完全哈希学习笔记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁可翰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="祁可翰的Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/02/18/全域哈希与完全哈希学习笔记/" itemprop="url">
+                  全域哈希与完全哈希学习笔记
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+                
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-02-18T08:55:36+08:00">2018-02-18</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>MIT《算法导论》课程第8课《全域哈希与完全哈希》学习笔记.</p>
+<p><em>哈希的一个根本缺陷</em></p>
+<p>对任意的一个哈希函数，都存在一个不好的键集，其中的所有的键都被映射到同一个槽。</p>
+<p>解决方法：随机地选择哈希函数，形成“全域哈希”。</p>
+<h2 id="全域哈希-Universal-Hashing"><a href="#全域哈希-Universal-Hashing" class="headerlink" title="全域哈希 Universal Hashing"></a>全域哈希 Universal Hashing</h2><p>令$U$是键的集合，$H$是哈希函数的有限集合，$H$中的哈希函数将$U$映射到${0,1,\dots,m-1}$。如果满足：对所有的两两互异的键$x$和$y$，有$|{h\in H : h(x) = h(y) } | = \frac{|H|}{m}$，则称$H$是全域的。</p>
+<p>从另一个角度来看，如果$h$从$H$里随机地选取，则$x$和$y$发生碰撞的概率是$\frac{1}{m}$。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9654612-3470b8c16f323f60.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/243" alt=""></p>
+<p>从$H$里随机地选取一个$h$，将$n$个键映射到$m$个槽，对于给定的键$x$，期望的碰撞次数$\lt \frac{n}{m} = \alpha$。 证明如下。</p>
+<p>设$C_x$为随机变量，用来表示哈希表$T$中与$x$发生碰撞的总次数。它实际上是指示器随机变量之和。</p>
+<p>令</p>
+<p>$$<br>C_{x,y}<br>\begin{cases}<br>1,&amp; 如果h(x)=h(y) \<br>0,&amp; 其他<br>\end{cases}<br>$$</p>
+<p>则</p>
+<p>$$<br>E[C_{x,y}] = \frac{1}{m}<br>$$</p>
+<p>$$<br>C_x=\sum\limits_{y \in T - {x}} C_{x,y}<br>$$</p>
+<p>$$<br>\begin{align}<br>E[C_x] &amp;= E\left[\sum\limits_{y \in T - {x}} C_{x,y}\right] \<br> &amp;= \sum\limits_{y \in T - {x}} E[C_{x, y}] \<br> &amp;= \sum\limits_{y \in T - {x}} \frac{1}{m} \<br> &amp;=\frac{n-1}{m} \<br> &amp; \lt frac{n}{m} \<br> &amp;= \alpha<br>\end{align}<br>$$</p>
+<p>证毕.</p>
+<h2 id="构建一个全域哈希"><a href="#构建一个全域哈希" class="headerlink" title="构建一个全域哈希"></a>构建一个全域哈希</h2><p>令槽数$m$为质数。将全域里的任意键$k$分解成$r+1$位的$m$进制表示，即：</p>
+<p>$$<br>k = &lt;k_0,k_1,\dots,k_r&gt;,0 \le k_i \le m - 1<br>$$</p>
+<p>随机地选择一个数$a = &lt;a_0, a_1, \dots, a_r&gt;$，其中每一个$a_i$都随机地从${0, 1, \dots, m - 1}$中选取。</p>
+<p>定义哈希函数$h_a(k) = \left( \sum \limits_{l = 0} \limits^r a_ik_i \right) \pmod m$。</p>
+<p>函数集$H = {h_a}$，其大小$|H| = m ^ {r +1}$，此时的$H$是全域的，证明如下。</p>
+<p>令$x = &lt;x_0, x_1, \dots, x_r&gt;, y = &lt;y_0, y_1, \dots, y_r&gt;$位两个互异的键，则$x$和$y$至少有以为不同，不妨设它们在第$0$位不相同，即$x_0 \ne y_0$.</p>
+<p>设$H$中存在函数$h_a$使得$x$和$y$发生碰撞.</p>
+<p>于是有：</p>
+<p>$$<br>\begin{align}<br> &amp; h_a(x) = h_a(y) \<br>\Rightarrow &amp; \sum\limits_{i = 0}\limits^r a_ix_i \equiv \sum\limits_{i=0}\limits^r a_iy_i \pmod m \<br>\Rightarrow &amp; \sum\limits_{i=0}\limits^r a_i(x_i - y_i) \equiv 0 \pmod m \<br>\Rightarrow &amp; a_0(x_0-y_0) + \sum\limits_{i=1}\limits^r a_i(x_i-y_i) \equiv 0 \pmod m \<br>\Rightarrow &amp; a_0(x_0-y_0) \equiv - \sum\limits_{i=1}\limits^r a_i(x_i-y_i) \pmod m<br>\end{align}<br>$$</p>
+<p><em>Number Theory Fact</em></p>
+<p>令$m$为质数，对任意的$z \in Z_m$（除$m$取余的整数）且$z \neq 0 \pmod m$，存在唯一的$z^{-1} \in Z_m$使得$z \cdot z^{-1} \equiv 1 \pmod m$。如$m=7$，有：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">$z$</th>
+<th style="text-align:center">1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+<th>6</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">$z^{-1}$</td>
+<td style="text-align:center">1</td>
+<td>4</td>
+<td>5</td>
+<td>2</td>
+<td>3</td>
+<td>6</td>
+</tr>
+</tbody>
+</table>
+<p>由于$x_0 \ne y_0$，故而$\exists (x_0 - y_0) ^ {-1}$.</p>
+<p>$$<br>\Rightarrow a_0 \equiv \left(-\sum\limits_{i=0}\limits^r a_i(x_i-y_i)\right)\cdot (x_0-y_0)^{-1} \pmod m<br>$$</p>
+<p>因此，对于任意选定的$a_0,a_1,\dots,a_r$，在$a_0$的所有$m$种选择中，有且只有一种选择导致发生碰撞，其余的$m-1$种选择不会导致碰撞。</p>
+<p>因此，导致$x$和$y$碰撞的$h_a$的数目为：</p>
+<p>$$<br>\begin{align}<br>&amp; m \cdot m \cdot \dots \cdot 1 \<br>=&amp; m^r \<br>=&amp; \frac{|H|}{m}<br>\end{align}<br>$$</p>
+<h2 id="完全哈希-Perfect-Hashing"><a href="#完全哈希-Perfect-Hashing" class="headerlink" title="完全哈希 Perfect Hashing"></a>完全哈希 Perfect Hashing</h2><p>给定$n$个键，创建一个静态的哈希表，其大小$m=O(n)$，使得在最坏情况下，查找的时间为$O(1)$。</p>
+<p>关键在于使用一个双级结构，并且每一级都使用全域哈希。通过这种方法，我们可以做到在第二级哈希表没有碰撞。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/9654612-81c77d995083ef0e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/482" alt="完全哈希示意图"></p>
+<p>如果有$n_i$个项被同时哈希到第1级的槽$i$，那么有$m_i=n_i^2$个槽在第二级的哈希表中。</p>
+<h3 id="对第二级的分析"><a href="#对第二级的分析" class="headerlink" title="对第二级的分析"></a>对第二级的分析</h3><p>如果我们把$n$个键映射到$m=n^2$个槽中，使用的哈希函数$h$是从全域集合$H$中随机挑选的，那么期望的碰撞次数小于$\frac{1}{2}$。证明如下。</p>
+<p>对于两个给定的键，经过$h \in H$哈希后，碰撞的概率为$\frac{1}{m} = \frac{1}{n^2}$。而一共有$C_2^n$对键。</p>
+<p>因此，</p>
+<p>$$<br>\begin{align}<br>E[碰撞次数] &amp;= C^n_2 \cdot \frac{1}{n^2} \<br> &amp;= \frac{n(n-1)}{2} \cdot \frac{1}{n^2} \<br> &amp; \lt \frac{1}{2}<br>\end{align}<br>$$</p>
+<p>证毕.</p>
+<p><em>引理：马尔科夫不等式</em></p>
+<p>对下界为$0$的随机变量$x$，</p>
+<p>$$<br>P(x \ge t) \le \frac{E[x]}{t}<br>$$</p>
+<p>证明如下。</p>
+<p>$$<br>\begin{align}<br>E[x] &amp;= \sum\limits_{x=0}\limits^\infty x \cdot P(X=x) \<br> &amp; \ge \sum\limits_{x=t}\limits^\infty x \cdot P(X=x) \<br>&amp; \ge \sum\limits_{x=t}\limits^\infty t \cdot P(X=x) \<br> &amp;= t \cdot P(X\ge x)<br>\end{align}<br>$$</p>
+<p>引理证毕.</p>
+<p>于是，$P(没有碰撞)\ge \frac{1}{2}$.证明如下.</p>
+<p>$$<br>\begin{align}<br>P(至少1个碰撞) &amp; \le \frac{E[碰撞次数]} {1} \<br> &amp; \le \frac{1}{2}<br>\end{align}<br>$$</p>
+<p>证毕.</p>
+<p>为找到良好的第2级的哈希函数，只需要随机测试几个，因为至少有一半的哈长局势都能保证不会发生碰撞。</p>
+<h3 id="空间复杂度分析"><a href="#空间复杂度分析" class="headerlink" title="空间复杂度分析"></a>空间复杂度分析</h3><p>整个二级表的空间复杂度为$\Theta(n)$.证明如下.</p>
+<p>对于第1级，选择$m=n$.令$n_i$作为被哈希到槽$i$里的键的数量。</p>
+<p>对于第2级的每个哈希表$S_i$，选择$m_i=n_i^2$.</p>
+<p>于是：</p>
+<p>$$<br>\begin{align}<br>E[总的存储空间]&amp;=n+E\left[\sum\limits_{i=0}\limits^{m-1} \Theta(n_i^2)\right]  \<br> &amp;=\Theta(n)(由桶排序分析可得)<br>\end{align}<br>$$</p>
+<p>证毕.</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2018/02/17/哈希表学习笔记/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1842,190 +2055,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2017/07/24/Curriculum-Vitae/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="祁可翰">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="祁可翰的Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/07/24/Curriculum-Vitae/" itemprop="url">
-                  Curriculum Vitae
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-                
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-24T19:29:33+08:00">2017-07-24</time>
-            
-
-            
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Qi-Kehan"><a href="#Qi-Kehan" class="headerlink" title="Qi Kehan"></a>Qi Kehan</h1><hr>
-<h2 id="EDUCATION"><a href="#EDUCATION" class="headerlink" title="EDUCATION"></a>EDUCATION</h2><h4 id="Undergraduate-Bachelor-of-Engineering-emsp-2013-2017"><a href="#Undergraduate-Bachelor-of-Engineering-emsp-2013-2017" class="headerlink" title="Undergraduate, Bachelor of Engineering &emsp;2013-2017"></a>Undergraduate, Bachelor of Engineering &emsp;2013-2017</h4><p><em>Zhejiang University</em></p>
-<ul>
-<li><p>College of Biomedical Engineering and Instrument Science</p>
-</li>
-<li><p>major in Measurement Control Technology and Instruments</p>
-</li>
-<li><p>GPA: 3.08/4.0</p>
-</li>
-</ul>
-<h4 id="Graduate-Master-of-Engineering-emsp-2018-2021"><a href="#Graduate-Master-of-Engineering-emsp-2018-2021" class="headerlink" title="Graduate, Master of Engineering &emsp; 2018-2021"></a>Graduate, Master of Engineering &emsp; 2018-2021</h4><p><em>University of Chinese Academy of Science</em></p>
-<ul>
-<li><p>Shenzhen Institute of Advanced Technology</p>
-</li>
-<li><p>major in Computer Technology</p>
-</li>
-<li><p>Research Interest: Image Segmentation, MR Image reconstruction, Machine Learning</p>
-</li>
-</ul>
-<h4 id="Coursera"><a href="#Coursera" class="headerlink" title="Coursera"></a>Coursera</h4><p><em>Machine Learning by Stanford University</em></p>
-<ul>
-<li>Certificate earned on September 14, 2017</li>
-</ul>
-<hr>
-<h2 id="WORK-EXPERIENCE"><a href="#WORK-EXPERIENCE" class="headerlink" title="WORK EXPERIENCE"></a>WORK EXPERIENCE</h2><h4 id="Software-Development-Engineer-emsp-2015"><a href="#Software-Development-Engineer-emsp-2015" class="headerlink" title="Software Development Engineer &emsp; 2015"></a>Software Development Engineer &emsp; 2015</h4><p><em>Zhejiang University, Advisor: Jiquan Liu, Associate Prof.</em></p>
-<ul>
-<li>Complete the Packman based on openCV. Design and overview the map based on APIs given by openCV. Design and realize the algrithm of the path which leads the ghost. Design the skills and optimize the game.</li>
-</ul>
-<h4 id="Software-Development-Engineer-emsp-2015-2016"><a href="#Software-Development-Engineer-emsp-2015-2016" class="headerlink" title="Software Development Engineer &emsp; 2015-2016"></a>Software Development Engineer &emsp; 2015-2016</h4><p><em>Zhejiang University, Advisor: Chen’ge Geng, Associate Prof.</em></p>
-<ul>
-<li>Complete the program to land in, read file, upload, get character, and print, based on the voice recognition API, SDK and demo given by iFlyTech.</li>
-</ul>
-<h4 id="Thesis-Project-emsp-2016-2017"><a href="#Thesis-Project-emsp-2016-2017" class="headerlink" title="Thesis Project &emsp; 2016-2017"></a>Thesis Project &emsp; 2016-2017</h4><p><em>Zhejiang University, Advisor: Youzhao Wang, Associate Prof.</em></p>
-<ul>
-<li>Realize a system which is able to complete the signal acquisition, data processing, data storage and displaying. Select a sensor and design a circuit based on a common low-pass filter to achieve the signal processing. Select mini2440 development board based on ARM-9 as an embedded development platform and design the program to complete data processing and storage based on embedded Linux. Achieve man-machine interface design based on Qt design application.</li>
-</ul>
-<h4 id="Student-Intern-emsp-2018"><a href="#Student-Intern-emsp-2018" class="headerlink" title="Student Intern &emsp; 2018"></a>Student Intern &emsp; 2018</h4><p><em>Shenzhen Institute of Advanced Technology, Advisor: Shanshan Wang</em></p>
-<ul>
-<li>Help to do research on MR Image segmentation and Machine Learning.</li>
-</ul>
-<hr>
-<h2 id="SKILLS"><a href="#SKILLS" class="headerlink" title="SKILLS"></a>SKILLS</h2><ul>
-<li><em>Writing</em> &emsp;&emsp;&emsp;&emsp;Markdowm, HTML, MS Office</li>
-<li><em>Programming</em> &emsp;Matlab, C/C++, Linux Shell, Verilog HDL</li>
-<li><em>OS</em> &emsp; &emsp; &emsp;&emsp;&emsp;Windows, Ubuntu, Rasbian, Zigbee Protocol Stack</li>
-<li><em>Home</em> &emsp;&emsp;&emsp;&emsp;<a href="https://andrewsher.github.io/">https://andrewsher.github.io/</a></li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
+    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/3/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -2068,7 +2102,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">20</span>
+                    <span class="site-state-item-count">21</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -2145,7 +2179,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>

@@ -289,6 +289,324 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2019/01/13/隐马尔可夫模型/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁可翰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="祁可翰的Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/13/隐马尔可夫模型/" itemprop="url">
+                  隐马尔可夫模型
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+                
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-01-13T22:24:03+08:00">2019-01-13</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>生成模型，描述由隐藏的马尔科夫链随机生成观测序列的过程。</p>
+<h1 id="隐马尔科夫模型"><a href="#隐马尔科夫模型" class="headerlink" title="隐马尔科夫模型"></a>隐马尔科夫模型</h1><p>设$Q$是所有可能的状态的集合，$V$是所有的可能的观测的集合。</p>
+<p>$$<br>Q=\{q_1, q_2, \dots, q_N\},V=\{v_1, v_2, \dots, v_M\}<br>$$</p>
+<p>其中$N$是可能的状态数，$M$是可能的观测数。</p>
+<p>$I$是长度为$T$的状态序列，$O$是对应的观测序列。</p>
+<p>$$<br>I=\{i_1, i_2, \dots, i_T\},O=\{o_1, o_2, \dots, o_T\}<br>$$</p>
+<p>$A$是状态转移概率矩阵：</p>
+<p>$$<br>A=[a_{ij}]_{N\times N}<br>$$</p>
+<p>其中，$a_{ij}=P(i_{t+1}=q_j | i_t = q_i),i=1,2,\dots,N;j=1,2,\dots,M$是在时刻$t$处于状态$q_i$的条件下在时刻$t+1$转移到状态$q_j$的概率。</p>
+<p>$B$是观测概率矩阵：</p>
+<p>$$<br>B=[b_j(k)]_{N\times M}<br>$$</p>
+<p>其中，$n_j(k)=P(o_t=v_k | i_t=q_j),k=1,2,\dots,M;j=1,2,\dots,N$是在时刻$t$处于状态$q_j$的条件下生成观测$v_t$的概率。</p>
+<p>$\pi$是初始状态观测的向量：</p>
+<p>$$<br>\pi=(\pi_i)<br>$$</p>
+<p>其中，$\pi_i=P(i_1=q_i),i=1,2,\dots,N$是时刻$t=1$处于状态$q_i$的概率。</p>
+<p>隐马尔科夫模型由初始状态概率向量$\pi$、状态转移概率矩阵$A$和观测概率矩阵$B$决定。$\pi$和$A$决定状态序列，$B$决定观测序列。因此，HMM $\lambda$可以由三元组表示：</p>
+<p>$$<br>\lambda = (A,B,\pi)<br>$$</p>
+<p>$A,B,\pi$称为HMM的三要素。</p>
+<p>$A,\pi$决定了隐藏的马尔科夫链，生成不可观测的状态序列。$B$决定了如何从状态生成观测，与状态序列综合决定了如何产生观测序列。</p>
+<p>从定义可知，HMM作了两个基本的假设：</p>
+<p>（1）齐次马尔科夫假设，即假设隐藏的马尔科夫链在任意时刻$t$的状态只依赖于其前一时刻的状态，而与其他时刻的状态无关，也与时刻$t$无关。</p>
+<p>$$<br>P(i_t | i_{t-1}, o_{t-1}, i_{t-2}, o_{t-2}, \dots, i_1, o_1) = P(i_t | i_{t-1}), t=1,2,\dots,T<br>$$</p>
+<p>（2）观测独立性假设，即假设任意时刻的观测只依赖于该时刻的状态，而与其他观测及状态无关。</p>
+<p>$$<br>P(o_t | i_T, o_T, i_{T-1}, o_{T-1}, \dots, i_{t+1}, o_{t+1}, i_t, o_t, i_{t-1}, o_{t-1}, \dots, i_1, o_1) = P(o_t | i_t)<br>$$</p>
+<h2 id="HMM过程"><a href="#HMM过程" class="headerlink" title="HMM过程"></a>HMM过程</h2><p>一个长度为$T$的观测序列$O=(o_1,o_2,\dots,o_T)$的生成过程描述如下：</p>
+<p>输入：隐马尔科夫模型$\lambda = (A, B, \pi)$，观测序列长度$T$。</p>
+<p>输出：观测序列</p>
+<p>（1）按照初始状态分布$\pi$产生状态$i_1$</p>
+<p>（2）令$t=1$</p>
+<p>（3）按照状态$i_t$的观测概率分布$b_{i_t}(k)$产生$o_t$</p>
+<p>（4）按照状态$i_t$的状态转移概率分布$\{a_{i_t}, i_{t+1}\}$生成状态$i_{t+1}, i_{t+!}=1,2,\dots,N$</p>
+<p>（5）令$t=t+1$，如果$t \lt T$，跳到(3)，否则终止。</p>
+<h2 id="HMM的三个基本问题"><a href="#HMM的三个基本问题" class="headerlink" title="HMM的三个基本问题"></a>HMM的三个基本问题</h2><p>（1）概率计算问题</p>
+<p>给定$\lambda = (A,B,\pi)$和观测序列$O=(o_1,o_2,\dots,o_T)$，计算在模型$\lambda$下观测序列$O$出现的概率$P(O|\lambda)$。</p>
+<p>（2）学习概率</p>
+<p>已知$O$，估计$\lambda$的参数，使$P(O|\lambda)$最大。</p>
+<p>（3）预测问题（解码问题）</p>
+<p>已知$\lambda$和$O$，求对$P(O|\lambda)$最大的状态序列$I=(i_1,i_2,\dots,i_T)$。</p>
+<h1 id="计算观测序列概率的方法"><a href="#计算观测序列概率的方法" class="headerlink" title="计算观测序列概率的方法"></a>计算观测序列概率的方法</h1><h2 id="直接计算法"><a href="#直接计算法" class="headerlink" title="直接计算法"></a>直接计算法</h2><p>列举所有可能的长度为$T$的状态序列$I=(i_1,i_2,\dots,i_T)$，求各个状态序列$I$与观测序列$O=(o_1,o_2,\dots,o_T)$的联合概率$P(O,I|\lambda)$，然后对所有可能的状态序列求和，得到$P(O|\lambda)$。</p>
+<p>状态序列$I=(i_1,i_2,\dots,i_T)$的概率是：</p>
+<p>$$<br>P(O,I|\lambda) = b_{i_1}(o_1) b_{i_2}(o_2) \dots b_{i_T} (o_T)<br>$$</p>
+<p>$O$和$I$同时出现的概率是：</p>
+<p>$$<br>P(O,I | \lambda) = P(O | I, \lambda) P(I|\lambda)=\pi _{i_1}b_{i_1}(o_1) a_{i_1 i_2} b_{i_2}(o_2) a_{i_2 i_3} \dots  a_{i_{T-1} i_{T}}b_{i_T}(o_T)<br>$$</p>
+<h2 id="前向算法"><a href="#前向算法" class="headerlink" title="前向算法"></a>前向算法</h2><p>定义前向概率：给定HMM $\lambda$，定义到时刻$t$部分观测序列为$o_1,o_2,\dots,o_t$且状态为$q_i$的概率为前向概率，记作：</p>
+<p>$$<br>\alpha_t(i)=P(o_1,o_2,\dots,o_t,i_t=q_i | \lambda)<br>$$</p>
+<p>观测序列概率的前向算法：</p>
+<p>输入：HMM $\lambda$，观测序列$O$。</p>
+<p>输出：观测序列概率$P(O|\lambda)$.</p>
+<p>（1）初值</p>
+<p>$$<br>\alpha_1(i) = \pi_i b_i (o_1), i=1,2,\dots, N<br>$$</p>
+<p>（2）递推</p>
+<p>对于$t=1,2,\dots,T-1$，</p>
+<p>$$<br>\alpha_{t+1}(i)= \left[ \sum\limits_{j=1}^N \alpha_t(j) a_{ij} \right] b_i(o_{t+1})<br>$$</p>
+<p>（3）终止</p>
+<p>$$<br>P(O|\lambda) = \sum\limits_{i=1}^N \alpha_T(i)<br>$$</p>
+<p>利用了动态规划的思想去计算$P(O|\lambda)$。</p>
+<h2 id="后向算法"><a href="#后向算法" class="headerlink" title="后向算法"></a>后向算法</h2><p>后向概率：给定HMM $\lambda$，定义在时刻$t$状态为$q_i$的条件下，从$t+1$到$T$的部分观测序列为$o_{t+1},o_{t+2},\dots,o_T$的概率为后向概率，记作：</p>
+<p>$$<br>\beta_t(i) = P(o_{t+1}, o_{t+2}, \dots, o_T | i_t = q_i, \lambda)<br>$$</p>
+<p>可以用递推的方法求得后向概率$\beta_t(i)$及观测序列概率$P(O|\lambda)$.</p>
+<p>输入：HMM $\lambda$，观测序列$O$。</p>
+<p>输出：观测序列概率$P(O|\lambda)$.</p>
+<p>（1）$\beta_T(i) = 1, i=1,2,\dots,N$</p>
+<p>（2）对$t=T-1,T-2,\dots,1,$</p>
+<p>$$<br>\beta_t(i)=\sum\limits_{j=1}^N a_{ij} b_j (o_{t+1}) \beta_{t+1} (j), i=1,2,\dots,N<br>$$</p>
+<p>（3）$P(O | \lambda) = \sum\limits_{i=1}^N \pi_i b_i (o_1)  \beta_1(i)$</p>
+<p>利用前向概率和后向概率的定义，观测序列概率$P(O|\lambda)$可以写成</p>
+<p>$$<br>P(O|\lambda) = \sum\limits_{i=1}^N \sum\limits_{j=1}^N \alpha_t (i) \alpha_{ij} b_j (o_{t+1}) \beta_{t+1} (j), t=1,2,\dots,T-1<br>$$</p>
+<p>给定前向概率和后向概率，可以得到关于单个状态和两个状态概率的计算公式。</p>
+<ul>
+<li>1 给定模型$\lambda$和观测序列$O$，在时刻$t$处于状态$q_i$的概率，记</li>
+</ul>
+<p>$$<br>\gamma_t(i) = P(i_t = q_i | O, \lambda)<br>$$</p>
+<p>而$\gamma_t(i) = P(i_t = q_i | O, \lambda) = \frac {P(i_t = q_i, O|\lambda)} {P(O|\lambda)}$，$\alpha_t(i) \beta_t(i) = P(i_t = q_i, O | \lambda)$</p>
+<p>于是</p>
+<p>$$<br>\gamma_t(i) = \frac{\alpha_t(i) \beta_t(i)}{P(O|\lambda)} = \frac {\alpha_t(i) \beta_t(i)} {\sum\limits_{j=1}^N \alpha_t(j) \beta_t(j)}<br>$$</p>
+<ul>
+<li>2 给定模型$\lambda$和观测$O$，在时刻$t$处于状态$q_i$且在时刻$t+1$处于状态$q_j$的概率，记为</li>
+</ul>
+<p>$$<br>\begin{split}<br>\xi_t (i,j)<br>= &amp; \frac {P(i_t = q_i, i_{t+1} = q_j, O | \lambda)} {P(O|\lambda)} \\<br>= &amp; \frac {P(i_t = q_i, i_{t+1} = q_j, O | \lambda)} {\sum\limits_{i=1}^N \sum\limits_{j=1}^N P(i_t = q_i, i_{t+1} = q_j, O | \lambda)}<br>\end{split}<br>$$</p>
+<p>而$P(i_t = q_i, i_{t+1} = q_j, O | \lambda) = \alpha_t (i) \alpha_{ij} b_j (o_{t+1}) \beta_{t+1} (j)$</p>
+<p>于是</p>
+<p>$$<br>\xi_t(i,j) = \frac {\alpha_t (i) \alpha_{ij} b_j (o_{t+1}) \beta_{t+1} (j)} {\sum\limits_{i=1}^N \sum\limits_{j=1}^N \alpha_t (i) \alpha_{ij} b_j (o_{t+1}) \beta_{t+1} (j)}<br>$$</p>
+<ul>
+<li>3 （1）在观测$O$下，状态$i$出现的期望值：</li>
+</ul>
+<p>$$<br>\sum\limits_{t=1}^T \gamma_t(i)<br>$$</p>
+<p> （2）在观测$O$下，状态$i$转移的期望值：</p>
+<p>$$<br>\sum\limits_{t=1}^{T-1} \gamma_t(i)<br>$$</p>
+<p>（3）在观测$O$下，由状态$i$转移到状态$j$的期望值：</p>
+<p>$$<br>\sum\limits_{t=1}^{T-1} \xi_t (i,j)<br>$$</p>
+<h1 id="学习算法"><a href="#学习算法" class="headerlink" title="学习算法"></a>学习算法</h1><h2 id="监督学习"><a href="#监督学习" class="headerlink" title="监督学习"></a>监督学习</h2><p>设已给出的数据包含了$S$个长度相同的观测序列和对应的状态序列$\{ (O_1, I_1), (O_2, I_2), \dots, (O_S, I_S) \}$，则可以使用极大似然估计来估计HMM的参数。</p>
+<p>（1）转移概率$a_{ij}$的估计</p>
+<p>设样本中时刻$t$处于状态$i$，时刻$t+1$处于状态$j$的样本为$A_{ij}$，则状态转移概率$a_{ij}$的估计是</p>
+<p>$$<br>\hat{a_{ij}} = \frac {A_{ij}} {\sum\limits_{j=1}^N A_{ij}}, i=1,2,\dots,N;j=1,2,\dots,N<br>$$</p>
+<p>（2）观测概率$b_j(k)$的估计</p>
+<p>设样本中状态为$j$且观测为$k$的频数是$B_{jk}$，那么状态为$j$观测为$k$的概率$b_j(k)$的估计为</p>
+<p>$$<br>\hat{b_j(k)} = \frac {B_{jk}} {\sum\limits_{k=1}^M B_{jk}},j=1,2,\dots,N;k=1,2,\dots,M<br>$$</p>
+<p>（3）初始状态概率$\pi_i$的估计</p>
+<p>$\pi_i$的估计$\hat{\pi_i}$为初始状态$q_i$的频率。</p>
+<h2 id="非监督学习"><a href="#非监督学习" class="headerlink" title="非监督学习"></a>非监督学习</h2><p>设训练数据包含$S$个长度为$T$的观测序列$\{O_1,O_2,\dots,O_S \}$，目标是学习HMM的参数$\lambda=(A,B,\pi)$。如果将状态序列视为不可观测的隐数据$I$，那么HMM就是一个含有隐变量的概率模型</p>
+<p>$$<br>P(O | \lambda) = \sum _I P(O|I,\lambda) P( I | \lambda )<br>$$</p>
+<p>这样参数的学习就可以通过EM算法实现。</p>
+<p>（1）确定完全数据的对数似然函数</p>
+<p>所有观测数据写成$O=(o_1,o_2,\dots,o_T)$，所有隐数据写成$I=(i_1,i_2,\dots,i_T)$，完全数据是$(O,I) = (o_1,o_2,\dots,o_T,i_1,i_2,\dots,i_T)$，完全数据的对数似然函数是$\log P(O,I|\lambda)$。</p>
+<p>（2）E步：求Q函数 $Q(\lambda, \overline\lambda)$</p>
+<p>$$<br>Q(\lambda, \overline\lambda) = \sum_I \log P(O,I|\lambda) P(O,I|\overline\lambda)<br>$$</p>
+<p>其中。$\overline\lambda$是HMM参数的当前估计值，$\lambda$是要极大化的值。</p>
+<p>$$<br>P(O,I|\lambda) = \pi_{i_1}b_{i_1}(o_1)a_{i_1 i_2}b_{i_2}(o_2)\dots a_{i_{T-1} i_T}b_{i_T}(o_T)<br>$$</p>
+<p>于是Q函数可以写成：</p>
+<p>$$<br>\begin{split}<br>Q(\lambda, \overline\lambda)<br>= &amp; \sum_I \log \pi_{i_1}P(O,I|\overline\lambda) \\<br>   &amp; + \sum_I \left(  \sum\limits_{t=1}^{T-1} \log a_{i_t} i_{t+1}  \right)P(O,I|\overline\lambda) \\<br>   &amp; + \sum_I \left( \sum\limits_{t=1}^T b_{i_t} (o_t)  \right)P(O,I|\overline\lambda)<br>\end{split} \tag{1}<br>$$</p>
+<p>（3） M步：极大化Q函数，求$\lambda$</p>
+<p>只需对$(1)$式的3项分别求极大化即可。</p>
+<ul>
+<li>公式$(1)$的第1项可以写成：</li>
+</ul>
+<p>$$<br>\sum_I \log \pi_{i_1}P(O,I|\overline\lambda) = \sum\limits_{i=1}^N \log \pi_i P(O,i_1=i | \overline\lambda)<br>$$</p>
+<p>存在约束条件</p>
+<p>$$<br>\sum\limits_{i=1}^N \pi_i = 1<br>$$</p>
+<p>利用拉格朗日乘子法，写出拉格朗日函数：</p>
+<p>$$<br>\sum\limits_{i=1}^N \log \pi_i P(O,i_1=i | \overline\lambda) + \gamma \left( \sum\limits_{i=1}^N \pi_i - 1 \right) \tag{2}<br>$$</p>
+<p>求$(2)$式对$\pi_i$的偏导令等于0，得</p>
+<p>$$<br>P(O,i_1=i | \overline\lambda) + \gamma\pi_i = 0, i=1,2,\dots,N \tag{3}<br>$$</p>
+<p>i从1到N，N个公式$(3)$相加，得到</p>
+<p>$$<br>P(O|\overline\lambda) + \gamma = 0<br>$$</p>
+<p>于是</p>
+<p>$$<br>\gamma = -P(O|\overline\lambda)<br>$$</p>
+<p>代回原式，得到</p>
+<p>$$<br>\pi_i = \frac {P(O,i_1=i | \overline\lambda)} {P(O|\overline\lambda)}<br>$$</p>
+<ul>
+<li>公式$(1)$的第2项可以写成：</li>
+</ul>
+<p>$$<br>\sum_I \left( \sum\limits_{t=1}^{T-1} \log a_{i_t i_{t+1}}  \right)P(O,I | \overline\lambda) = \sum\limits_{i=1}^N \sum\limits_{j=1}^N \sum\limits_{t=1}^{T-1} \log a_{ij} P(O, i_t = i, i_{t+1} = j | \overline\lambda)<br>$$</p>
+<p>存在约束条件：$\sum\limits_{j=1}^N a_{ij} = 1$</p>
+<p>利用拉格朗日乘子法可得：</p>
+<p>$$<br>a_{ij} = \frac {\sum\limits_{t=1}^{T-1} P(O, i_t = i, i_{t+1} = j | \overline\lambda)} {\sum\limits_{t=1}^{T-1} P(O, i_t = i | \overline\lambda)}<br>$$</p>
+<ul>
+<li>公式$(1)$的第3项可以写成：</li>
+</ul>
+<p>$$<br>\sum_I \left( \sum\limits_{t=1}^T \log b_{i_t}(o_t) \right) P(O, I | \overline\lambda) = \sum\limits_{j=1}^N \sum\limits_{t=1}^T \log b_{i_t}(o_t)  P(O, i_t = j | \overline\lambda)<br>$$</p>
+<p>约束条件$\sum\limits_{k=1}^M b_j(k) = 1$</p>
+<p>注意到只有在$o_t = v_k$时$b_j(o_t)$对$b_j(k)$的偏导数才不为0，以$I(o_t = v_k)$表示。</p>
+<p>由拉格朗日乘子法得：</p>
+<p>$$<br>b_j(k) = \frac {\sum\limits_{t=1}^T P(O, i_t = j | \overline\lambda) I(o_t = v_k)} {\sum\limits_{t=1}^T P(O, i_t = j | \overline\lambda)}<br>$$</p>
+<p>将以上三个结果分别用$\gamma_t(i), \xi_t(i,j)$表示，则有</p>
+<p>$$<br>a_{ij} = \frac{\sum\limits_{t=1}^{T-1} \xi_t (i,j) } { \sum\limits_{t=1}^{T-1} \gamma_t(i) }<br>$$</p>
+<p>$$<br>b_j(k) = \frac {\sum\limits_{t=0,o_t=v_k}^{T} \gamma_t(j) } {\sum\limits_{t=1}^T \gamma_t(j)}<br>$$</p>
+<p>$$<br>\pi_i = \gamma_i(i)<br>$$</p>
+<p>以上即为Baum-Welch算法，它是EM算法在HMM中的具体实现。</p>
+<h1 id="预测算法"><a href="#预测算法" class="headerlink" title="预测算法"></a>预测算法</h1><h2 id="近似算法"><a href="#近似算法" class="headerlink" title="近似算法"></a>近似算法</h2><p>在每个时刻$t$选择在该时刻最有可能出现的状态$i_t^{*}$，从而得到一个状态序列$I^{*} = (i_1^{*}, i_2^{*}, \dots, i_T^{*})$，作为预测结果。</p>
+<p>给定HMM参数$\lambda$和观测序列$O$，在时刻$t$处于状态$q_i$的概率$\gamma_t(i)$是：</p>
+<p>$$<br>\gamma_t(i) = \frac {\alpha_t(i) \beta_t(i)} {P(O|\lambda)} = \frac {\alpha_t(i) \beta_t(i)} {\sum\limits_{j=1}^N \alpha_t(j) \beta_t(j)}<br>$$</p>
+<p>在每一时刻$t$最有可能的状态$i_t^{*}$是：</p>
+<p>$$<br>i_t^{*} = \arg \max\limits_{1 \le i \le N} \left[ \gamma_t(i) \right],i=1,2,\dots,T<br>$$</p>
+<p>从而得到状态序列$I^{*} = (i_1^{*}, i_2^{*}, \dots, i_T^{*})$。</p>
+<p>这种方法计算见到，但是不能保证预测的状态序列整体上是最有可能的状态序列。</p>
+<h2 id="维特比算法"><a href="#维特比算法" class="headerlink" title="维特比算法"></a>维特比算法</h2><p>用动态规划的思想去求解HMM预测问题。</p>
+<p>输入：模型$\lambda = (A,B,\pi)$和观测$O=(o_1,o_2,\dots,o_T)$。</p>
+<p>输出：最优路径$I^{*} = (i_1^{*}, i_2^{*}, \dots, i_T^{*})$</p>
+<ul>
+<li>1 初始化</li>
+</ul>
+<p>$$<br>\delta_1(i) = \pi_i b_i (o_1),i=1,2,\dots,N<br>$$</p>
+<p>$$<br>\psi_1(i) = 0,i=1,2,\dots,N<br>$$</p>
+<ul>
+<li>2 递推</li>
+</ul>
+<p>对$t=2,3,\dots,T$</p>
+<p>$$<br>\delta_t(i) = \max\limits_{1 \le j \le N} [\delta_{t-1} a_{ji}] b_i (o_t), i=1,2,\dots,N<br>$$</p>
+<p>$$<br>\psi_t(i) = \arg \max \limits_{1 \le j \le N} [\delta_{t-1}(j) a_{ji}], i=1,2,\dots,N<br>$$</p>
+<ul>
+<li>3 终止</li>
+</ul>
+<p>$$<br>P^{*} = \max \limits_{1 \le i \le N} \delta_T(i)<br>$$</p>
+<p>$$<br>i^{*} = \arg \max \limits_{1 \le j \le N} [\delta_T(i)]<br>$$</p>
+<p>$\delta$为在时刻$t$状态为$i$的所有单个路径$(i_1,i_2,\dots,i_t)$中概率的最大值.</p>
+<p>$$<br>\delta_t(i) = \max \limits_{i_1,i_2,\dots,i_{t-1}}P(i_t=i,i_{t-1},\dots,i_1,o_t,o_{t-1},\dots,o_1),i=1,2,\dots,N<br>$$</p>
+<p>于是：</p>
+<p>$$<br>\begin{split}<br>\delta_{t+1}(i)<br> = &amp; \max \limits_{i_1,i_2,\dots,i_{t-1}} P(i_{t+1}=i,i_{t},\dots,i_1,o_{t+1},o_{t},\dots,o_1) \\<br> = &amp; \max\limits_{1\le j\le N} [\delta_t(j)a_{ji}] b_i(o_{t+1})<br>\end{split}<br>$$</p>
+<p>$\psi$为在时刻$t$状态为$i$的所有单个路径$(i_1,i_2,\dots,i_t)$中概率最大的路径的第$t-1$个结点.</p>
+<p>$$<br>\psi_t(i) = \arg \max\limits_{1\le j \le N} [\delta_{t-1}(j)a_{ji}],i=1,2,\dots,N<br>$$</p>
+<ul>
+<li>4 最优路径回溯</li>
+</ul>
+<p>对$t=T-1,T-2,\dots,1$，</p>
+<p>$$<br>i^{*} = \psi_{t+1}(i_{t+1} ^ {*})<br>$$</p>
+<p>于是最优路径$I^{*} = (i_1^{*}, i_2^{*}, \dots, i_T^{*})$</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2018/12/10/EM算法/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1936,224 +2254,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2018/02/18/全域哈希与完全哈希学习笔记/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="祁可翰">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="祁可翰的Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/02/18/全域哈希与完全哈希学习笔记/" itemprop="url">
-                  全域哈希与完全哈希学习笔记
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-                
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-02-18T08:55:36+08:00">2018-02-18</time>
-            
-
-            
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>MIT《算法导论》课程第8课《全域哈希与完全哈希》学习笔记.</p>
-<p><em>哈希的一个根本缺陷</em></p>
-<p>对任意的一个哈希函数，都存在一个不好的键集，其中的所有的键都被映射到同一个槽。</p>
-<p>解决方法：随机地选择哈希函数，形成“全域哈希”。</p>
-<h2 id="全域哈希-Universal-Hashing"><a href="#全域哈希-Universal-Hashing" class="headerlink" title="全域哈希 Universal Hashing"></a>全域哈希 Universal Hashing</h2><p>令$U$是键的集合，$H$是哈希函数的有限集合，$H$中的哈希函数将$U$映射到${0,1,\dots,m-1}$。如果满足：对所有的两两互异的键$x$和$y$，有$|{h\in H : h(x) = h(y) } | = \frac{|H|}{m}$，则称$H$是全域的。</p>
-<p>从另一个角度来看，如果$h$从$H$里随机地选取，则$x$和$y$发生碰撞的概率是$\frac{1}{m}$。</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/9654612-3470b8c16f323f60.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/243" alt=""></p>
-<p>从$H$里随机地选取一个$h$，将$n$个键映射到$m$个槽，对于给定的键$x$，期望的碰撞次数$\lt \frac{n}{m} = \alpha$。 证明如下。</p>
-<p>设$C_x$为随机变量，用来表示哈希表$T$中与$x$发生碰撞的总次数。它实际上是指示器随机变量之和。</p>
-<p>令</p>
-<p>$$<br>C_{x,y}<br>\begin{cases}<br>1,&amp; 如果h(x)=h(y) \<br>0,&amp; 其他<br>\end{cases}<br>$$</p>
-<p>则</p>
-<p>$$<br>E[C_{x,y}] = \frac{1}{m}<br>$$</p>
-<p>$$<br>C_x=\sum\limits_{y \in T - {x}} C_{x,y}<br>$$</p>
-<p>$$<br>\begin{align}<br>E[C_x] &amp;= E\left[\sum\limits_{y \in T - {x}} C_{x,y}\right] \<br> &amp;= \sum\limits_{y \in T - {x}} E[C_{x, y}] \<br> &amp;= \sum\limits_{y \in T - {x}} \frac{1}{m} \<br> &amp;=\frac{n-1}{m} \<br> &amp; \lt frac{n}{m} \<br> &amp;= \alpha<br>\end{align}<br>$$</p>
-<p>证毕.</p>
-<h2 id="构建一个全域哈希"><a href="#构建一个全域哈希" class="headerlink" title="构建一个全域哈希"></a>构建一个全域哈希</h2><p>令槽数$m$为质数。将全域里的任意键$k$分解成$r+1$位的$m$进制表示，即：</p>
-<p>$$<br>k = &lt;k_0,k_1,\dots,k_r&gt;,0 \le k_i \le m - 1<br>$$</p>
-<p>随机地选择一个数$a = &lt;a_0, a_1, \dots, a_r&gt;$，其中每一个$a_i$都随机地从${0, 1, \dots, m - 1}$中选取。</p>
-<p>定义哈希函数$h_a(k) = \left( \sum \limits_{l = 0} \limits^r a_ik_i \right) \pmod m$。</p>
-<p>函数集$H = {h_a}$，其大小$|H| = m ^ {r +1}$，此时的$H$是全域的，证明如下。</p>
-<p>令$x = &lt;x_0, x_1, \dots, x_r&gt;, y = &lt;y_0, y_1, \dots, y_r&gt;$位两个互异的键，则$x$和$y$至少有以为不同，不妨设它们在第$0$位不相同，即$x_0 \ne y_0$.</p>
-<p>设$H$中存在函数$h_a$使得$x$和$y$发生碰撞.</p>
-<p>于是有：</p>
-<p>$$<br>\begin{align}<br> &amp; h_a(x) = h_a(y) \<br>\Rightarrow &amp; \sum\limits_{i = 0}\limits^r a_ix_i \equiv \sum\limits_{i=0}\limits^r a_iy_i \pmod m \<br>\Rightarrow &amp; \sum\limits_{i=0}\limits^r a_i(x_i - y_i) \equiv 0 \pmod m \<br>\Rightarrow &amp; a_0(x_0-y_0) + \sum\limits_{i=1}\limits^r a_i(x_i-y_i) \equiv 0 \pmod m \<br>\Rightarrow &amp; a_0(x_0-y_0) \equiv - \sum\limits_{i=1}\limits^r a_i(x_i-y_i) \pmod m<br>\end{align}<br>$$</p>
-<p><em>Number Theory Fact</em></p>
-<p>令$m$为质数，对任意的$z \in Z_m$（除$m$取余的整数）且$z \neq 0 \pmod m$，存在唯一的$z^{-1} \in Z_m$使得$z \cdot z^{-1} \equiv 1 \pmod m$。如$m=7$，有：</p>
-<table>
-<thead>
-<tr>
-<th style="text-align:center">$z$</th>
-<th style="text-align:center">1</th>
-<th>2</th>
-<th>3</th>
-<th>4</th>
-<th>5</th>
-<th>6</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center">$z^{-1}$</td>
-<td style="text-align:center">1</td>
-<td>4</td>
-<td>5</td>
-<td>2</td>
-<td>3</td>
-<td>6</td>
-</tr>
-</tbody>
-</table>
-<p>由于$x_0 \ne y_0$，故而$\exists (x_0 - y_0) ^ {-1}$.</p>
-<p>$$<br>\Rightarrow a_0 \equiv \left(-\sum\limits_{i=0}\limits^r a_i(x_i-y_i)\right)\cdot (x_0-y_0)^{-1} \pmod m<br>$$</p>
-<p>因此，对于任意选定的$a_0,a_1,\dots,a_r$，在$a_0$的所有$m$种选择中，有且只有一种选择导致发生碰撞，其余的$m-1$种选择不会导致碰撞。</p>
-<p>因此，导致$x$和$y$碰撞的$h_a$的数目为：</p>
-<p>$$<br>\begin{align}<br>&amp; m \cdot m \cdot \dots \cdot 1 \<br>=&amp; m^r \<br>=&amp; \frac{|H|}{m}<br>\end{align}<br>$$</p>
-<h2 id="完全哈希-Perfect-Hashing"><a href="#完全哈希-Perfect-Hashing" class="headerlink" title="完全哈希 Perfect Hashing"></a>完全哈希 Perfect Hashing</h2><p>给定$n$个键，创建一个静态的哈希表，其大小$m=O(n)$，使得在最坏情况下，查找的时间为$O(1)$。</p>
-<p>关键在于使用一个双级结构，并且每一级都使用全域哈希。通过这种方法，我们可以做到在第二级哈希表没有碰撞。</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/9654612-81c77d995083ef0e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/482" alt="完全哈希示意图"></p>
-<p>如果有$n_i$个项被同时哈希到第1级的槽$i$，那么有$m_i=n_i^2$个槽在第二级的哈希表中。</p>
-<h3 id="对第二级的分析"><a href="#对第二级的分析" class="headerlink" title="对第二级的分析"></a>对第二级的分析</h3><p>如果我们把$n$个键映射到$m=n^2$个槽中，使用的哈希函数$h$是从全域集合$H$中随机挑选的，那么期望的碰撞次数小于$\frac{1}{2}$。证明如下。</p>
-<p>对于两个给定的键，经过$h \in H$哈希后，碰撞的概率为$\frac{1}{m} = \frac{1}{n^2}$。而一共有$C_2^n$对键。</p>
-<p>因此，</p>
-<p>$$<br>\begin{align}<br>E[碰撞次数] &amp;= C^n_2 \cdot \frac{1}{n^2} \<br> &amp;= \frac{n(n-1)}{2} \cdot \frac{1}{n^2} \<br> &amp; \lt \frac{1}{2}<br>\end{align}<br>$$</p>
-<p>证毕.</p>
-<p><em>引理：马尔科夫不等式</em></p>
-<p>对下界为$0$的随机变量$x$，</p>
-<p>$$<br>P(x \ge t) \le \frac{E[x]}{t}<br>$$</p>
-<p>证明如下。</p>
-<p>$$<br>\begin{align}<br>E[x] &amp;= \sum\limits_{x=0}\limits^\infty x \cdot P(X=x) \<br> &amp; \ge \sum\limits_{x=t}\limits^\infty x \cdot P(X=x) \<br>&amp; \ge \sum\limits_{x=t}\limits^\infty t \cdot P(X=x) \<br> &amp;= t \cdot P(X\ge x)<br>\end{align}<br>$$</p>
-<p>引理证毕.</p>
-<p>于是，$P(没有碰撞)\ge \frac{1}{2}$.证明如下.</p>
-<p>$$<br>\begin{align}<br>P(至少1个碰撞) &amp; \le \frac{E[碰撞次数]} {1} \<br> &amp; \le \frac{1}{2}<br>\end{align}<br>$$</p>
-<p>证毕.</p>
-<p>为找到良好的第2级的哈希函数，只需要随机测试几个，因为至少有一半的哈长局势都能保证不会发生碰撞。</p>
-<h3 id="空间复杂度分析"><a href="#空间复杂度分析" class="headerlink" title="空间复杂度分析"></a>空间复杂度分析</h3><p>整个二级表的空间复杂度为$\Theta(n)$.证明如下.</p>
-<p>对于第1级，选择$m=n$.令$n_i$作为被哈希到槽$i$里的键的数量。</p>
-<p>对于第2级的每个哈希表$S_i$，选择$m_i=n_i^2$.</p>
-<p>于是：</p>
-<p>$$<br>\begin{align}<br>E[总的存储空间]&amp;=n+E\left[\sum\limits_{i=0}\limits^{m-1} \Theta(n_i^2)\right]  \<br> &amp;=\Theta(n)(由桶排序分析可得)<br>\end{align}<br>$$</p>
-<p>证毕.</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="Next page"></i></a>
   </nav>
 
 
@@ -2196,7 +2301,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">20</span>
+                    <span class="site-state-item-count">21</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -2273,7 +2378,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>
