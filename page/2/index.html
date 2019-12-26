@@ -289,6 +289,202 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2018/03/03/整数与浮点数的运算/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁可翰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="祁可翰的Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/03/03/整数与浮点数的运算/" itemprop="url">
+                  整数与浮点数的运算
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+                
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-03T07:09:44+08:00">2018-03-03</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="整数的运算"><a href="#整数的运算" class="headerlink" title="整数的运算"></a>整数的运算</h2><p>两个n位的整数相乘，所得的2n位整数，取低n位。</p>
+<p>设有如下函数：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">mul</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> z;</span><br><span class="line">	z = x * y;</span><br><span class="line">	<span class="keyword">return</span> z;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>判断相乘是否溢出：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">!x || z / x == y;</span><br></pre></td></tr></table></figure>
+<p>或：</p>
+<p>$$<br>-2^{n-1} \le x * y \lt 2^{n-1}<br>$$</p>
+<p>即：乘积高n位全为0或1，且等于低n位的最高位。<br>因此可用无符号乘来实现带符号乘，但无法判断溢出。<br>硬件不判断溢出，仅保留2n位乘积，供软件使用。指令区分无符号乘和带符号乘。</p>
+<p>下面的函数存在由乘法溢出导致的漏洞：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 复制数组到堆中，count为数组元素个数。*/</span></span><br><span class="line"><span class="function"><span class="keyword">int</span>* <span class="title">copyArray</span><span class="params">(<span class="keyword">int</span>* <span class="built_in">array</span>, <span class="keyword">int</span> count)</span> </span>&#123;</span><br><span class="line">	<span class="comment">// 分配内存</span></span><br><span class="line">	<span class="keyword">int</span>* myArray = (<span class="keyword">int</span>*)<span class="built_in">malloc</span>(count * <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br><span class="line">	<span class="comment">// 就是这句有漏洞。当count很大时，count * sizeof(int)会溢出。</span></span><br><span class="line">	<span class="comment">// 比如当count = 2^30 + 1时，count * sizeof(int)结果为4。</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span>(<span class="literal">NULL</span> == myArray) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; count; i++) &#123;</span><br><span class="line">		myArray[i] = <span class="built_in">array</span>[i];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> myArray;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>编译器处理变量和常数相乘时，往往以移位、加减的组合来代替乘法运算。</p>
+<h2 id="整数的除法运算"><a href="#整数的除法运算" class="headerlink" title="整数的除法运算"></a>整数的除法运算</h2><p>n位整数除以n位整数，除$-2^{n-1} / -1= 2^{n-1}$会溢出外，都不会发生溢出。如：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">0x80000000</span>;</span><br><span class="line"><span class="keyword">int</span> b = a / <span class="number">-1</span>;	<span class="comment">// 不会发生溢出，因为编译器会对这行代码进行优化</span></span><br><span class="line"><span class="keyword">int</span> c = <span class="number">-1</span>;</span><br><span class="line"><span class="keyword">int</span> d = a / c;	<span class="comment">// 会发生溢出</span></span><br></pre></td></tr></table></figure>
+<p>如果除法的结果不为整数，正数商会取floor运算，右移出低位直接丢弃；负数商取ceiling运算，加上$2^k-1$的偏移量，再右移。</p>
+<p>例如：<a href="https://leetcode.com/problems/divide-two-integers/" target="_blank" rel="noopener">实现除法操作，不得使用乘、除、取模运算。</a></p>
+<p>考虑15除以3。</p>
+<p>尝试使用15减去3得到12，大于0.尝试使用15减去2倍的3，得到9，大于0.尝试使用15减去4倍的3（也就是3左移2位），得到3，大于0.尝试使用15减去8倍的3（也就是3左移3位），得到-9，小于0.</p>
+<p>于是我们先用15减去4倍的3，得到3，即商为4，余数为3.</p>
+<p>接下来，我们对剩下的这个余数3采取同样的操作。用3减去1倍的除数3，得到0，于是我们得到商为1，余数为0.</p>
+<p>最后，把历次所得的商累加，得到最终结果为$4 + 1 = 5$。</p>
+<p>此外，考虑溢出的情况，只有发生以下两种情况中的一种时，才会发生溢出：</p>
+<ol>
+<li>除数为0</li>
+<li><p>被除数为$-2^{32}$（没有溢出），除数为-1,。此时的商为$2^{32} \gt 2^{32} - 1$，发生了溢出。</p>
+<p>于是，可以编写<a href="https://github.com/Andrewsher/Leetcode/blob/master/29_Divide_Two_Integers.cpp" target="_blank" rel="noopener">如下的代码</a>，实现除法操作。</p>
+</li>
+</ol>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">divide</span><span class="params">(<span class="keyword">int</span> dividend, <span class="keyword">int</span> divisor)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(!divisor || (dividend == INT_MIN &amp;&amp; divisor == <span class="number">-1</span>)) <span class="keyword">return</span> INT_MAX;</span><br><span class="line">        <span class="keyword">long</span> <span class="keyword">long</span> tmpDividend = <span class="built_in">labs</span>(dividend), tmpDivisor = <span class="built_in">labs</span>(divisor);</span><br><span class="line">        <span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span>(tmpDividend &gt;= tmpDivisor) &#123;</span><br><span class="line">            <span class="keyword">long</span> <span class="keyword">long</span> tmp = tmpDivisor, multiple = <span class="number">1</span>;<span class="comment">// tmp为divisor增大的倍数，也就是dividend已经减小的数。multiple为divisor的倍数，也就是商，至少为1倍。</span></span><br><span class="line">            <span class="comment">// dividend分别尝试减去divisor的1倍，2倍，4倍，8倍，……，直到无法再减少下去，这个倍数就是暂定的商，把这个商加到结果中。</span></span><br><span class="line">            <span class="comment">// 每循环一次，tmpDivisor增大一倍</span></span><br><span class="line">            <span class="keyword">while</span>(tmpDividend &gt;= (tmp &lt;&lt; <span class="number">1</span>)) &#123;</span><br><span class="line">                <span class="comment">// tmp表示tmpDivisor增大到的数</span></span><br><span class="line">                tmp = tmp &lt;&lt; <span class="number">1</span>;</span><br><span class="line">                <span class="comment">// multiple表示增大的倍数</span></span><br><span class="line">                multiple = multiple &lt;&lt; <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// tmpDividend减去tmpDivisor</span></span><br><span class="line">            tmpDividend -= tmp;</span><br><span class="line">            <span class="comment">// result加上已经减去的duvisor倍数</span></span><br><span class="line">            result += multiple; </span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> sign = ((dividend &lt; <span class="number">0</span>) ^ (divisor &lt; <span class="number">0</span>)) ? <span class="number">-1</span> : <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span> == sign ? result : -result;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h2 id="浮点数的运算"><a href="#浮点数的运算" class="headerlink" title="浮点数的运算"></a>浮点数的运算</h2><p>设浮点数$A = M_a \cdot 2^{E_a}，B = M_b \cdot 2^{E_b}$，则</p>
+<p>$$<br>A + B = (M_a + M_b \cdot 2^{-(E_a-E_b)}) \cdot 2^{E_a}（设E_a \gt E_b） \<br>A * B = (M_a \cdot M_b) \cdot 2^{E_a + E_b} \<br>A / B = (M_a / M_b) \cdot 2^{E_a - E_b}<br>$$</p>
+<p>可能出现：</p>
+<p>阶码上溢：正指数$\ge$最大允许值</p>
+<p>阶码下溢：负指数$\le$最小允许值</p>
+<p>尾数溢出：最高有效位有进位（结果不一定溢出）</p>
+<p>非规格化的溢出：数值部分高位为0</p>
+<p>IEEE754规定的5种异常情况：</p>
+<ol>
+<li><p>无意义的运算</p>
+</li>
+<li><p>除以0</p>
+</li>
+<li><p>数太大（阶上溢），指数大于127</p>
+</li>
+<li><p>数太小，指数小于-126</p>
+</li>
+<li><p>结果不精确</p>
+</li>
+</ol>
+<p>浮点数加减的过程：</p>
+<p>设$X = X_m \cdot 2^{X_e}, Y = T_m \cdot 2^{Y_e}$</p>
+<ol>
+<li><p>求阶差：$\Delta e = Y_e - X_e$。如果$Y_e \gt X_e$,则结果阶码为$Y_e$.</p>
+</li>
+<li><p>对阶：将$X_m$右移$\Delta e$位，$X$写成$X_m \cdot 2^{X_e - Y_e} \cdot 2^{Y_e}$.</p>
+</li>
+<li><p>尾数加减：$X \cdot 2^{X_e - Y_e} \pm Y_m$</p>
+</li>
+<li><p>规格化。若尾数高位为0，需左规：尾数每左移1位，阶码减1，直到MSB为1；每次阶码减1，要判断阶码是否下溢。若尾数高位有进位，需右规。阶码上溢，结果溢出；阶码下溢，结果为0.</p>
+</li>
+<li><p>舍入：四舍六入五凑双.</p>
+</li>
+<li><p>如果尾数为0，此时运算结果为0，则将阶码置0.</p>
+</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2018/02/18/全域哈希与完全哈希学习笔记/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1915,146 +2111,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2017/07/25/A-Solution-of-a-Written-Examination-Question-1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="祁可翰">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="祁可翰的Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/07/25/A-Solution-of-a-Written-Examination-Question-1/" itemprop="url">
-                  A Solution of A Written Question in An Examination (1)
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-                
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-07-25T23:18:14+08:00">2017-07-25</time>
-            
-
-            
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="Question"><a href="#Question" class="headerlink" title="Question"></a>Question</h2><p>Assume an Slist L, with a data structure of each node as following:</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">node</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="keyword">int</span> num;</span><br><span class="line">    node* next;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>Complete the function as following, where for each ordinal sublist with n nodes, the function is able to reserve its order, and return the new head of the list. For the last sublist, do not reserve its order if the number of nodes is less than n.</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">node* <span class="title">f</span><span class="params">(node* head, <span class="keyword">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="comment">/****************************/</span></span><br><span class="line">    <span class="comment">/* Add your code here. */</span></span><br><span class="line">    <span class="comment">/****************************/</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>Feature <em>head</em> is the first node of the slist, n is the given number. This function will return the first node of the list.</p>
-<h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h2><p>Assume that we have a list of the length 3, thus we can complete the code as following.<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">node* <span class="title">f</span><span class="params">(node* head)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    node* former(head-&gt;next), temp(head-&gt;next-&gt;next), letter(head-&gt;next-&gt;next-&gt;next);</span><br><span class="line">    former-&gt;next = head;</span><br><span class="line">    temp-&gt;next = former;</span><br><span class="line">    letter-&gt;next = temp;</span><br><span class="line">    <span class="keyword">return</span> head;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>For the list L with the length n(n &gt;= 3), we can saberate it as n lists, each of which has one node that needs transforming.<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">node* <span class="title">f</span><span class="params">(node* head, <span class="keyword">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="function">node* <span class="title">former</span><span class="params">(head-&gt;next)</span></span>;</span><br><span class="line">    <span class="function">node* <span class="title">temp</span><span class="params">(head-&gt;next-&gt;next)</span></span>;</span><br><span class="line">    <span class="function">node* <span class="title">letter</span><span class="params">(head-&gt;next-&gt;next-&gt;next)</span></span>;</span><br><span class="line">    former-&gt;next = head;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n; i++)</span><br><span class="line">    &#123;</span><br><span class="line">        temp-&gt;next = former;</span><br><span class="line">        former = temp;</span><br><span class="line">        temp = letter;</span><br><span class="line">        letter = letter-&gt;next;</span><br><span class="line">    &#125;</span><br><span class="line">    temp-&gt;next = former;</span><br><span class="line">    <span class="keyword">return</span> temp;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>With the combination of the algorithm shown and the considerition of that it is used in a sublist with the length n, we can complete the solution of this problem as following consequently.<br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">node* <span class="title">f</span><span class="params">(node* head, <span class="keyword">int</span> n)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="function">node* <span class="title">former</span><span class="params">(head-&gt;next)</span></span>;</span><br><span class="line">    <span class="function">node* <span class="title">temp</span><span class="params">(head-&gt;next-&gt;next)</span></span>;</span><br><span class="line">    <span class="function">node* <span class="title">letter</span><span class="params">(head-&gt;next-&gt;next-&gt;next)</span></span>;</span><br><span class="line">    <span class="function">node* <span class="title">header</span><span class="params">(head)</span></span>; <span class="comment">// The node before the first one</span></span><br><span class="line">    <span class="function">node* <span class="title">header_temp</span><span class="params">(head)</span></span>;</span><br><span class="line">    <span class="function">node* <span class="title">tail</span><span class="params">(head)</span></span>;   <span class="comment">// The node after the last one</span></span><br><span class="line">    <span class="keyword">do</span></span><br><span class="line">    &#123;   </span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt;= n || !tail; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            tail = tail-&gt;next;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span>(!tail) <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">        &#123;</span><br><span class="line">            tail = tail-&gt;next;</span><br><span class="line">            former-&gt;next = tail;</span><br><span class="line">            header_temp = former;   <span class="comment">// Save the node as the one before the first node of the next group of nodes</span></span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; n; i++)</span><br><span class="line">            &#123;</span><br><span class="line">                temp-&gt;next = former;</span><br><span class="line">                former = temp;</span><br><span class="line">                temp = letter;</span><br><span class="line">                letter = letter-&gt;next;</span><br><span class="line">            &#125;</span><br><span class="line">            temp-&gt;next = former;</span><br><span class="line">            header-&gt;next = temp;</span><br><span class="line">            header = header_temp;   <span class="comment">// Refresh header</span></span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;<span class="keyword">while</span>(<span class="number">1</span>);  <span class="comment">// while</span></span><br><span class="line">    <span class="keyword">return</span> head;</span><br><span class="line">&#125;   <span class="comment">// f</span></span><br></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2102,7 +2158,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">21</span>
+                    <span class="site-state-item-count">22</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>

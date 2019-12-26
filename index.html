@@ -289,6 +289,173 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2019/12/26/县域农业AI大赛总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁可翰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="祁可翰的Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/12/26/县域农业AI大赛总结/" itemprop="url">
+                  县域农业AI大赛总结
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+                
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-12-26T19:56:03+08:00">2019-12-26</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="大赛描述"><a href="#大赛描述" class="headerlink" title="大赛描述"></a>大赛描述</h1><p><a href="https://tianchi.aliyun.com/competition/entrance/231717/introduction?spm=5176.12281957.1004.5.38b02448MjMG2F" title="2019 年县域农业大脑AI挑战赛" target="_blank" rel="noopener">大赛链接</a></p>
+<p>时间：</p>
+<ul>
+<li>初赛：2019年6月20日-7月19日</li>
+<li>复赛：2019年7月29日-8月30日</li>
+</ul>
+<p>排名：参赛总人数1520，初赛个人排名96，初赛团体排名36，复赛团体排名27。</p>
+<h1 id="思路总结"><a href="#思路总结" class="headerlink" title="思路总结"></a>思路总结</h1><ol>
+<li>这个图像分割的任务，训练数据是一张很大的图，必须要做裁切。裁切的方式可以使用顺序或者随机。由于各个类别不平衡，可以在裁切时控制各类别的比例、使之平衡。在大赛中最终选用的是随机裁切，并且resize到原图的$\frac{1}{4}$。做resize是由于考虑到农田中的种植较为稀疏，用U-Net这样的网络直接预测会过多考虑作物之间的空隙。</li>
+<li>网络选用了U-Net，在imagenet上预训练，使用交叉熵loss。</li>
+<li>backbone用了resnet18，试过resnet50，和resnet18效果差距不大。</li>
+<li>提分点：预训练，snapshot，旋转预测取平均，对patch的预测取中间部分，为防止过拟合取第一个epoch的结果（初赛）。</li>
+<li>试了用UNet++做模型蒸馏，效果没有变化。</li>
+</ol>
+<h1 id="可用trick"><a href="#可用trick" class="headerlink" title="可用trick"></a>可用trick</h1><ol>
+<li>预训练一般是有用的</li>
+<li>用较大的patch可以提升效果，但是也不能太大导致gpu塞不下。</li>
+<li>snapshot有用</li>
+<li>旋转预测取平均</li>
+<li>预测一个patch后取中间的一小块</li>
+<li>可以把各个epoch的预测结果都show出来看一下</li>
+<li>模型融合一般是有用的，两个线上效果差不多的模型，差异越大、融合后的提升越多。</li>
+</ol>
+<h1 id="赛后总结"><a href="#赛后总结" class="headerlink" title="赛后总结"></a>赛后总结</h1><ol>
+<li>瞎改loss没什么用</li>
+<li>瞎改网络没什么用</li>
+<li>似乎没有想到什么特别好的方法防止过拟合</li>
+<li>选择拟合能力足够的backbone即可，没有必要选择很多的、很复杂的backbone。</li>
+<li>由于农作物比较稀疏，选用Deeplab v3+这样较多使用high-level feature的网络，效果会比较好。一开始选择了U-Net对农作物进行预测是一个失误。此外，似乎U-Net对道路的预测结果比DeepLab好。应当根据任务和数据的特性取选择合适的网络。</li>
+<li>图像不应该resize到$\frac{1}{4}$，这样会损失信息。应当用原始图像，然后用DeepLab v3+或者PSPNet。</li>
+<li>冠军的方案使用了软标签，这个是由于数据集的标注不够精准。软标签的做法是将边界区域一定宽度的像素设置为0~1之间的浮点数，而非原始的one-hot向量。</li>
+<li>冠军的方案使用了伪标签，似乎这个一般而言都是有用的。做法是对测试数据进行预测，取预测概率比较高的结果加入到训练数据中，然后重新训练，然后对剩下的测试数据再做预测、概率高的结果加入训练数据，如此往复。</li>
+<li>后处理用过腐蚀、膨胀，效果不明显。不过对于其他任务而言，可以用这种方式消除较小的连通域。</li>
+<li>模型融合方法，我们用的是直接取并集，可能这并不是最好的融合方案。可以采用投票的方式，或者取交集。</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2019/01/13/隐马尔可夫模型/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2058,202 +2225,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2018/03/03/整数与浮点数的运算/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="祁可翰">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="祁可翰的Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/03/03/整数与浮点数的运算/" itemprop="url">
-                  整数与浮点数的运算
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-                
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-03T07:09:44+08:00">2018-03-03</time>
-            
-
-            
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="整数的运算"><a href="#整数的运算" class="headerlink" title="整数的运算"></a>整数的运算</h2><p>两个n位的整数相乘，所得的2n位整数，取低n位。</p>
-<p>设有如下函数：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">mul</span><span class="params">(<span class="keyword">int</span> x, <span class="keyword">int</span> y)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> z;</span><br><span class="line">	z = x * y;</span><br><span class="line">	<span class="keyword">return</span> z;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>判断相乘是否溢出：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">!x || z / x == y;</span><br></pre></td></tr></table></figure>
-<p>或：</p>
-<p>$$<br>-2^{n-1} \le x * y \lt 2^{n-1}<br>$$</p>
-<p>即：乘积高n位全为0或1，且等于低n位的最高位。<br>因此可用无符号乘来实现带符号乘，但无法判断溢出。<br>硬件不判断溢出，仅保留2n位乘积，供软件使用。指令区分无符号乘和带符号乘。</p>
-<p>下面的函数存在由乘法溢出导致的漏洞：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 复制数组到堆中，count为数组元素个数。*/</span></span><br><span class="line"><span class="function"><span class="keyword">int</span>* <span class="title">copyArray</span><span class="params">(<span class="keyword">int</span>* <span class="built_in">array</span>, <span class="keyword">int</span> count)</span> </span>&#123;</span><br><span class="line">	<span class="comment">// 分配内存</span></span><br><span class="line">	<span class="keyword">int</span>* myArray = (<span class="keyword">int</span>*)<span class="built_in">malloc</span>(count * <span class="keyword">sizeof</span>(<span class="keyword">int</span>));</span><br><span class="line">	<span class="comment">// 就是这句有漏洞。当count很大时，count * sizeof(int)会溢出。</span></span><br><span class="line">	<span class="comment">// 比如当count = 2^30 + 1时，count * sizeof(int)结果为4。</span></span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span>(<span class="literal">NULL</span> == myArray) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; count; i++) &#123;</span><br><span class="line">		myArray[i] = <span class="built_in">array</span>[i];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> myArray;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>编译器处理变量和常数相乘时，往往以移位、加减的组合来代替乘法运算。</p>
-<h2 id="整数的除法运算"><a href="#整数的除法运算" class="headerlink" title="整数的除法运算"></a>整数的除法运算</h2><p>n位整数除以n位整数，除$-2^{n-1} / -1= 2^{n-1}$会溢出外，都不会发生溢出。如：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> a = <span class="number">0x80000000</span>;</span><br><span class="line"><span class="keyword">int</span> b = a / <span class="number">-1</span>;	<span class="comment">// 不会发生溢出，因为编译器会对这行代码进行优化</span></span><br><span class="line"><span class="keyword">int</span> c = <span class="number">-1</span>;</span><br><span class="line"><span class="keyword">int</span> d = a / c;	<span class="comment">// 会发生溢出</span></span><br></pre></td></tr></table></figure>
-<p>如果除法的结果不为整数，正数商会取floor运算，右移出低位直接丢弃；负数商取ceiling运算，加上$2^k-1$的偏移量，再右移。</p>
-<p>例如：<a href="https://leetcode.com/problems/divide-two-integers/" target="_blank" rel="noopener">实现除法操作，不得使用乘、除、取模运算。</a></p>
-<p>考虑15除以3。</p>
-<p>尝试使用15减去3得到12，大于0.尝试使用15减去2倍的3，得到9，大于0.尝试使用15减去4倍的3（也就是3左移2位），得到3，大于0.尝试使用15减去8倍的3（也就是3左移3位），得到-9，小于0.</p>
-<p>于是我们先用15减去4倍的3，得到3，即商为4，余数为3.</p>
-<p>接下来，我们对剩下的这个余数3采取同样的操作。用3减去1倍的除数3，得到0，于是我们得到商为1，余数为0.</p>
-<p>最后，把历次所得的商累加，得到最终结果为$4 + 1 = 5$。</p>
-<p>此外，考虑溢出的情况，只有发生以下两种情况中的一种时，才会发生溢出：</p>
-<ol>
-<li>除数为0</li>
-<li><p>被除数为$-2^{32}$（没有溢出），除数为-1,。此时的商为$2^{32} \gt 2^{32} - 1$，发生了溢出。</p>
-<p>于是，可以编写<a href="https://github.com/Andrewsher/Leetcode/blob/master/29_Divide_Two_Integers.cpp" target="_blank" rel="noopener">如下的代码</a>，实现除法操作。</p>
-</li>
-</ol>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Solution</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">divide</span><span class="params">(<span class="keyword">int</span> dividend, <span class="keyword">int</span> divisor)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(!divisor || (dividend == INT_MIN &amp;&amp; divisor == <span class="number">-1</span>)) <span class="keyword">return</span> INT_MAX;</span><br><span class="line">        <span class="keyword">long</span> <span class="keyword">long</span> tmpDividend = <span class="built_in">labs</span>(dividend), tmpDivisor = <span class="built_in">labs</span>(divisor);</span><br><span class="line">        <span class="keyword">int</span> result = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span>(tmpDividend &gt;= tmpDivisor) &#123;</span><br><span class="line">            <span class="keyword">long</span> <span class="keyword">long</span> tmp = tmpDivisor, multiple = <span class="number">1</span>;<span class="comment">// tmp为divisor增大的倍数，也就是dividend已经减小的数。multiple为divisor的倍数，也就是商，至少为1倍。</span></span><br><span class="line">            <span class="comment">// dividend分别尝试减去divisor的1倍，2倍，4倍，8倍，……，直到无法再减少下去，这个倍数就是暂定的商，把这个商加到结果中。</span></span><br><span class="line">            <span class="comment">// 每循环一次，tmpDivisor增大一倍</span></span><br><span class="line">            <span class="keyword">while</span>(tmpDividend &gt;= (tmp &lt;&lt; <span class="number">1</span>)) &#123;</span><br><span class="line">                <span class="comment">// tmp表示tmpDivisor增大到的数</span></span><br><span class="line">                tmp = tmp &lt;&lt; <span class="number">1</span>;</span><br><span class="line">                <span class="comment">// multiple表示增大的倍数</span></span><br><span class="line">                multiple = multiple &lt;&lt; <span class="number">1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// tmpDividend减去tmpDivisor</span></span><br><span class="line">            tmpDividend -= tmp;</span><br><span class="line">            <span class="comment">// result加上已经减去的duvisor倍数</span></span><br><span class="line">            result += multiple; </span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> sign = ((dividend &lt; <span class="number">0</span>) ^ (divisor &lt; <span class="number">0</span>)) ? <span class="number">-1</span> : <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">1</span> == sign ? result : -result;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<h2 id="浮点数的运算"><a href="#浮点数的运算" class="headerlink" title="浮点数的运算"></a>浮点数的运算</h2><p>设浮点数$A = M_a \cdot 2^{E_a}，B = M_b \cdot 2^{E_b}$，则</p>
-<p>$$<br>A + B = (M_a + M_b \cdot 2^{-(E_a-E_b)}) \cdot 2^{E_a}（设E_a \gt E_b） \<br>A * B = (M_a \cdot M_b) \cdot 2^{E_a + E_b} \<br>A / B = (M_a / M_b) \cdot 2^{E_a - E_b}<br>$$</p>
-<p>可能出现：</p>
-<p>阶码上溢：正指数$\ge$最大允许值</p>
-<p>阶码下溢：负指数$\le$最小允许值</p>
-<p>尾数溢出：最高有效位有进位（结果不一定溢出）</p>
-<p>非规格化的溢出：数值部分高位为0</p>
-<p>IEEE754规定的5种异常情况：</p>
-<ol>
-<li><p>无意义的运算</p>
-</li>
-<li><p>除以0</p>
-</li>
-<li><p>数太大（阶上溢），指数大于127</p>
-</li>
-<li><p>数太小，指数小于-126</p>
-</li>
-<li><p>结果不精确</p>
-</li>
-</ol>
-<p>浮点数加减的过程：</p>
-<p>设$X = X_m \cdot 2^{X_e}, Y = T_m \cdot 2^{Y_e}$</p>
-<ol>
-<li><p>求阶差：$\Delta e = Y_e - X_e$。如果$Y_e \gt X_e$,则结果阶码为$Y_e$.</p>
-</li>
-<li><p>对阶：将$X_m$右移$\Delta e$位，$X$写成$X_m \cdot 2^{X_e - Y_e} \cdot 2^{Y_e}$.</p>
-</li>
-<li><p>尾数加减：$X \cdot 2^{X_e - Y_e} \pm Y_m$</p>
-</li>
-<li><p>规格化。若尾数高位为0，需左规：尾数每左移1位，阶码减1，直到MSB为1；每次阶码减1，要判断阶码是否下溢。若尾数高位有进位，需右规。阶码上溢，结果溢出；阶码下溢，结果为0.</p>
-</li>
-<li><p>舍入：四舍六入五凑双.</p>
-</li>
-<li><p>如果尾数为0，此时运算结果为0，则将阶码置0.</p>
-</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2301,7 +2272,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">21</span>
+                    <span class="site-state-item-count">22</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
