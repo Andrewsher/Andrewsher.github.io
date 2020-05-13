@@ -289,6 +289,179 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2018/03/03/随机二叉搜索树学习笔记/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁可翰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="祁可翰的Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/03/03/随机二叉搜索树学习笔记/" itemprop="url">
+                  随机二叉搜索树学习笔记
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+                
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-03T15:25:27+08:00">2018-03-03</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>MIT《算法导论》课程第9课《二叉搜索树》学习笔记.</p>
+<p>本章主要讨论使用随机化的方法使二叉搜索树(Binary Search Tree, BST)达到平衡。</p>
+<p>使用如下的方法构建一棵二叉搜索树并返回排序结果:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">BST_sort(A):</span><br><span class="line">  BST_Init(T)</span><br><span class="line">  for i = 1 to n:</span><br><span class="line">    TreeInsert(T, A[i])</span><br><span class="line">  InorderTreeWalk(T)    // 中序遍历</span><br></pre></td></tr></table></figure>
+<p>如果数组A已经是有序的，那么生成BST的时间复杂度为$\Theta(n^2)$.<br>如果得到的BST是平衡二叉树，那么时间复杂度为$O(n \log n)$.<br>二叉搜索排序和快速排序做的是相同的比较，但比较的次序不同。</p>
+<h2 id="随机化的二叉搜索排序"><a href="#随机化的二叉搜索排序" class="headerlink" title="随机化的二叉搜索排序"></a>随机化的二叉搜索排序</h2><ol>
+<li><p>随机地排列数组A</p>
+</li>
+<li><p>对A进行二叉搜索排序</p>
+</li>
+</ol>
+<p>其期望的时间复杂度$E[二叉搜索排序] = E[快速排序]$ = O(n \log n)</p>
+<p>$$<br>T[二叉搜索排序] = \sum\limits_{x \in \mathtt{Tree}} \mathtt{depth} (x) \<br>E\left[\frac{1}{n} \sum\limits_{x \in \mathtt{Tree}} \mathtt{depth}(x)\right] = \frac{\Theta(n \log n)}{n} = \Theta(\log n)<br>$$</p>
+<p>$$<br>E[随机二叉搜索树的深度] = O(\log n)<br>$$</p>
+<p>证明如下。</p>
+<p>证明分为4个步骤：</p>
+<ol>
+<li>使用归纳法证明Jensen不等式:<br>当$f$为凹函数，$X$为随机变量时，<br>$$<br>f(E[X]) \le E[f(X)]<br>$$</li>
+<li><p>分析$y_n = 2^{x_n}$的情况</p>
+</li>
+<li><p>证明$E[y_n] = O(n^3)$ </p>
+</li>
+<li><p>$$<br>2^{E[X_n]} \le E[2^{X_n}] = E[Y_n] = O(n^3) \<br>\Rightarrow E[X_n] \le \log O(n^3) = 3O(\log n) + O(1) \<br>\Rightarrow E[X_n]= O(\log n)<br>$$</p>
+</li>
+</ol>
+<p>下面使用归纳法证明Jensen不等式。</p>
+<p>Base: $n = 1, \alpha = 1, f(1 \cdot x_1) \le 1 \cdot f(x_1)$.</p>
+<p>Step:<br>$$<br>\begin{align}<br>f\left(\sum\limits_{k=1}\limits^{n} \alpha_kx_k\right) &amp; = f\left(\alpha_nx_n + (1 - \alpha_n) \sum\limits_{k=1}\limits^{n-1}\frac{\alpha_k}{1-\alpha_n}x_k\right) \<br> &amp; \le \alpha_nf(x_n) + (1-\alpha_n)f\left( \sum\limits_{k=1}\limits^{n-1}\frac{\alpha_k}{1-\alpha_n}x_k\right) （凹函数定义）\<br> &amp; \le \alpha_nf(x_n) + (1-\alpha_n)\sum\limits_{k=1}\limits^{n-1} \frac{\alpha_k}{1-\alpha_n}f(x_k) （归纳） \<br> &amp; = \sum\limits_{k=1}\limits^{n} \alpha_kf(x_k)<br>\end{align}<br>$$</p>
+<p>于是有：</p>
+<p>$$<br>\begin{align}<br>f(E[X]) &amp; = f\left( \sum\limits_{k = -\infty}\limits^{\infty}X\cdot P(X = k)\right) \<br> &amp; \le \sum\limits_{k = -\infty}\limits^{\infty} P(X = k) \cdot f(k) \<br> &amp; = \sum\limits_{y \in \mathtt{range}(f)}y \cdot \sum\limits_{k: f(k) = y} P(x = k) \<br> &amp; = E\left[f(X)\right]<br>\end{align}<br>$$</p>
+<p>其中$X$为随机量.<br>证明完毕.</p>
+<p>下面对$Y_n = 2^{X_n}$进行分析.</p>
+<p>$$<br>Y_n = 2^{X_n} \<br>X_n = 1 + \mathtt{max}{X_{k-1}, X_{n-1}} \<br>Y_n = 2 \cdot \mathtt{max} {Y_{k-1}, Y_{n-k}}<br>$$</p>
+<p>定义指示器随机变量：<br>$$<br>Z_{nk} =<br>\begin{cases}<br>1, 根节点序号为k \<br>0, 其他<br>\end{cases}<br>\<br>P(Z_{nk} = 1) = E[Z_{nk}] = \frac{1}{n} \<br>Y_n = \sum\limits_{k=1}\limits^{n} Z_{nk} \cdot (2 \cdot \mathtt{max} {Y_{k-1}, Y_{n-k}} \<br>\begin{align}<br>E[Y_n] &amp; = E\left[ \sum\limits_{k=1}\limits^{n} Z_{nk} (2\cdot\mathtt{max} {Y_{k-1}, Y_{n-k} } ) \right] \<br> &amp; = \sum\limits_{k = 1}\limits^{n} E\left[ Z_{nk} \cdot (2 \mathtt{max} {Y_{k-1}, Y_{n-k} } ) \right] \<br> &amp; = 2 \cdot \sum\limits_{k=1}\limits^{n} E[Z_{nk}] \cdot E[\mathtt{max} {Y_{k-1}, Y_{n-k} }] \<br> &amp; \le \frac{2}{n} \sum\limits_{k=1}\limits^{n} E[Y_{k-1}, Y_{n-k}] \<br> &amp; = \frac{4}{n} \sum\limits_{k=0}\limits^{n-1} E[Y_k]<br>\end{align}<br>$$</p>
+<p>下面使用代换法求$E[Y_n]$.</p>
+<p>Claim: $E[Y_n] \le c\cdot n^3$</p>
+<p>Proof: </p>
+<p>Base: $\exists N，对所有n \gt N，E[Y_n] \le c \cdot n^3当c足够大.$</p>
+<p>Step:<br>$$<br>\begin{align}<br>E[Y_n] \le &amp; \frac{4}{n}\sum\limits_{k=0}\limits^{n-1} E[Y_k] \<br> \le &amp; \frac{4}{n}\sum\limits_{k=0}\limits^{n-1} c\cdot n^3 \<br> \le &amp; \frac{4c}{n} \int_0^nx^3\mathtt{d}x \<br> = &amp; cn^3<br>\end{align}<br>$$</p>
+<p>最后，得出结论.</p>
+<p>$$<br>2^{E[X_n]} \le E[2^{X_n}] = E[Y_n] = O(n^3) \<br>\Rightarrow E[X_n] \le \log O(n^3) = 3O(\log n) + O(1) \<br>\Rightarrow E[X_n]= O(\log n)<br>$$</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2018/03/03/整数与浮点数的运算/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1970,147 +2143,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2017/08/29/A-Solution-of-A-Written-Question-in-An-Examination-2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="祁可翰">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="祁可翰的Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/08/29/A-Solution-of-A-Written-Question-in-An-Examination-2/" itemprop="url">
-                  A Solution of A Written Question in An Examination (2)
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-                
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-29T20:52:30+08:00">2017-08-29</time>
-            
-
-            
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="Question"><a href="#Question" class="headerlink" title="Question"></a>Question</h2><p>  设计一个算法，将数组A[n]中的元素A[0]至A[n-1]循环右移<em>k</em>位，并要求只用一个元素大小的附加存储，元素移动或交换次数为<em>O(n)</em>。</p>
-<h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h2><p>对于要求只有一个元素大小的附加存储的循环右移，可以分为以下3步进行：</p>
-<ul>
-<li>1 对所有<em>n</em>个元素逆序；</li>
-<li>2 对前<em>k</em>个元素逆序；</li>
-<li>3 对后<em>n-k</em>个元素逆序。</li>
-</ul>
-<p>  由于逆序可以只占用一个元素大小，元素交换次数为<em>O(n)</em>，该算法可以满足题目要求。</p>
-<p>  算法的C语言实现：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">rotateRight</span><span class="params">(<span class="keyword">int</span>* A, <span class="keyword">int</span> n, <span class="keyword">int</span> k)</span></span></span><br><span class="line"><span class="function"><span class="comment">// A为给定数组，n为数组大小，k为指定的移动位数</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> temp; <span class="comment">//附加存储</span></span><br><span class="line">	k = k % n;</span><br><span class="line">	<span class="comment">// n个元素逆序</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n / <span class="number">2</span>; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		temp = A[i];</span><br><span class="line">		A[i] = A[n - <span class="number">1</span> - i];</span><br><span class="line">		A[n - <span class="number">1</span> - i] = temp;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 前k位逆序</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; k / <span class="number">2</span>; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		temp = A[i]; </span><br><span class="line">		A[i] = A[k - <span class="number">1</span> - i];</span><br><span class="line">		A[k - <span class="number">1</span> - i] = temp;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 后n-k位逆序</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; (n - k) / <span class="number">2</span>; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		temp = A[i + k];</span><br><span class="line">		A[i + k] = A[n - <span class="number">1</span> - i];</span><br><span class="line">		A[n - <span class="number">1</span> - i] = temp;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2158,7 +2190,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">22</span>
+                    <span class="site-state-item-count">23</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -2235,7 +2267,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>

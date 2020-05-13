@@ -289,6 +289,147 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2017/08/29/A-Solution-of-A-Written-Question-in-An-Examination-2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁可翰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="祁可翰的Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/08/29/A-Solution-of-A-Written-Question-in-An-Examination-2/" itemprop="url">
+                  A Solution of A Written Question in An Examination (2)
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+                
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-08-29T20:52:30+08:00">2017-08-29</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Question"><a href="#Question" class="headerlink" title="Question"></a>Question</h2><p>  设计一个算法，将数组A[n]中的元素A[0]至A[n-1]循环右移<em>k</em>位，并要求只用一个元素大小的附加存储，元素移动或交换次数为<em>O(n)</em>。</p>
+<h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h2><p>对于要求只有一个元素大小的附加存储的循环右移，可以分为以下3步进行：</p>
+<ul>
+<li>1 对所有<em>n</em>个元素逆序；</li>
+<li>2 对前<em>k</em>个元素逆序；</li>
+<li>3 对后<em>n-k</em>个元素逆序。</li>
+</ul>
+<p>  由于逆序可以只占用一个元素大小，元素交换次数为<em>O(n)</em>，该算法可以满足题目要求。</p>
+<p>  算法的C语言实现：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">rotateRight</span><span class="params">(<span class="keyword">int</span>* A, <span class="keyword">int</span> n, <span class="keyword">int</span> k)</span></span></span><br><span class="line"><span class="function"><span class="comment">// A为给定数组，n为数组大小，k为指定的移动位数</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	<span class="keyword">int</span> temp; <span class="comment">//附加存储</span></span><br><span class="line">	k = k % n;</span><br><span class="line">	<span class="comment">// n个元素逆序</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; n / <span class="number">2</span>; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		temp = A[i];</span><br><span class="line">		A[i] = A[n - <span class="number">1</span> - i];</span><br><span class="line">		A[n - <span class="number">1</span> - i] = temp;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 前k位逆序</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; k / <span class="number">2</span>; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		temp = A[i]; </span><br><span class="line">		A[i] = A[k - <span class="number">1</span> - i];</span><br><span class="line">		A[k - <span class="number">1</span> - i] = temp;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 后n-k位逆序</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; (n - k) / <span class="number">2</span>; i++)</span><br><span class="line">	&#123;</span><br><span class="line">		temp = A[i + k];</span><br><span class="line">		A[i + k] = A[n - <span class="number">1</span> - i];</span><br><span class="line">		A[n - <span class="number">1</span> - i] = temp;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2017/07/25/A-Solution-of-a-Written-Examination-Question-1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -640,7 +781,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">22</span>
+                    <span class="site-state-item-count">23</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -717,7 +858,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>
@@ -904,6 +1045,8 @@
 
   
   
+    
+      
     
       
     

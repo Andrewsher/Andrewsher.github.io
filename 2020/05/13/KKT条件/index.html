@@ -103,25 +103,25 @@
 
 
 
-  <meta name="description" content="支持向量机定义在特征空间上的间隔最大的线形分类器，核技巧使得它称为事实上的非线性分类器。核函数表示将输入从输入空间映射到特征空间，得到的特征向量的内积。 线形可分支持向量机给定线形可分训练机，通过间隔最大化或等价求解凸二次规划，得到分离超平面：$$w^0 \cdot x + b^0 = 0$$ 以及相应的分类决策函数：$$f(x)=sign(w^0\cdot x+b^0)$$称为线形SVM。 函数">
+  <meta name="description" content="非线性约束：$$\begin{matrix}\min  &amp;amp; f(\mathbf x) \\\mathbb {s.t.}  &amp;amp; g_j(\mathbf x) = 0 \\      &amp;amp; h_k(\mathbf x) \le 0\end{matrix}$$定义拉格朗日函数：$$L(\mathbf x, \mathbf \lambda, \mathbf \mu) = f(\mat">
 <meta name="keywords" content="Machine Learning">
 <meta property="og:type" content="article">
-<meta property="og:title" content="线形可分支持向量机">
-<meta property="og:url" content="https://andrewsher.github.io/2018/08/09/线形可分支持向量机/index.html">
+<meta property="og:title" content="KKT条件">
+<meta property="og:url" content="https://andrewsher.github.io/2020/05/13/KKT条件/index.html">
 <meta property="og:site_name" content="祁可翰的Blog">
-<meta property="og:description" content="支持向量机定义在特征空间上的间隔最大的线形分类器，核技巧使得它称为事实上的非线性分类器。核函数表示将输入从输入空间映射到特征空间，得到的特征向量的内积。 线形可分支持向量机给定线形可分训练机，通过间隔最大化或等价求解凸二次规划，得到分离超平面：$$w^0 \cdot x + b^0 = 0$$ 以及相应的分类决策函数：$$f(x)=sign(w^0\cdot x+b^0)$$称为线形SVM。 函数">
+<meta property="og:description" content="非线性约束：$$\begin{matrix}\min  &amp;amp; f(\mathbf x) \\\mathbb {s.t.}  &amp;amp; g_j(\mathbf x) = 0 \\      &amp;amp; h_k(\mathbf x) \le 0\end{matrix}$$定义拉格朗日函数：$$L(\mathbf x, \mathbf \lambda, \mathbf \mu) = f(\mat">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-08-09T09:04:01.815Z">
+<meta property="og:updated_time" content="2020-05-13T07:00:48.481Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="线形可分支持向量机">
-<meta name="twitter:description" content="支持向量机定义在特征空间上的间隔最大的线形分类器，核技巧使得它称为事实上的非线性分类器。核函数表示将输入从输入空间映射到特征空间，得到的特征向量的内积。 线形可分支持向量机给定线形可分训练机，通过间隔最大化或等价求解凸二次规划，得到分离超平面：$$w^0 \cdot x + b^0 = 0$$ 以及相应的分类决策函数：$$f(x)=sign(w^0\cdot x+b^0)$$称为线形SVM。 函数">
+<meta name="twitter:title" content="KKT条件">
+<meta name="twitter:description" content="非线性约束：$$\begin{matrix}\min  &amp;amp; f(\mathbf x) \\\mathbb {s.t.}  &amp;amp; g_j(\mathbf x) = 0 \\      &amp;amp; h_k(\mathbf x) \le 0\end{matrix}$$定义拉格朗日函数：$$L(\mathbf x, \mathbf \lambda, \mathbf \mu) = f(\mat">
 
 
 
 
 
 
-  <link rel="canonical" href="https://andrewsher.github.io/2018/08/09/线形可分支持向量机/"/>
+  <link rel="canonical" href="https://andrewsher.github.io/2020/05/13/KKT条件/"/>
 
 
 
@@ -131,7 +131,7 @@
   };
 </script>
 
-  <title>线形可分支持向量机 | 祁可翰的Blog</title>
+  <title>KKT条件 | 祁可翰的Blog</title>
   
 
 
@@ -293,7 +293,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2018/08/09/线形可分支持向量机/">
+    <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2020/05/13/KKT条件/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="祁可翰">
@@ -310,7 +310,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">线形可分支持向量机
+          <h1 class="post-title" itemprop="name headline">KKT条件
               
             
           </h1>
@@ -329,7 +329,7 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-09T16:05:17+08:00">2018-08-09</time>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-05-13T10:29:37+08:00">2020-05-13</time>
             
 
             
@@ -366,41 +366,18 @@
       
 
       
-        <h1 id="支持向量机"><a href="#支持向量机" class="headerlink" title="支持向量机"></a>支持向量机</h1><p>定义在特征空间上的间隔最大的线形分类器，核技巧使得它称为事实上的非线性分类器。核函数表示将输入从输入空间映射到特征空间，得到的特征向量的内积。</p>
-<h1 id="线形可分支持向量机"><a href="#线形可分支持向量机" class="headerlink" title="线形可分支持向量机"></a>线形可分支持向量机</h1><p>给定线形可分训练机，通过间隔最大化或等价求解凸二次规划，得到分离超平面：<br>$$<br>w^0 \cdot x + b^0 = 0<br>$$</p>
-<p>以及相应的分类决策函数：<br>$$<br>f(x)=sign(w^0\cdot x+b^0)<br>$$<br>称为线形SVM。</p>
-<h1 id="函数间隔"><a href="#函数间隔" class="headerlink" title="函数间隔"></a>函数间隔</h1><p>定义超平面关于样本点的函数间隔为：<br>$$<br>\hat{\gamma}_i = y_i(w\cdot x_i+b)<br>$$</p>
-<p>超平面$(w,b)$关于训练集$T$的函数间隔：<br>$$<br>\hat{\gamma}=\min\limits_{i=1,\dots,N} \hat{\gamma}_i<br>$$</p>
-<p>点$x_i$与超平面$(w,b)$之间的距离（几何间隔）：<br>$$<br>\gamma_i=y_i(\frac{w}{||w||}\cdot x_i + \frac{b}{||w||})<br>$$</p>
-<p>其中$||w||$为$w$的$L_2$范数。</p>
-<p>$(w,b)$关于$T$的几何间隔：<br>$$<br>\gamma=\min\limits_{i=1,\dots,N}\gamma_i<br>$$</p>
-<p>易知$\gamma_i=\frac{\hat\gamma_i}{||w||}$，$\gamma=\frac{\hat\gamma}{||w||}$</p>
-<h1 id="间隔最大化"><a href="#间隔最大化" class="headerlink" title="间隔最大化"></a>间隔最大化</h1><p>$$<br>\max\limits_{w, b} \gamma<br>$$</p>
-<p>$$<br>s.t. y_i(\frac{w}{||w||}x_i+\frac{b}{||w||}) \ge \gamma, i=1,\dots,N<br>$$</p>
-<p>或：<br>$$<br>\max\limits_{w,b} \frac{\hat\gamma}{||w||}<br>$$<br>$$<br>s.t. y_i(w\cdot x_i+b)\ge \hat\gamma, i=1,\dots,N<br>$$</p>
-<p>或：<br>$$<br>\min\limits_{w,b} \frac{1}{2}||w||^2<br>$$<br>$$<br>s.t. y_i(w\cdot x_i+b) -1 \ge 0, i=1,\dots,N<br>$$</p>
-<h1 id="线形可分支持向量机——最大间隔法"><a href="#线形可分支持向量机——最大间隔法" class="headerlink" title="线形可分支持向量机——最大间隔法"></a>线形可分支持向量机——最大间隔法</h1><p>输入：训练集$t={(x_1,y_1),\dots,(x_N,y_N)}$（二分类）</p>
-<p>输出：最大间隔分离超平面和决策函数</p>
+        <p>非线性约束：<br>$$<br>\begin{matrix}<br>\min  &amp; f(\mathbf x) \\<br>\mathbb {s.t.}  &amp; g_j(\mathbf x) = 0 \\<br>      &amp; h_k(\mathbf x) \le 0<br>\end{matrix}<br>$$<br>定义拉格朗日函数：<br>$$<br>L(\mathbf x, \mathbf \lambda, \mathbf \mu) = f(\mathbf x) + \sum_{j=1}^m \lambda_j g_j(\mathbf x) + \sum_{k=1}^p \mu_k h_k(\mathbf x)<br>$$<br>KKT条件（Karush–Kuhn–Tucker conditions）：<br>$$<br>\begin{cases}<br>\nabla _\mathbf x L &amp; = \mathbf 0 \\<br>g_j (\mathbf x) &amp; = 0 \\<br>h_k(\mathbf x) &amp; \le 0 \\<br>\mu_k &amp; \ge 0 \\<br>\mu_k h_k(\mathbf x) &amp; = 0<br>\end{cases}<br>$$</p>
+<h1 id="1-等式约束的优化问题"><a href="#1-等式约束的优化问题" class="headerlink" title="1 等式约束的优化问题"></a>1 等式约束的优化问题</h1><p>$$<br>\begin {matrix}<br>\min &amp; f(x) &amp;  \\<br>\mathbb {s.t.} &amp; g(x) &amp;= 0<br>\end{matrix}<br>$$</p>
+<p>定义Lagrange函数：<br>$$<br>L(x, \lambda) = f(x) + \lambda g(x)<br>$$<br>其中$\lambda$称为拉格朗日乘数。这种方法将等式约束的优化问题转化为无约束的优化问题：<br>$$<br>\min _{x,\lambda} L(x,\lambda)<br>$$<br>具体方法是对$x$和$\lambda$求偏导数，令等于0，得到最优解的必要条件：<br>$$<br>\begin{cases}<br>\nabla _x L   = \nabla _x f +\lambda \nabla_x g = 0 \\<br>\nabla _\lambda L  = g = 0<br>\end{cases}<br>$$<br>这个方程组为等式约束的极值必要条件。</p>
+<h1 id="2-不等式约束的优化问题"><a href="#2-不等式约束的优化问题" class="headerlink" title="2 不等式约束的优化问题"></a>2 不等式约束的优化问题</h1><p>假设存在不等式约束的优化问题：<br>$$<br>\begin{matrix}<br>\min  &amp; f(x) \\<br>\mathbb {s.t.} &amp; h(x) \le 0<br>\end{matrix}<br>$$<br>假设拉格朗日函数：<br>$$<br>L(x,\mu) = f(x) + \mu h(x)<br>$$</p>
+<p>约束不等式$h(x)\le 0$称为原始可行性，对应的区域${ x \in R | h(x) \le 0}$称为可行域。假设存在满足条件的最优解$x_0$，则：</p>
 <ol>
-<li><p>构造并求解最优化问题<br>$$<br>\min\limits_{w,b} \frac{1}{2}||w||^2<br>$$<br>$$<br>s.t. y_i(w\cdot x_i+b) -1 \ge 0, i=1,\dots,N<br>$$<br>求得最优解$w^0,b^0$</p>
-</li>
-<li><p>由此得到分离超平面：<br>$$<br>w^0\cdot x+b^0 =0<br>$$<br>分类决策函数：<br>$$<br>f(x)=sign(w^0x+b^0)<br>$$</p>
-</li>
+<li>$h(x_0) \lt 0$，此时$x_0$位于可行域内部，称为内部解。此时原始问题退化为无约束问题，驻点$x_0$满足$\nabla_{x_0} f = 0, \mu = 0 $。</li>
+<li>$h(x_0) = 0$，此时$x_0$位于可行域边界，称为边界解。此时原始不等式约束问题退化为等式约束问题，$\nabla _{x_0} L = 0$。由于我们希望梯度$\nabla f$指向可行域的内部，梯度$\nabla h$指向可行域的外部，因此$\mu \ge 0$。</li>
 </ol>
-<p>线形可分数据集的最大间隔分离超平面是存在且唯一的。</p>
-<h1 id="支持向量"><a href="#支持向量" class="headerlink" title="支持向量"></a>支持向量</h1><p>在线形可分的情况下，训练数据集的样本点中与分离超平面最近的样本点的实例称为支持向量。</p>
-<p>支持向量：$y_i(w\cdot x_i+b)-1=0$</p>
-<p>对于$y_i=+1$的点，支持向量在超平面$H_1:w\cdot x+b=1$上。</p>
-<p>对于$y_i=-1$的点，支持向量在超平面$H_2:w\cdot x+b=-1$上。</p>
-<h1 id="线形可分支持向量机的对偶算法"><a href="#线形可分支持向量机的对偶算法" class="headerlink" title="线形可分支持向量机的对偶算法"></a>线形可分支持向量机的对偶算法</h1><p>应用拉格朗日对偶性，求解对偶问题，得到原始问题的最优解。</p>
-<p>定义拉格朗日函数：<br>$$<br>L(w,b, \alpha) = \frac{1}{2} ||w||^2 - \sum\limits_{i=1}^{N} \alpha_i y_i (w\cdot x_i + b) + \sum\limits_{i=1}^{N} \alpha_i<br>$$<br>其中$\vec\alpha=(\alpha_1,\dots,\alpha_N)^T$为拉格朗日乘子向量。</p>
-<p>根据拉格朗日对偶性，原始问题的对偶问题是极大极小问题：<br>$$<br>\max\limits_{\alpha} \min\limits_{w,b} L(w, b, \alpha)<br>$$</p>
-<p>首先对$(w, b)$求最小：<br>$$<br>\min\limits_{w,b} L(w, b, \alpha) = - \frac{1}{2} \sum\limits_{i=1}^{N} \sum\limits_{j=1}^{N} \alpha_i \alpha_j y_i y_j (x_i \cdot x_j) + \sum\limits_{i=1}^{N}\alpha_i<br>$$</p>
-<p>对上式求对$\alpha$的极大：<br>$$<br>\min\limits_{\alpha} \frac{1}{2}\sum\limits_{i=1}^{N} \sum\limits_{j=1}^{N} \alpha_i\alpha_i y_iy_j (x_i \cdot x_j) - \sum\limits_{i=1}^{N}\alpha_i<br>$$</p>
-<p>$$<br>s.t. \sum\limits_{i=1}^{N}\alpha_iy_i=0, \alpha_i\ge 0, i=1, \dots, N<br>$$</p>
-<p>如果$\alpha^0=(\alpha^0_1, \dots, \alpha^0_l)^T$是上述对偶最优化问题的解，则存在下标$j$，使得$\alpha^0_j \ge 0$，并可按下式求得原始最优化问题的解$w^0,b^0$：<br>$$<br>w^0 = \sum\limits_{i=1}^{N} \alpha^0_iy_ix_i<br>$$<br>$$<br>b^0=y_j - \sum\limits_{i=1}^{N} \alpha^0_iy_i(x_i \cdot x_j)<br>$$</p>
-<p>于是有分离超平面：<br>$$<br>\sum\limits_{=1}^{N} \alpha^0_i y_i (x \cdot x_i) + b^0 = 0<br>$$</p>
-<p>分类决策函数：<br>$$<br>f(x)=sign(\sum\limits_{i=1}^{N} \alpha^0_i y_i (x \cdot x_i) + b^{*})<br>$$</p>
+<p>综上，$\mu \ge 0, \mu h(x) = 0$。</p>
+<p>整合上述两种情况，得到不等式约束下的KKT条件：<br>$$<br>\begin {cases}<br>\nabla _x L = 0 \\<br>h(x) \le 0 \\<br>\mu \ge 0 \\<br>\mu h(x) = 0<br>\end{cases}<br>$$</p>
+<h1 id="3-KKT条件"><a href="#3-KKT条件" class="headerlink" title="3 KKT条件"></a>3 KKT条件</h1><p>推广到多个等式约束和不等式约束条件：<br>$$<br>\begin{matrix}<br>\min  &amp; f(\mathbf x) \\<br>\mathbb {s.t.}  &amp; g_j(\mathbf x) = 0 \\<br>      &amp; h_k(\mathbf x) \le 0<br>\end{matrix}<br>$$<br>得到对应的KKT条件：<br>$$<br>\begin{cases}<br>\nabla _\mathbf x L &amp; = \mathbf 0 \\<br>g_j (\mathbf x) &amp; = 0, j=1,\dots,m \\<br>h_k(\mathbf x) &amp; \le 0, k=1,\dots,p \\<br>\mu_k &amp; \ge 0 \\<br>\mu_k h_k(\mathbf x) &amp; = 0<br>\end{cases}<br>$$</p>
 
       
     </div>
@@ -449,8 +426,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/06/10/感知机学习笔记/" rel="next" title="感知机学习笔记">
-                <i class="fa fa-chevron-left"></i> 感知机学习笔记
+              <a href="/2019/12/26/县域农业AI大赛总结/" rel="next" title="县域农业AI大赛总结">
+                <i class="fa fa-chevron-left"></i> 县域农业AI大赛总结
               </a>
             
           </div>
@@ -458,10 +435,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/10/21/线形支持向量机/" rel="prev" title="线形支持向量机">
-                线形支持向量机 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -608,7 +581,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#支持向量机"><span class="nav-number">1.</span> <span class="nav-text">支持向量机</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#线形可分支持向量机"><span class="nav-number">2.</span> <span class="nav-text">线形可分支持向量机</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#函数间隔"><span class="nav-number">3.</span> <span class="nav-text">函数间隔</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#间隔最大化"><span class="nav-number">4.</span> <span class="nav-text">间隔最大化</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#线形可分支持向量机——最大间隔法"><span class="nav-number">5.</span> <span class="nav-text">线形可分支持向量机——最大间隔法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#支持向量"><span class="nav-number">6.</span> <span class="nav-text">支持向量</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#线形可分支持向量机的对偶算法"><span class="nav-number">7.</span> <span class="nav-text">线形可分支持向量机的对偶算法</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-等式约束的优化问题"><span class="nav-number">1.</span> <span class="nav-text">1 等式约束的优化问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-不等式约束的优化问题"><span class="nav-number">2.</span> <span class="nav-text">2 不等式约束的优化问题</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-KKT条件"><span class="nav-number">3.</span> <span class="nav-text">3 KKT条件</span></a></li></ol></div>
             
 
           </div>
