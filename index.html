@@ -289,6 +289,191 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2020/05/18/KNN算法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁可翰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="祁可翰的Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/05/18/KNN算法/" itemprop="url">
+                  KNN算法和KD树
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+                
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-05-18T15:18:52+08:00">2020-05-18</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="1-K近邻算法"><a href="#1-K近邻算法" class="headerlink" title="1 K近邻算法"></a>1 K近邻算法</h1><p>给定训练数据集和测试样本，根据给定的距离度量方法，在训练数据集中找出距离该样本最近的k个样本，然后根据这k个样本的类别和某种决策规则（如多数表决）来确定测试样本的类别。当k=1时，算法变成最近邻算法。</p>
+<p>可见，K近邻算法涉及3个要素，k值的选择、距离度量、决策规则。</p>
+<p>这种模型具有很高的容量，在训练数据集很大的时候效果很好；在训练阶段开销为0，即”惰性学习“。但其计算量很高（特别是在训练集很大的时候），训练集较小时泛化能力较差，且无法判别特征的重要程度。</p>
+<h1 id="2-K值的选择"><a href="#2-K值的选择" class="headerlink" title="2 K值的选择"></a>2 K值的选择</h1><ul>
+<li>当k=1时，该算法为最近邻算法。</li>
+<li>当k值较小时，相当于使用较小邻域内的训练样本进行预测，此时的模型预测结果具有较小的bias和较大的variance。</li>
+<li>当k值较大时，模型具有较大的bias和较小的variance。</li>
+<li>一般k会取一个较小的值，使用交叉验证来确定合适的k值。</li>
+</ul>
+<h1 id="3-距离度量"><a href="#3-距离度量" class="headerlink" title="3 距离度量"></a>3 距离度量</h1><p>这里的距离用来表示两个样本点的相似程度。k近邻算法的输入样本的特征空间一般是n维实数向量空间。对于距离的度量一般采用欧式距离，也可以采用其他距离。</p>
+<p>以下$P(x_1, x_2, \dots, x_n),Q(y_1, y_2, \dots, y_n), \mathbf x = (x_1,x_2,\dots,x_n)^T, \mathbf y = (y_1, y_2, \dots, y_n)^T$</p>
+<h2 id="3-1-闵可夫斯基距离-欧式距离-曼哈顿距离-切比雪夫距离"><a href="#3-1-闵可夫斯基距离-欧式距离-曼哈顿距离-切比雪夫距离" class="headerlink" title="3.1 闵可夫斯基距离 欧式距离 曼哈顿距离 切比雪夫距离"></a>3.1 闵可夫斯基距离 欧式距离 曼哈顿距离 切比雪夫距离</h2><p>闵可夫斯基距离：<br>$$<br>dist = (\sum_{i=1}^n |x_i - y_i|^p)^{1/p}<br>$$<br>当$p=1$时，该距离为曼哈顿距离：<br>$$<br>dist = \sum_{i=1}^n |x_i - y_i|<br>$$</p>
+<p>当$p=2$时，该距离为欧氏距离：<br>$$<br>dist = \sqrt {\sum_{i=1}^n (x_i - y_i)^2}<br>$$</p>
+<p>当$p$趋于无穷大时，该距离为切比雪夫距离：<br>$$<br>dist = \lim \limits_{p \to \infty} \left( \sum_{i=1}^n |x_i - y_i |^p \right)^{1/p} = \max \limits_{i=1}^n |x_i - y_i|<br>$$<br>在使用闵可夫斯基距离度量之前，可能需要对数据进行标准化处理。</p>
+<p>闵可夫斯基距离比较直观，但是不能反映数据的分布和各个维度之间的相关性。</p>
+<h2 id="3-2-马氏距离-Mahalanobis-Distance"><a href="#3-2-马氏距离-Mahalanobis-Distance" class="headerlink" title="3.2 马氏距离 (Mahalanobis Distance)"></a>3.2 马氏距离 (Mahalanobis Distance)</h2><p>假设有$m$个$n$维的样本$ x_1, \dots,  x_m,x_i\in R^n$，协方差矩阵为$S$，均值为$\mu$，则样本$x$到均值$\mu$的马氏距离为：<br>$$<br>dist = \sqrt {(x - \mu)^T S^{-1} (x - \mu)}<br>$$<br>样本$x_i,x_j$之间的距离为：<br>$$<br>dist = \sqrt {(x_i - x_j)^T S^{-1} (x_i - x_j)}<br>$$<br>当协方差矩阵$S$为单位阵时，马氏距离相当于欧氏距离。</p>
+<p>马氏距离与量纲无关，可以排除变量之间的相关性的干扰。</p>
+<h2 id="3-3-向量内积"><a href="#3-3-向量内积" class="headerlink" title="3.3 向量内积"></a>3.3 向量内积</h2><p>$$<br>&lt;\mathbf x,\mathbf y&gt; = \sum_{i=1}^n x_i y_i<br>$$</p>
+<h2 id="3-4-余弦相似度"><a href="#3-4-余弦相似度" class="headerlink" title="3.4 余弦相似度"></a>3.4 余弦相似度</h2><p>$$<br>CosSim(\mathbf x, \mathbf y) = \frac {&lt;\mathbf x, \mathbf y &gt;} {||\mathbf x|| ||\mathbf y||} = \frac {\sum_{i=1}^n x_iy_i} {\sqrt {\sum_{i=1}^n x_i^2} \sqrt {\sum_{i=1}^n y_i^2}}<br>$$</p>
+<p>余弦相似度与向量的幅度无关，只与向量的方向有关。</p>
+<h2 id="3-5-皮尔逊相关系数"><a href="#3-5-皮尔逊相关系数" class="headerlink" title="3.5 皮尔逊相关系数"></a>3.5 皮尔逊相关系数</h2><p>$$<br>\begin {align}<br>Corr (\mathbf x, \mathbf y)&amp; = CosSim(\mathbf x - \bar x, \mathbf y - \bar y) \<br>&amp; = \frac {&lt;\mathbf x - \bar x, \mathbf y - \bar y&gt;} {||\mathbf x - \bar x|| || \mathbf y - \bar y ||} \<br>&amp; = \frac {\sum_i (x_i - \bar x)(y_i - \bar y)} {\sqrt {\sum_i (x_i - \bar x)^2} \sqrt {\sum_i (y_i - \bar y)^2}}<br>\end {align}<br>$$</p>
+<p>皮尔逊相关系数具有平易近人不变性和尺度不变性。</p>
+<h2 id="3-6-汉明距离"><a href="#3-6-汉明距离" class="headerlink" title="3.6 汉明距离"></a>3.6 汉明距离</h2><p>两个等长字符串$s_1$和$s_2$之间的汉明距离定义为将一个变为另一个需要的最小替换次数。</p>
+<h2 id="3-7-Jaccard相似系数-Jaccard距离"><a href="#3-7-Jaccard相似系数-Jaccard距离" class="headerlink" title="3.7 Jaccard相似系数 Jaccard距离"></a>3.7 Jaccard相似系数 Jaccard距离</h2><p>两个集合$A,B$之间的Jaccard相似系数为：<br>$$<br>J(A,B)=\frac {|A \cap B|} {|A \cup B|}<br>$$<br>Jaccard距离用于衡量两个集合的区分度，定义为：<br>$$<br>J_\delta (A,B) = 1 - J(A,B) = \frac {|A \cup B| - |A \cap B|} {|A \cup B|}<br>$$</p>
+<h1 id="4-决策规则"><a href="#4-决策规则" class="headerlink" title="4 决策规则"></a>4 决策规则</h1><ul>
+<li>分类决策可以用多数表决，或者根据距离测试样本点的远近、对于邻域内的样本点赋予不同权重。</li>
+<li>回归问题可以用求均值的方法，也可以根据距离测试样本的远近进行加权投票。</li>
+</ul>
+<h1 id="5-KD树"><a href="#5-KD树" class="headerlink" title="5 KD树"></a>5 KD树</h1><p>kd树即k-dimonsion tree，用于在k维空间中对数据进行划分，主要用于k维空间中相似性检索。这是一种平衡二叉树。</p>
+<p>一般来说，高维空间中的相似性检索有两种方式，一是范围查询，在数据集中查找所有与目标点的距离低于阈值的样本；另一种是K近邻，只查找与目标点最近的K个样本。查找方式也有两种，一种是线性扫描，对所有样本点计算它到目标点的距离；另一种是构建索引，对特征空间进行层次划分。KD树属于后者的一种，在划分时各个子空间没有重叠。</p>
+<h1 id="6-KD树的构建"><a href="#6-KD树的构建" class="headerlink" title="6 KD树的构建"></a>6 KD树的构建</h1><p>使用如下的算法构造KD树：</p>
+<ol>
+<li><p>构造根节点，对应于整个k维空间</p>
+</li>
+<li><p>使用如下的方法生成左孩子和右孩子节点：</p>
+<p>a. 维度选择：对于需要构造kd树的样本集，计算每个维度上的方差，选择方差最大的维度作为划分的维度。</p>
+<p>b. 在该维度上对样本集进行排序，取中值作为划分点。</p>
+<p>c. 使用该划分点，将当前空间划分为左右两个子空间，对应的样本集也划分为左右两个子集，分别对应于左孩子和右孩子。</p>
+</li>
+<li><p>对左孩子和右孩子，递归的使用第2步生成对应的kd树，直到子空间内无样本。</p>
+</li>
+</ol>
+<p>维度的选择方式，除了使用最大方差的方式，还可以使用顺序、指定优先次序的方式。划分点的选择，除了使用中值，也可以使用中位数。</p>
+<h1 id="7-KD树的最近邻搜索"><a href="#7-KD树的最近邻搜索" class="headerlink" title="7 KD树的最近邻搜索"></a>7 KD树的最近邻搜索</h1><ol>
+<li><p>确定初始值：从kd树的根节点出发，递归的访问孩子节点，直到找到目标点x所在的叶子节点。如果目标点x的当前维度的坐标小于当前节点对应的划分坐标，则访问左孩子，否则访问右孩子。以最终叶子节点作为当前最近邻点。</p>
+</li>
+<li><p>回溯：向上回归，直到到达根节点。对于每一个经过的节点，进行如下的操作：</p>
+<p>a. 如果该节点对应的样本点比”当前最近邻点”距离目标点更近，则对”当前最近邻点”进行更新，更新为该节点。</p>
+<p>b. 搜索可能存在的解：最近邻点一定存在于该节点的两个子树中。检查该节点的另一个子节点对应的子空间中是否存在更近的点。具体做法是，以目标点x为球心、目标点和”当前最近邻点”之间的距离为半径作球，看这个超球体是否与该节点对应的划分超平面相交，如果相交则说明另一个子节点对应的子空间中可能存在更近的点，如果如此，则移动到另一个子节点，并在另一个子节点中递归的进行最近邻搜索；否则，向上回退。</p>
+</li>
+<li><p>回退到根节点时，搜索结束，此时的”当前最近邻点”即为离目标点最近的点。</p>
+</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2020/05/13/KKT条件/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2010,192 +2195,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2018/03/09/阅读笔记 - 1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="祁可翰">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="祁可翰的Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/03/09/阅读笔记 - 1/" itemprop="url">
-                  阅读笔记 - 1
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-                
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-03-09T21:33:27+08:00">2018-03-09</time>
-            
-
-            
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="赋值运算需要注意的地方"><a href="#赋值运算需要注意的地方" class="headerlink" title="赋值运算需要注意的地方"></a>赋值运算需要注意的地方</h2><p>对于重载的“=”函数，考察知识点如下：</p>
-<ol>
-<li><p>把返回值的类型声明为该类型的引用；</p>
-</li>
-<li><p>把传入的参数的类型声明为常量引用；</p>
-</li>
-<li><p>释放自身已有的内存；</p>
-</li>
-<li><p>判断传入的参数和当前的实例(*this)是不是同一个实例。</p>
-</li>
-</ol>
-<p>于是有重载的=函数：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">CMyString</span> &#123;</span></span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">	CMyString(<span class="keyword">char</span>* pData = <span class="literal">NULL</span>);</span><br><span class="line">	CMyString(<span class="keyword">const</span> CMyString&amp; str);</span><br><span class="line">	~CMyString(<span class="keyword">void</span>);</span><br><span class="line"><span class="keyword">private</span>:</span><br><span class="line">	<span class="keyword">char</span>* m_pData;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">CMyString&amp; CMyString::<span class="keyword">operator</span> =(<span class="keyword">const</span> CMyString&amp; str) &#123;</span><br><span class="line">	<span class="keyword">if</span>(<span class="keyword">this</span> == &amp;str) <span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">	<span class="keyword">delete</span> []m_pData; </span><br><span class="line">	m_pData = <span class="literal">NULL</span>;</span><br><span class="line">	m_Data = <span class="keyword">new</span> <span class="keyword">char</span>[<span class="built_in">strlen</span>(str.m_pData) + <span class="number">1</span>];</span><br><span class="line">	<span class="built_in">strcpy</span>(m_pData, str.m_pData;</span><br><span class="line">	<span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>如果我们在new char的时候发现内存不足，那么程序就会崩溃。于是我们有如下的代码：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">CMyString&amp; CMyString::<span class="keyword">operator</span> =(<span class="keyword">const</span> CMyString &amp;str) &#123;</span><br><span class="line">	<span class="keyword">if</span>(<span class="keyword">this</span> != &amp;str) &#123;</span><br><span class="line">		CMyString strTemp(str);</span><br><span class="line">		<span class="keyword">char</span>* pTemp = strTemp.m_pData;</span><br><span class="line">		strTemp.m_pData = m_pData;</span><br><span class="line">		m_pData = ptemp;</span><br><span class="line">	&#125; <span class="comment">// 调用strTemp的析构函数，释放内存空间</span></span><br><span class="line">	<span class="keyword">return</span> *<span class="keyword">this</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>这种情况下，如果内存不足，我们还没有修改原来的实例，也就保证了异常安全性。</p>
-<p>这一道题考察对C++基础语法的理解，包括运算符参数、常量引用等等；还有内存泄漏；对高级程序员还要考察对异常安全性的理解。</p>
-<h2 id="二维数组的查找"><a href="#二维数组的查找" class="headerlink" title="二维数组的查找"></a>二维数组的查找</h2><p>对于已经排序的二维数组中数字的查找：从右上角开始查找。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">bool</span> <span class="title">find</span><span class="params">(<span class="keyword">int</span>** matrix, <span class="keyword">int</span> rows, <span class="keyword">int</span> columns, <span class="keyword">int</span> number)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">bool</span> found = <span class="literal">false</span>;</span><br><span class="line">	<span class="keyword">if</span>(matrix != <span class="literal">NULL</span> &amp;&amp; rows &gt; <span class="number">0</span> &amp;&amp; columns &gt; <span class="number">0</span>) &#123;</span><br><span class="line">		<span class="keyword">int</span> row = <span class="number">0</span>, column = column - <span class="number">1</span>;	<span class="comment">// 当前行列，从二维数组的右上角开始</span></span><br><span class="line">		<span class="keyword">while</span>(row &lt; rows &amp;&amp; column &gt;= <span class="number">0</span>) &#123;</span><br><span class="line">			<span class="keyword">if</span>(matrix[row][column] == number) &#123;	<span class="comment">// 找到了</span></span><br><span class="line">				found = <span class="literal">true</span>;</span><br><span class="line">				<span class="keyword">break</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span> <span class="keyword">if</span>(matrix[row][column] &gt; number) &#123;	<span class="comment">// 向左移动</span></span><br><span class="line">				--column;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">else</span> ++row;	<span class="comment">// 向下移动</span></span><br><span class="line">		&#125; <span class="comment">//while</span></span><br><span class="line">	&#125; <span class="comment">//if</span></span><br><span class="line">	<span class="keyword">return</span> found;</span><br><span class="line">&#125; <span class="comment">//find()</span></span><br></pre></td></tr></table></figure>
-<p>测试用例：二维数组包含了要查找的数字；没有包含要查找的数字；输入空指针。</p>
-<h2 id="数组扫描"><a href="#数组扫描" class="headerlink" title="数组扫描"></a>数组扫描</h2><p>例题：替换空格，将字符串中的空格替换为”%20”</p>
-<p>解题思路：从后往前扫描。预先分配足够大的内存空间，两个指针分别从后往前扫描，一个指向原始字符串，另一个指向替换之后的字符串。参考代码如下。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* length为字符数组string的总容量，该容量足够大以容纳转换后的字符数组*/</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">replaceBlank</span><span class="params">(<span class="keyword">char</span> <span class="built_in">string</span>[], ing length)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(<span class="literal">NULL</span> == <span class="built_in">string</span> || length &lt;= <span class="number">0</span>) <span class="keyword">return</span>;	<span class="comment">// 判断输入参数有效性</span></span><br><span class="line">	</span><br><span class="line">	<span class="comment">// originalLnegth为字符串string的实际长度</span></span><br><span class="line">	<span class="keyword">int</span> originalLength = <span class="number">0</span>;</span><br><span class="line">	<span class="comment">// numberOfBlank为空格的个数</span></span><br><span class="line">	<span class="keyword">int</span> numberOfBlank = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">int</span> i = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span>(<span class="built_in">string</span>[i] != <span class="string">'\0'</span>) &#123;</span><br><span class="line">		originalLength++;</span><br><span class="line">		<span class="keyword">if</span>(<span class="string">' '</span> == <span class="built_in">string</span>[i]) &#123;</span><br><span class="line">			numberOfBlank++;</span><br><span class="line">		&#125;<span class="comment">//if</span></span><br><span class="line">		i++;</span><br><span class="line">	&#125; <span class="comment">//while</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">// newLength为把' '替换为"%20"之后的长度</span></span><br><span class="line">	<span class="keyword">int</span> newLength = originalLength + numberOfBlank * <span class="number">2</span>;</span><br><span class="line">	<span class="keyword">if</span>(newLength &gt; length) <span class="keyword">return</span>;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">int</span> indexOfOriginal = originalLength;</span><br><span class="line">	<span class="keyword">int</span> indexOfNew = newLength;</span><br><span class="line">	<span class="keyword">while</span>(indexOfOriginal &gt;= <span class="number">0</span> &amp;&amp; indexOfNew &gt; indexOfOriginal) &#123;</span><br><span class="line">		<span class="comment">//遇到空格，转换</span></span><br><span class="line">		<span class="keyword">if</span>(<span class="string">' '</span> == <span class="built_in">string</span>[indexOfOriginal]) &#123;</span><br><span class="line">			<span class="built_in">string</span>[indexOfNew] = <span class="string">'0'</span>;</span><br><span class="line">			<span class="built_in">string</span>[indexOfNew - <span class="number">1</span>] = <span class="string">'2'</span>;</span><br><span class="line">			<span class="built_in">string</span>[indexOfNew - <span class="number">2</span>] = <span class="string">'%'</span>;</span><br><span class="line">			indexOfNew -= <span class="number">3</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="comment">// 否则，直接复制</span></span><br><span class="line">		<span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="built_in">string</span>[indexOfNew] = <span class="built_in">string</span>[indexOfPriginal];</span><br><span class="line">			indexOfNew -= <span class="number">1</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		indexOfOriginal--;</span><br><span class="line">	&#125; <span class="comment">// while</span></span><br><span class="line">&#125; <span class="comment">// void replaceBlank(char string[], int length)</span></span><br></pre></td></tr></table></figure>
-<p>注意，以下的情况必须通过测试：</p>
-<p>1.输入的字符串包括的多个空格</p>
-<p>2.输入的字符串没有空格</p>
-<p>3.输入的字符串为NULL</p>
-<p>注意，string的内存空间必须足够大。</p>
-<p>合并两个数组的时候，如果从前往后复制需要移动元素多次，我们不妨考虑从后往前复制，以减少移动元素的次数。</p>
-<h2 id="链表考察"><a href="#链表考察" class="headerlink" title="链表考察"></a>链表考察</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">ListNode</span> &#123;</span></span><br><span class="line">	<span class="keyword">int</span> m_nValue;</span><br><span class="line">	ListNode* m_pNext;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>插入节点：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Status <span class="title">addToTail</span><span class="params">(ListNode* &amp;pHead, <span class="keyword">int</span> Value)</span> </span>&#123;</span><br><span class="line">	ListNode* pNew = <span class="keyword">new</span> ListNode();</span><br><span class="line">	<span class="keyword">if</span>(<span class="literal">NULL</span> == pNew) <span class="keyword">return</span> ERROR;</span><br><span class="line">	pNew-&gt;m_nValue = value;</span><br><span class="line">	pNew-&gt;m_pNext = <span class="literal">NULL</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">if</span>(<span class="literal">NULL</span> == pHead) &#123;</span><br><span class="line">		pHead = pNew;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">else</span>&#123;</span><br><span class="line">		ListNode* pTmp = pHead;</span><br><span class="line">		<span class="keyword">while</span>(<span class="literal">NULL</span> != pTmp-&gt;m_pNext) &#123;</span><br><span class="line">			pTmp = pTmp-&gt;m_pNext;</span><br><span class="line">		&#125;</span><br><span class="line">		pTmp-&gt;m_pNext = pNew;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> OK;</span><br><span class="line">&#125; <span class="comment">// addToTail()</span></span><br></pre></td></tr></table></figure>
-<p>删除节点：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">removeNode</span><span class="params">(ListNode** pHead, <span class="keyword">int</span> value)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(<span class="literal">NULL</span> == pHead || <span class="literal">NULL</span> == *pHead) <span class="keyword">return</span>;</span><br><span class="line">	ListNode* pToBeRemoved = <span class="literal">NULL</span>;</span><br><span class="line">	<span class="comment">// 删除的是头结点</span></span><br><span class="line">	<span class="keyword">if</span>((*pHead)-&gt;m_nValue == value) &#123;</span><br><span class="line">		pToBeRemoved = *pHead;</span><br><span class="line">		*pHead = (*pHead)-&gt;m_pNode;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 删除的不是头结点</span></span><br><span class="line">	<span class="keyword">else</span> &#123;</span><br><span class="line">		ListNode* pNode = *pHead;</span><br><span class="line">		<span class="keyword">while</span>(<span class="literal">NULL</span> != pNode-&gt;m_pNext &amp;&amp; pNode-&gt;m_pNext-&gt;m_nValue != value) &#123;</span><br><span class="line">			pNode = pNode-&gt;m_pNext;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span>(<span class="literal">NULL</span> != pNode-&gt;m_pNext &amp;&amp; value == p-&gt;Node-&gt;m_pNext-&gt;m_pValue) &#123;</span><br><span class="line">			pToBeRemoved = pNode-&gt;m_pNext;</span><br><span class="line">			pNode-&gt;m_pNext = pNode-&gt;m_pNext-&gt;m_pNext;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(<span class="literal">NULL</span> != pToBeRemoved) &#123;</span><br><span class="line">		<span class="keyword">delete</span> pToBeRemoved;</span><br><span class="line">		pToBeRemoved = <span class="literal">NULL</span>;	<span class="comment">//防止出现野指针</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="重建二叉树"><a href="#重建二叉树" class="headerlink" title="重建二叉树"></a>重建二叉树</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">struxt BTNode &#123;</span><br><span class="line">	<span class="keyword">int</span> value;</span><br><span class="line">	BTNode* lChild;</span><br><span class="line">	BTNode* rChild;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-<p>由于先序遍历序列的第一个元素就是根节点的值，而在中序遍历序列中，位于这个值左边的元素都在左子树上，位于这个值右边的元素都在右子树上，这样就确定了根节点的元素，以及左右子树分别有哪些元素。递归的处理这两个序列，我们就可以重建出一颗二叉树。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">BTNode* <span class="title">Construct</span><span class="params">(<span class="keyword">int</span>* preOrder, <span class="keyword">int</span>* inOrder, <span class="keyword">int</span> length)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(<span class="literal">NULL</span> == preOrder || <span class="literal">NULL</span> == inOrder || length &gt;= <span class="number">0</span>) <span class="keyword">return</span> <span class="literal">NULL</span>;</span><br><span class="line">	<span class="keyword">return</span> ConstructCore(preOrder, preOrder + length - <span class="number">1</span>, inOrder, inOrder + length - <span class="number">1</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function">BTNode <span class="title">COnstructCore</span><span class="params">(<span class="keyword">int</span>* startPreOrder, <span class="keyword">int</span>* endPreOrder, <span class="keyword">int</span>* startInOrder, <span class="keyword">int</span>* endInOrder)</span> </span>&#123;</span><br><span class="line">	<span class="comment">// 从先序遍历序列获取根节点</span></span><br><span class="line">	<span class="keyword">int</span> rootValue = startPreOrder[<span class="number">0</span>];</span><br><span class="line">	BTNode* root = <span class="keyword">new</span> BTNode();</span><br><span class="line">	root-&gt;value = rootValue;</span><br><span class="line">	root-&gt;lChild = root-&gt;rChild = <span class="literal">NULL</span>;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 该节点是叶子节点</span></span><br><span class="line">	<span class="keyword">if</span>(startPreOrder == endPreOrder) &#123;</span><br><span class="line">		<span class="keyword">if</span>(startInOrder == endInOrder &amp;&amp; *startPreOrder == *startInOrder) <span class="keyword">return</span> root;</span><br><span class="line">		<span class="keyword">else</span> <span class="keyword">throw</span> <span class="built_in">std</span>::exception(<span class="string">"InValid input."</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 在中序遍历序列中寻找根节点的值</span></span><br><span class="line">	<span class="keyword">int</span>* rootInOrder = startInOrder;</span><br><span class="line">	<span class="keyword">while</span>(rootInOrder &lt;= endInOrder &amp;&amp; *rootInOrder != rootValue) &#123;</span><br><span class="line">		rootInOrder++;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(rootInOrder == endInOrder &amp;&amp; *rootInOrder != rootValue) &#123;</span><br><span class="line">		<span class="keyword">throw</span> <span class="built_in">std</span>::exception(<span class="string">"InValid input."</span>);</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 左子树大小</span></span><br><span class="line">	<span class="keyword">int</span> leftLength = rootInOrder - startInOrder;</span><br><span class="line">	<span class="keyword">int</span>* leftPreOrderEnd = startPreOrder + leftLength;</span><br><span class="line">	<span class="comment">// 构建左子树</span></span><br><span class="line">	<span class="keyword">if</span>(leftLength &gt; <span class="number">0</span>) &#123;</span><br><span class="line">		root-&gt;lChild = constructCore(startPreOrder + <span class="number">1</span>, leftPreOrderEnd, startInOrder, rootInOrder - <span class="number">1</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">// 构建右子树</span></span><br><span class="line">	<span class="keyword">if</span>(leftLength &lt; endPreorder - startPreorder) &#123;</span><br><span class="line">		root-&gt;rChild = ConstructCore(leftPreprderEnd + <span class="number">1</span>, endPreorder, rootInOrder + <span class="number">1</span>, endInOrder);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> root;</span><br><span class="line">&#125; <span class="comment">// ConstructCore()</span></span><br></pre></td></tr></table></figure>
-<h2 id="快速排序"><a href="#快速排序" class="headerlink" title="快速排序"></a>快速排序</h2><p>在数组中选择一个数字，将所有比这个数字小的数移动到整个数组的左边，大的数移动到数组的右边。递归的对数组的左右两边进行同样的处理。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">Partition</span><span class="params">(<span class="keyword">int</span>* data, <span class="keyword">int</span> length, <span class="keyword">int</span> start, <span class="keyword">int</span> end)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(<span class="literal">NULL</span> == data || length &lt;= <span class="number">0</span> || start &lt; <span class="number">0</span> || end &gt;= length) &#123;</span><br><span class="line">		<span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">std</span>::exception(<span class="string">"Invalid Parameters."</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment">// 产生一个位于[start..end]之间的随机数</span></span><br><span class="line">	<span class="keyword">int</span> index = randomInRange(start, end);</span><br><span class="line">	swap(&amp;data[index], &amp;data[end]);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">int</span> small = start - <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span>(index = start; index &lt; end; index++) &#123;</span><br><span class="line">		<span class="keyword">if</span>(data[index &lt; data[end]) &#123;</span><br><span class="line">			small++;</span><br><span class="line">			<span class="keyword">if</span>(small != index) &#123;</span><br><span class="line">				swap(&amp;data[index], &amp;data[small]);</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	small++;</span><br><span class="line">	swap(&amp;data[small], &amp;data[end]);</span><br><span class="line">	<span class="keyword">return</span> small;</span><br><span class="line">&#125; <span class="comment">// Partition()</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">quickSort</span><span class="params">(<span class="keyword">int</span>* data, <span class="keyword">int</span> length, <span class="keyword">int</span> start, <span class="keyword">int</span> end)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(start == end) <span class="keyword">return</span>;</span><br><span class="line">	<span class="keyword">int</span> index = Partition(data, length, start, end);</span><br><span class="line">	<span class="keyword">if</span>(index &gt; start) &#123;</span><br><span class="line">		quickSort(data, length, start, index - <span class="number">1</span>);</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">if</span>(index &lt; end) &#123;</span><br><span class="line">		quickSort(data, length, index + <span class="number">1</span>, end);</span><br><span class="line">&#125; <span class="comment">// quickSort()</span></span><br></pre></td></tr></table></figure>
-<h2 id="旋转数组"><a href="#旋转数组" class="headerlink" title="旋转数组"></a>旋转数组</h2><p>旋转数组，如{3, 4, 5, 1, 2}是{1, 2, 3, 4, 5}的一个旋转。输入一个旋转后的数组，输出数组的最小值，在$O(1)$的时间复杂度内实现。</p>
-<p>用类似二分法的超照实现，比如在旋转数组{3, 4, 5, 1, 2}中，首先查找位于中间的元素，得到5,5&gt;3，于是5位于第一个递增的子数组中，那么最小元素位于5后面的部分，即{1, 2}；然后对这个子数组采取同样的查找操作，得到元素1，’’’ 1 &gt;= 1 &amp;&amp; 1 &lt;= 2 ‘’’，于是最小元素位于{1, 2}的左边部分，即{1}；最后不需要再查找了，因为{1}只包含一个元素，这个元素就是我们要找的最小元素。</p>
-<p>基于以上的思路，我们可以写出如下的代码：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 顺序查找*/</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">MinInOrder</span><span class="params">(<span class="keyword">int</span>* numbers, <span class="keyword">int</span> start, <span class="keyword">int</span> end)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> result = numbers[start];</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">int</span> i = start + <span class="number">1</span>; i &lt;= end; i++) &#123;</span><br><span class="line">		<span class="keyword">if</span>(result &gt; numbers[i]) result = numbers[i];</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> result;</span><br><span class="line">&#125; <span class="comment">// MinInOrder()</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*类似二分法的查找*/</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">min</span><span class="params">(<span class="keyword">int</span>* numbers, <span class="keyword">int</span> length)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span>(<span class="literal">NULL</span> == numbers || length &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">		<span class="keyword">throw</span> <span class="keyword">new</span> <span class="built_in">std</span>::exception(InValid parameters<span class="string">");</span></span><br><span class="line"><span class="string">	&#125;</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">	int index1 = 0, index2 = length - 1;</span></span><br><span class="line"><span class="string">	int indexMid = index1;	//特例：如果没有进行旋转，则返回numbers[0]</span></span><br><span class="line"><span class="string">	while(numbers[index1] &gt;= numbers[index2]) &#123;</span></span><br><span class="line"><span class="string">		if(index2 - index1 == 1) &#123;</span></span><br><span class="line"><span class="string">			indexMid = index2;</span></span><br><span class="line"><span class="string">			break;</span></span><br><span class="line"><span class="string">		&#125;</span></span><br><span class="line"><span class="string">		indexMid = (index1 + index2) / 2;</span></span><br><span class="line"><span class="string">		// 如果numbers[index1]、numbers[index2]、numbers[indexMid]三者相等，则只能顺序查找</span></span><br><span class="line"><span class="string">		if(numbers[index1] == numbers[index2] &amp;&amp; numbers[indexMid] == numbers[index1]) &#123;</span></span><br><span class="line"><span class="string">			return MinInOrder(numbers, index1, index2);</span></span><br><span class="line"><span class="string">		&#125;</span></span><br><span class="line"><span class="string">		// 在右半部分的子数组中查找</span></span><br><span class="line"><span class="string">		if(numbers[indexMid] &gt;= numbers[index1]) &#123;</span></span><br><span class="line"><span class="string">			index1 = indexMid;</span></span><br><span class="line"><span class="string">		&#125;</span></span><br><span class="line"><span class="string">		// 在左半部分的子数组中查找</span></span><br><span class="line"><span class="string">		else if(numbers[indexMid] &lt;= numbers[index2]) &#123;</span></span><br><span class="line"><span class="string">			index2 = indexMid;</span></span><br><span class="line"><span class="string">		&#125;</span></span><br><span class="line"><span class="string">	&#125; //while</span></span><br><span class="line"><span class="string">	return numbers[indexMid];</span></span><br><span class="line"><span class="string">&#125; //min()</span></span><br></pre></td></tr></table></figure>
-<h2 id="Fibonacci数列"><a href="#Fibonacci数列" class="headerlink" title="Fibonacci数列"></a>Fibonacci数列</h2><p>基于动态规划的解法：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">Fibonacci</span><span class="params">(n)</span>:</span></span><br><span class="line">	<span class="keyword">if</span> n == <span class="number">0</span>: </span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span></span><br><span class="line">	a = <span class="number">0</span></span><br><span class="line">	b = <span class="number">1</span></span><br><span class="line">	<span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">1</span>, n):</span><br><span class="line">		a, b = b, a + b</span><br><span class="line">	<span class="keyword">return</span> b</span><br></pre></td></tr></table></figure>
-<p>也可以基于如下公式：</p>
-<p>$$<br>\begin{matrix}<br>f(n) &amp; f(n-1) \<br>f(n-1) &amp; f(n-2)<br>\end{matrix}<br>=<br>\begin{matrix}<br>1 &amp; 1 \<br>1 &amp; 0<br>\end{matrix}<br>^{n-1}<br>$$</p>
-<h2 id="求二进制中1的个数"><a href="#求二进制中1的个数" class="headerlink" title="求二进制中1的个数"></a>求二进制中1的个数</h2><p>依次判断证书最右边一位是不是1，然后右移。这样做有一个问题，如果输入一个负数，就会引起死循环。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">numberOfOne</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span>(n) &#123;</span><br><span class="line">		<span class="keyword">if</span>(n &amp; <span class="number">1</span>) count++;</span><br><span class="line">		n = n &gt;&gt; <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> count;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>为了避免出现死循环，我们可以做左移运算：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">numberOfOne</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">unsigned</span> <span class="keyword">int</span> flag = <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">while</span>(flag) &#123;</span><br><span class="line">		<span class="keyword">if</span>(n &amp; flag) count++;</span><br><span class="line">		flag = flag &lt;&lt; <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> count;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>如果一个整数减去1，那么最右边的一个1会变成0.如果在这个1的右边有0存在，它们都会变成1；而这个1左边的所有的1保持不变。比如，1100 - 1 = 1011。这个时候，再对做减法得到的结果1011和原来的数1100做“与”运算，得到了1000，也就是说，我们“处理掉”了位于最右边的一个1.基于这样的思路，可以写出如下的代码。</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">numberOfOne</span><span class="params">(<span class="keyword">int</span> n)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span>(n) &#123;</span><br><span class="line">		count++;</span><br><span class="line">		n = (n - <span class="number">1</span>) &amp; n;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> count;</span><br><span class="line">&#125; <span class="comment">// numberOfOne()</span></span><br></pre></td></tr></table></figure>
-<p>类似的，我们可以统计一个整数中1的个数，来判断它是不是2的整数次方；如果只有一位是1，那么它是2的整数次方，因而可以用<code>0 == (n - 1) &amp; n</code> 来判断。</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2243,7 +2242,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">23</span>
+                    <span class="site-state-item-count">24</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>

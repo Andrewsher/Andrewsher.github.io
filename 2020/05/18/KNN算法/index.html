@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+  <link rel="stylesheet" href="/lib/needsharebutton/needsharebutton.css">
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.1.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.1.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.1.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.1.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '6.1.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="1 K近邻算法给定训练数据集和测试样本，根据给定的距离度量方法，在训练数据集中找出距离该样本最近的k个样本，然后根据这k个样本的类别和某种决策规则（如多数表决）来确定测试样本的类别。当k=1时，算法变成最近邻算法。 可见，K近邻算法涉及3个要素，k值的选择、距离度量、决策规则。 这种模型具有很高的容量，在训练数据集很大的时候效果很好；在训练阶段开销为0，即”惰性学习“。但其计算量很高（特别是在训练">
+<meta name="keywords" content="Machine Learning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="KNN算法和KD树">
+<meta property="og:url" content="https://andrewsher.github.io/2020/05/18/KNN算法/index.html">
+<meta property="og:site_name" content="祁可翰的Blog">
+<meta property="og:description" content="1 K近邻算法给定训练数据集和测试样本，根据给定的距离度量方法，在训练数据集中找出距离该样本最近的k个样本，然后根据这k个样本的类别和某种决策规则（如多数表决）来确定测试样本的类别。当k=1时，算法变成最近邻算法。 可见，K近邻算法涉及3个要素，k值的选择、距离度量、决策规则。 这种模型具有很高的容量，在训练数据集很大的时候效果很好；在训练阶段开销为0，即”惰性学习“。但其计算量很高（特别是在训练">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2020-05-19T16:01:22.064Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="KNN算法和KD树">
+<meta name="twitter:description" content="1 K近邻算法给定训练数据集和测试样本，根据给定的距离度量方法，在训练数据集中找出距离该样本最近的k个样本，然后根据这k个样本的类别和某种决策规则（如多数表决）来确定测试样本的类别。当k=1时，算法变成最近邻算法。 可见，K近邻算法涉及3个要素，k值的选择、距离度量、决策规则。 这种模型具有很高的容量，在训练数据集很大的时候效果很好；在训练阶段开销为0，即”惰性学习“。但其计算量很高（特别是在训练">
+
+
+
+
+
+
+  <link rel="canonical" href="https://andrewsher.github.io/2020/05/18/KNN算法/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>KNN算法和KD树 | 祁可翰的Blog</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">祁可翰的Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+</li>
+
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />Tags</a>
+</li>
+
+      
+        
+        
+          
+  
+  <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+</li>
+
+      
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2020/05/18/KNN算法/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁可翰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="祁可翰的Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">KNN算法和KD树
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+                
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-05-18T15:18:52+08:00">2020-05-18</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="1-K近邻算法"><a href="#1-K近邻算法" class="headerlink" title="1 K近邻算法"></a>1 K近邻算法</h1><p>给定训练数据集和测试样本，根据给定的距离度量方法，在训练数据集中找出距离该样本最近的k个样本，然后根据这k个样本的类别和某种决策规则（如多数表决）来确定测试样本的类别。当k=1时，算法变成最近邻算法。</p>
+<p>可见，K近邻算法涉及3个要素，k值的选择、距离度量、决策规则。</p>
+<p>这种模型具有很高的容量，在训练数据集很大的时候效果很好；在训练阶段开销为0，即”惰性学习“。但其计算量很高（特别是在训练集很大的时候），训练集较小时泛化能力较差，且无法判别特征的重要程度。</p>
+<h1 id="2-K值的选择"><a href="#2-K值的选择" class="headerlink" title="2 K值的选择"></a>2 K值的选择</h1><ul>
+<li>当k=1时，该算法为最近邻算法。</li>
+<li>当k值较小时，相当于使用较小邻域内的训练样本进行预测，此时的模型预测结果具有较小的bias和较大的variance。</li>
+<li>当k值较大时，模型具有较大的bias和较小的variance。</li>
+<li>一般k会取一个较小的值，使用交叉验证来确定合适的k值。</li>
+</ul>
+<h1 id="3-距离度量"><a href="#3-距离度量" class="headerlink" title="3 距离度量"></a>3 距离度量</h1><p>这里的距离用来表示两个样本点的相似程度。k近邻算法的输入样本的特征空间一般是n维实数向量空间。对于距离的度量一般采用欧式距离，也可以采用其他距离。</p>
+<p>以下$P(x_1, x_2, \dots, x_n),Q(y_1, y_2, \dots, y_n), \mathbf x = (x_1,x_2,\dots,x_n)^T, \mathbf y = (y_1, y_2, \dots, y_n)^T$</p>
+<h2 id="3-1-闵可夫斯基距离-欧式距离-曼哈顿距离-切比雪夫距离"><a href="#3-1-闵可夫斯基距离-欧式距离-曼哈顿距离-切比雪夫距离" class="headerlink" title="3.1 闵可夫斯基距离 欧式距离 曼哈顿距离 切比雪夫距离"></a>3.1 闵可夫斯基距离 欧式距离 曼哈顿距离 切比雪夫距离</h2><p>闵可夫斯基距离：<br>$$<br>dist = (\sum_{i=1}^n |x_i - y_i|^p)^{1/p}<br>$$<br>当$p=1$时，该距离为曼哈顿距离：<br>$$<br>dist = \sum_{i=1}^n |x_i - y_i|<br>$$</p>
+<p>当$p=2$时，该距离为欧氏距离：<br>$$<br>dist = \sqrt {\sum_{i=1}^n (x_i - y_i)^2}<br>$$</p>
+<p>当$p$趋于无穷大时，该距离为切比雪夫距离：<br>$$<br>dist = \lim \limits_{p \to \infty} \left( \sum_{i=1}^n |x_i - y_i |^p \right)^{1/p} = \max \limits_{i=1}^n |x_i - y_i|<br>$$<br>在使用闵可夫斯基距离度量之前，可能需要对数据进行标准化处理。</p>
+<p>闵可夫斯基距离比较直观，但是不能反映数据的分布和各个维度之间的相关性。</p>
+<h2 id="3-2-马氏距离-Mahalanobis-Distance"><a href="#3-2-马氏距离-Mahalanobis-Distance" class="headerlink" title="3.2 马氏距离 (Mahalanobis Distance)"></a>3.2 马氏距离 (Mahalanobis Distance)</h2><p>假设有$m$个$n$维的样本$ x_1, \dots,  x_m,x_i\in R^n$，协方差矩阵为$S$，均值为$\mu$，则样本$x$到均值$\mu$的马氏距离为：<br>$$<br>dist = \sqrt {(x - \mu)^T S^{-1} (x - \mu)}<br>$$<br>样本$x_i,x_j$之间的距离为：<br>$$<br>dist = \sqrt {(x_i - x_j)^T S^{-1} (x_i - x_j)}<br>$$<br>当协方差矩阵$S$为单位阵时，马氏距离相当于欧氏距离。</p>
+<p>马氏距离与量纲无关，可以排除变量之间的相关性的干扰。</p>
+<h2 id="3-3-向量内积"><a href="#3-3-向量内积" class="headerlink" title="3.3 向量内积"></a>3.3 向量内积</h2><p>$$<br>&lt;\mathbf x,\mathbf y&gt; = \sum_{i=1}^n x_i y_i<br>$$</p>
+<h2 id="3-4-余弦相似度"><a href="#3-4-余弦相似度" class="headerlink" title="3.4 余弦相似度"></a>3.4 余弦相似度</h2><p>$$<br>CosSim(\mathbf x, \mathbf y) = \frac {&lt;\mathbf x, \mathbf y &gt;} {||\mathbf x|| ||\mathbf y||} = \frac {\sum_{i=1}^n x_iy_i} {\sqrt {\sum_{i=1}^n x_i^2} \sqrt {\sum_{i=1}^n y_i^2}}<br>$$</p>
+<p>余弦相似度与向量的幅度无关，只与向量的方向有关。</p>
+<h2 id="3-5-皮尔逊相关系数"><a href="#3-5-皮尔逊相关系数" class="headerlink" title="3.5 皮尔逊相关系数"></a>3.5 皮尔逊相关系数</h2><p>$$<br>\begin {align}<br>Corr (\mathbf x, \mathbf y)&amp; = CosSim(\mathbf x - \bar x, \mathbf y - \bar y) \<br>&amp; = \frac {&lt;\mathbf x - \bar x, \mathbf y - \bar y&gt;} {||\mathbf x - \bar x|| || \mathbf y - \bar y ||} \<br>&amp; = \frac {\sum_i (x_i - \bar x)(y_i - \bar y)} {\sqrt {\sum_i (x_i - \bar x)^2} \sqrt {\sum_i (y_i - \bar y)^2}}<br>\end {align}<br>$$</p>
+<p>皮尔逊相关系数具有平易近人不变性和尺度不变性。</p>
+<h2 id="3-6-汉明距离"><a href="#3-6-汉明距离" class="headerlink" title="3.6 汉明距离"></a>3.6 汉明距离</h2><p>两个等长字符串$s_1$和$s_2$之间的汉明距离定义为将一个变为另一个需要的最小替换次数。</p>
+<h2 id="3-7-Jaccard相似系数-Jaccard距离"><a href="#3-7-Jaccard相似系数-Jaccard距离" class="headerlink" title="3.7 Jaccard相似系数 Jaccard距离"></a>3.7 Jaccard相似系数 Jaccard距离</h2><p>两个集合$A,B$之间的Jaccard相似系数为：<br>$$<br>J(A,B)=\frac {|A \cap B|} {|A \cup B|}<br>$$<br>Jaccard距离用于衡量两个集合的区分度，定义为：<br>$$<br>J_\delta (A,B) = 1 - J(A,B) = \frac {|A \cup B| - |A \cap B|} {|A \cup B|}<br>$$</p>
+<h1 id="4-决策规则"><a href="#4-决策规则" class="headerlink" title="4 决策规则"></a>4 决策规则</h1><ul>
+<li>分类决策可以用多数表决，或者根据距离测试样本点的远近、对于邻域内的样本点赋予不同权重。</li>
+<li>回归问题可以用求均值的方法，也可以根据距离测试样本的远近进行加权投票。</li>
+</ul>
+<h1 id="5-KD树"><a href="#5-KD树" class="headerlink" title="5 KD树"></a>5 KD树</h1><p>kd树即k-dimonsion tree，用于在k维空间中对数据进行划分，主要用于k维空间中相似性检索。这是一种平衡二叉树。</p>
+<p>一般来说，高维空间中的相似性检索有两种方式，一是范围查询，在数据集中查找所有与目标点的距离低于阈值的样本；另一种是K近邻，只查找与目标点最近的K个样本。查找方式也有两种，一种是线性扫描，对所有样本点计算它到目标点的距离；另一种是构建索引，对特征空间进行层次划分。KD树属于后者的一种，在划分时各个子空间没有重叠。</p>
+<h1 id="6-KD树的构建"><a href="#6-KD树的构建" class="headerlink" title="6 KD树的构建"></a>6 KD树的构建</h1><p>使用如下的算法构造KD树：</p>
+<ol>
+<li><p>构造根节点，对应于整个k维空间</p>
+</li>
+<li><p>使用如下的方法生成左孩子和右孩子节点：</p>
+<p>a. 维度选择：对于需要构造kd树的样本集，计算每个维度上的方差，选择方差最大的维度作为划分的维度。</p>
+<p>b. 在该维度上对样本集进行排序，取中值作为划分点。</p>
+<p>c. 使用该划分点，将当前空间划分为左右两个子空间，对应的样本集也划分为左右两个子集，分别对应于左孩子和右孩子。</p>
+</li>
+<li><p>对左孩子和右孩子，递归的使用第2步生成对应的kd树，直到子空间内无样本。</p>
+</li>
+</ol>
+<p>维度的选择方式，除了使用最大方差的方式，还可以使用顺序、指定优先次序的方式。划分点的选择，除了使用中值，也可以使用中位数。</p>
+<h1 id="7-KD树的最近邻搜索"><a href="#7-KD树的最近邻搜索" class="headerlink" title="7 KD树的最近邻搜索"></a>7 KD树的最近邻搜索</h1><ol>
+<li><p>确定初始值：从kd树的根节点出发，递归的访问孩子节点，直到找到目标点x所在的叶子节点。如果目标点x的当前维度的坐标小于当前节点对应的划分坐标，则访问左孩子，否则访问右孩子。以最终叶子节点作为当前最近邻点。</p>
+</li>
+<li><p>回溯：向上回归，直到到达根节点。对于每一个经过的节点，进行如下的操作：</p>
+<p>a. 如果该节点对应的样本点比”当前最近邻点”距离目标点更近，则对”当前最近邻点”进行更新，更新为该节点。</p>
+<p>b. 搜索可能存在的解：最近邻点一定存在于该节点的两个子树中。检查该节点的另一个子节点对应的子空间中是否存在更近的点。具体做法是，以目标点x为球心、目标点和”当前最近邻点”之间的距离为半径作球，看这个超球体是否与该节点对应的划分超平面相交，如果相交则说明另一个子节点对应的子空间中可能存在更近的点，如果如此，则移动到另一个子节点，并在另一个子节点中递归的进行最近邻搜索；否则，向上回退。</p>
+</li>
+<li><p>回退到根节点时，搜索结束，此时的”当前最近邻点”即为离目标点最近的点。</p>
+</li>
+</ol>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Machine-Learning/" rel="tag"># Machine Learning</a>
+          
+        </div>
+      
+
+      
+      
+        <div class="post-widgets">
+        
+
+        
+
+        
+          
+          <div id="needsharebutton-postbottom">
+            <span class="btn">
+              <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </span>
+          </div>
+        
+        </div>
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/05/13/KKT条件/" rel="next" title="KKT条件">
+                <i class="fa fa-chevron-left"></i> KKT条件
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">祁可翰</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">24</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">4</span>
+                    <span class="site-state-item-name">tags</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/Andrewsher" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:andrewsher@163.com" target="_blank" title="E-Mail"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-K近邻算法"><span class="nav-number">1.</span> <span class="nav-text">1 K近邻算法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-K值的选择"><span class="nav-number">2.</span> <span class="nav-text">2 K值的选择</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-距离度量"><span class="nav-number">3.</span> <span class="nav-text">3 距离度量</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-闵可夫斯基距离-欧式距离-曼哈顿距离-切比雪夫距离"><span class="nav-number">3.1.</span> <span class="nav-text">3.1 闵可夫斯基距离 欧式距离 曼哈顿距离 切比雪夫距离</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-2-马氏距离-Mahalanobis-Distance"><span class="nav-number">3.2.</span> <span class="nav-text">3.2 马氏距离 (Mahalanobis Distance)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-3-向量内积"><span class="nav-number">3.3.</span> <span class="nav-text">3.3 向量内积</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-4-余弦相似度"><span class="nav-number">3.4.</span> <span class="nav-text">3.4 余弦相似度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-5-皮尔逊相关系数"><span class="nav-number">3.5.</span> <span class="nav-text">3.5 皮尔逊相关系数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-6-汉明距离"><span class="nav-number">3.6.</span> <span class="nav-text">3.6 汉明距离</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-7-Jaccard相似系数-Jaccard距离"><span class="nav-number">3.7.</span> <span class="nav-text">3.7 Jaccard相似系数 Jaccard距离</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-决策规则"><span class="nav-number">4.</span> <span class="nav-text">4 决策规则</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-KD树"><span class="nav-number">5.</span> <span class="nav-text">5 KD树</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-KD树的构建"><span class="nav-number">6.</span> <span class="nav-text">6 KD树的构建</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7-KD树的最近邻搜索"><span class="nav-number">7.</span> <span class="nav-text">7 KD树的最近邻搜索</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">祁可翰</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Gemini</a> v6.1.0</div>
+
+
+
+
+        
+
+
+
+
+
+  <script type="text/javascript">
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=65318195";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+      <div id="needsharebutton-float">
+        <span class="btn">
+          <i class="fa fa-share-alt" aria-hidden="true"></i>
+        </span>
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.1.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.1.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.1.0"></script>
+
+
+
+  
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+
+  
+    
+      <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+    
+  
+
+
+  
+  
+  
+  <script src="/lib/needsharebutton/needsharebutton.js"></script>
+
+  <script>
+    
+      pbOptions = {};
+      
+          pbOptions.iconStyle = "box";
+      
+          pbOptions.boxForm = "horizontal";
+      
+          pbOptions.position = "top";
+      
+          pbOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-postbottom', pbOptions);
+    
+    
+      flOptions = {};
+      
+          flOptions.iconStyle = "box";
+      
+          flOptions.boxForm = "horizontal";
+      
+          flOptions.position = "middleRight";
+      
+          flOptions.networks = "Weibo,Wechat,Douban,QQZone,Twitter,Facebook";
+      
+      new needShareButton('#needsharebutton-float', flOptions);
+    
+  </script>
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

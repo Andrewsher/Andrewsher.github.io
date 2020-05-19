@@ -289,6 +289,155 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2017/09/07/A-Solution-of-A-Written-Question-in-An-Examination-3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁可翰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="祁可翰的Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/09/07/A-Solution-of-A-Written-Question-in-An-Examination-3/" itemprop="url">
+                  A Solution of A Written Question in An Examination (3)
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+                
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-07T23:19:03+08:00">2017-09-07</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Question"><a href="#Question" class="headerlink" title="Question"></a>Question</h2><p>假设以定长存储结构表示串，试设计一个算法，求串s和串t的一个最长公共子串。</p>
+<h2 id="Solution"><a href="#Solution" class="headerlink" title="Solution"></a>Solution</h2><p>串的定长存储表示可描述如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">define</span>		MAXSTRLEN		255				<span class="comment">//用户可在255以内定义最大串长</span></span></span><br><span class="line"><span class="keyword">typedef</span>		<span class="keyword">unsigned</span> <span class="keyword">char</span>	SString[MAXSTRLEN + <span class="number">1</span>];		<span class="comment">//0号单元存放串的长度</span></span><br></pre></td></tr></table></figure>
+<p>对于求两个串s和t的公共子串，根据算法的空间复杂度分为两类：</p>
+<ul>
+<li>(1) 空间复杂度为<em>O(length(s) + length(t))</em></li>
+<li>(2) 空间复杂度为<em>O(length(s) * length(t))</em></li>
+</ul>
+<p>对于第1种方法，可以采用串的模式匹配算法，对串s的每一个子串寻找其在串t中是否可以匹配。下面主要介绍第二种方法的一种实现。</p>
+<p>考虑到串s和串t为定长存储结构，可以比较方便地建立二维数组A来表示两个串中每一个字符的匹配情况，如果s[i]和t[j]相等，则置A[i][j]&gt;0，否则A[i][j]=0。因此，对于s和t的公共子串r，必有：</p>
+<pre><code>A[i][j] &gt; 0, for continious s[i] and t[j] in r
+</code></pre><p>为便于计算最长的r，特别地，置</p>
+<pre><code>A[i][j] = A[i - 1][j - 1] + 1, if s[i] == t[j]
+</code></pre><p>此时A[i][j]表示对应的公共子串的长度。</p>
+<p>因此，遍历A取A[i][j]的最大值，对应的子串即为所求的最长公共子串。</p>
+<p>算法的C语言实现如下：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">lngstCmnSubStr</span><span class="params">(SString s, SString t, SString&amp; r)</span></span></span><br><span class="line"><span class="function"><span class="comment">//求以定长存储表示的串s和t的最长公共子串，存入r</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">	r[<span class="number">0</span>] = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">int</span>** ch = <span class="keyword">new</span> <span class="keyword">int</span> [s[<span class="number">0</span>] + <span class="number">1</span>][t[<span class="number">0</span>] + <span class="number">1</span>];</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; s[<span class="number">0</span>]; i++)</span><br><span class="line">    &#123;</span><br><span class="line">    	<span class="keyword">for</span>(<span class="keyword">int</span> j = <span class="number">1</span>; j &lt; t[<span class="number">0</span>]; j++)</span><br><span class="line">        &#123;</span><br><span class="line">        	<span class="keyword">if</span>(s[i] != t[j])</span><br><span class="line">            &#123;</span><br><span class="line">            	ch[i][j] = <span class="number">0</span>;</span><br><span class="line">            &#125; <span class="comment">// if</span></span><br><span class="line">            <span class="keyword">else</span></span><br><span class="line">            &#123;</span><br><span class="line">            	<span class="keyword">if</span>(j == <span class="number">1</span> || i == <span class="number">1</span>)</span><br><span class="line">                &#123;</span><br><span class="line">                	ch[i][j] = <span class="number">1</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">else</span></span><br><span class="line">                &#123;</span><br><span class="line">                	ch[i][j] = ch[i - <span class="number">1</span>][j - <span class="number">1</span>] + <span class="number">1</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">// Refresh maxLen</span></span><br><span class="line">                <span class="keyword">if</span>(ch[i][j] &gt; maxLen)</span><br><span class="line">                &#123;</span><br><span class="line">                	maxLen = ch[i][j];</span><br><span class="line">                    max_s = i;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="comment">// else</span></span><br><span class="line">        &#125; <span class="comment">// for</span></span><br><span class="line">    &#125; <span class="comment">// for</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">// Refresh r</span></span><br><span class="line">    r[<span class="number">0</span>] = maxLen;</span><br><span class="line">    <span class="keyword">for</span>(<span class="keyword">int</span> i = <span class="number">1</span>; i &lt; maxLen; i++)</span><br><span class="line">    &#123;</span><br><span class="line">    	r[i] = s[max_s - maxLen + i];</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">delete</span> ch[][];</span><br><span class="line">&#125; <span class="comment">// lngstCmnSubStr()</span></span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2017/08/29/A-Solution-of-A-Written-Question-in-An-Examination-2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -781,7 +930,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">23</span>
+                    <span class="site-state-item-count">24</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -1047,6 +1196,10 @@
   
     
       
+        
+      
+    
+      
     
       
     
@@ -1054,6 +1207,29 @@
     
   
 
+  
+    
+      <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+      tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+        processEscapes: true,
+        skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    });
+</script>
+
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Queue(function() {
+      var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+    });
+</script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+    
   
 
 
