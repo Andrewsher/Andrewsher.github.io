@@ -289,6 +289,193 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2020/06/26/kaggle-Bengali-AI-Handwritten-Grapheme-Classification总结/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁可翰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="祁可翰的Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2020/06/26/kaggle-Bengali-AI-Handwritten-Grapheme-Classification总结/" itemprop="url">
+                  kaggle-Bengali.AI Handwritten Grapheme Classification总结
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+                
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-06-26T16:29:28+08:00">2020-06-26</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>比赛链接：<a href="https://www.kaggle.com/c/bengaliai-cv19" target="_blank" rel="noopener">https://www.kaggle.com/c/bengaliai-cv19</a> </p>
+<h1 id="1-赛题解析"><a href="#1-赛题解析" class="headerlink" title="1 赛题解析"></a>1 赛题解析</h1><ul>
+<li><p>孟加拉语字符识别。</p>
+</li>
+<li><p>每一个字符由3部分组成：grapheme root (共168类)，vowel diacritics (共11类)，consonant diacritics (共7类)。</p>
+</li>
+<li>需要对这3个部分的类别进行预测。</li>
+<li>public leaderboard的结果较高，且与大部分本地交叉验证结果一致；private leaderboard与public leaderboard的排名由很大差异，主要是由于数据的分布不一致，出现了之前未曾出现的组合。</li>
+</ul>
+<h1 id="2-第1名的方案"><a href="#2-第1名的方案" class="headerlink" title="2 第1名的方案"></a>2 <a href="https://www.kaggle.com/c/bengaliai-cv19/discussion/135984" title="第一名的方案" target="_blank" rel="noopener">第1名的方案</a></h1><p><img src="https://www.googleapis.com/download/storage/v1/b/kaggle-user-content/o/inbox%2F4114579%2F5231a0ab7a0bf93611fb6fd3d72c6295%2F1.png?generation=1584591840196431&amp;alt=media" alt="模型总览"></p>
+<p>考虑了所有的$168\times 11\times 8=14784$种情况。</p>
+<p>包含了4个模型，第1个用于判断图像的类别是seen还是unseen，第二个用于对seen作分类，第3、4个用于处理unseen类别。</p>
+<p>集成的时候，根据第1和第3、4个模型判断是属于seen还是unseen，如果是seen则用第2个模型分类，否则用第3、4个模型分类。</p>
+<h2 id="2-1-数据划分"><a href="#2-1-数据划分" class="headerlink" title="2.1 数据划分"></a>2.1 数据划分</h2><p>字符的三个元素分别有168、11和8类，所有的情况就是14784类。这14784类中，在训练数据中出现的有1295类，称为”seen”，剩余的称为”unseen”。</p>
+<p>如果将这1295类的训练集再进行随机划分，则可以得到如下的划分：</p>
+<p><img src="https://www.googleapis.com/download/storage/v1/b/kaggle-user-content/o/inbox%2F4114579%2F2fd56df85b7442295bc605b10053aac9%2F2.png?generation=1584591905364753&amp;alt=media" alt="数据划分"></p>
+<h2 id="2-2-第1个模型：判断seen和unseen"><a href="#2-2-第1个模型：判断seen和unseen" class="headerlink" title="2.2 第1个模型：判断seen和unseen"></a>2.2 第1个模型：判断seen和unseen</h2><p>第1个模型的作用是判断输入图片的类别是seen还是unseen。</p>
+<p>该模型的输出神经元数目为1295，最后的激活函数为sigmoid。如果这1295个神经元的输出至少有一个大于阈值，则认为输入图像为seen，否则为unseen。</p>
+<h2 id="2-3-第2个模型：分类seen"><a href="#2-3-第2个模型：分类seen" class="headerlink" title="2.3 第2个模型：分类seen"></a>2.3 第2个模型：分类seen</h2><p>第2个模型的作用是对seen进行分类，这就是一个使用softmax分类器的1295类的分类器，输入图像，输出1295类”seen”各自的概率值。模型采用efficientnet-b7。</p>
+<h2 id="2-4-第3、4个模型：处理unseen"><a href="#2-4-第3、4个模型：处理unseen" class="headerlink" title="2.4 第3、4个模型：处理unseen"></a>2.4 第3、4个模型：处理unseen</h2><p>这两个模型起的作用是一样的，都是用于处理unseen，输出会进行集成。</p>
+<p>每一个模型包含两个子模型，一个是14784类的分类器，输入生成的图像，输出14784类各自的概率；另一个是CycleGAN，用来做图像风格转换，其生成器输入手写字符图像，生成所需的data-like图像。</p>
+<p>在预测的时候，输入测试集中的手写字符图像，先进行风格转换，然后使用分类器进行分类。</p>
+<h2 id="2-5-小结"><a href="#2-5-小结" class="headerlink" title="2.5 小结"></a>2.5 小结</h2><ol>
+<li>考虑了所有可能的情况；</li>
+<li>按照类别是否在训练数据中出现，分成了seen和unseen，两种类别用不同模型处理；</li>
+<li>使用CycleGAN生成数据，主要用来处理unseen。</li>
+</ol>
+<h1 id="3-第2名的方案"><a href="#3-第2名的方案" class="headerlink" title="3 第2名的方案"></a>3 <a href="https://www.kaggle.com/c/bengaliai-cv19/discussion/135966" title="第2名的方案" target="_blank" rel="noopener">第2名的方案</a></h1><ol>
+<li>使用一个3-head模型做分类。注意到CV和LB的gap主要来自grapheme_root和consonant_diacritic，在数据中添加一些consonant_diacritic。</li>
+<li>预测单个字素；使用Fmix而非cutmix。</li>
+<li>为root和consonant单独使用模型进行预测；对consonant使用生成的数据。</li>
+<li>多模型混合，对7个模型结果加权求和。</li>
+</ol>
+<h1 id="4-第3名的方案"><a href="#4-第3名的方案" class="headerlink" title="4 第3名的方案"></a>4 <a href="https://www.kaggle.com/c/bengaliai-cv19/discussion/135982" title="第3名的方案" target="_blank" rel="noopener">第3名的方案</a></h1><p><img src="https://www.googleapis.com/download/storage/v1/b/kaggle-user-content/o/inbox%2F1620223%2Fb2143c50d9c92271e7b871912dd171d7%2Fbengali_pipeline%20.jpg?generation=1584447993610250&amp;alt=media" alt="第3名的方案overview"></p>
+<p>先用计算距离的方式判断输入图像是seen还是unseen，然后跳转到对应的分支。</p>
+<h2 id="4-1-训练"><a href="#4-1-训练" class="headerlink" title="4.1 训练"></a>4.1 训练</h2><ul>
+<li>所有模型用增强后的数据集预训练。</li>
+<li>对于seen分支，在预训练数据集上训练对seen的分类，然后在原始数据集上finetune。</li>
+<li>对于unseen和arcface，在原始数据集上对预训练模型进行训练。</li>
+</ul>
+<h2 id="4-2-推理"><a href="#4-2-推理" class="headerlink" title="4.2 推理"></a>4.2 推理</h2><ul>
+<li>对于arcface，计算训练数据和测试数据之间的最小的余弦相似度，用于判断是seen还是unseen；阈值采用的是训练和验证的embedding feature的最小的余弦相似度。</li>
+<li>如果判断结果是seen，使用共享特征用于seen分支的分类。</li>
+<li>如果是unseen，需要用另外的模型提取特征用于分类。</li>
+</ul>
+<h1 id="5-第4名的方案"><a href="#5-第4名的方案" class="headerlink" title="5 第4名的方案"></a>5 <a href="https://www.kaggle.com/c/bengaliai-cv19/discussion/136982" title="第4名的方案" target="_blank" rel="noopener">第4名的方案</a></h1><p>该方案将前述的seen称为ID (in-dictionary)，unseen称为OOD(out-of-dictionary)。首先是用一个arcface模型计算ID的中心，从而判别测试图像是属于ID还是OOD。对于ID，使用arcface模型进行分类。对于OOD，训练另外的1-head和3-head模型进行分类。</p>
+<h1 id="6-第5名的方案"><a href="#6-第5名的方案" class="headerlink" title="6 第5名的方案"></a>6 <a href="https://www.kaggle.com/c/bengaliai-cv19/discussion/136129" title="第5名的方案" target="_blank" rel="noopener">第5名的方案</a></h1><p>3-head模型，辅助head用arc cos损失</p>
+<p><img src="https://www.googleapis.com/download/storage/v1/b/kaggle-user-content/o/inbox%2F1424766%2F3e968cbc82806b9211bf7609b662a18a%2Fbengali%20arch.001.jpeg?generation=1584456769762003&amp;alt=media" alt="第5名的方案"></p>
+<h1 id="7-个人总结"><a href="#7-个人总结" class="headerlink" title="7 个人总结"></a>7 个人总结</h1><ol>
+<li>这种训练数据未覆盖所有类别的情况，在测试数据变化时比较容易翻车。</li>
+<li>直接用一个3-head模型容易过拟合，对于unseen的分类效果不会好。</li>
+<li>这几个方案较多的是先判断是seen还是unseen、再分别处理。判断seen还是unseen比较多的是用arcface模型、计算二者之间的距离；第一名的方案是直接用sigmoid计算1295类的概率、然后用阈值判断。</li>
+<li>模型、损失、数据三者都对性能提升有很大作用，个人认为只有对数据的理解到位了，才能在模型和损失上作出有效的改进。</li>
+<li>top级选手是真的强，让人大开眼界。</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2020/05/18/KNN算法/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2038,165 +2225,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2018/04/10/平衡搜索树/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="祁可翰">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="祁可翰的Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/04/10/平衡搜索树/" itemprop="url">
-                  平衡搜索树
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-                
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-04-10T11:41:14+08:00">2018-04-10</time>
-            
-
-            
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>MIT《算法导论》课程第10课《平衡搜索树》学习笔记.</p>
-<p>我们希望搜索树的数据结构有$n$个元素，树高为$O(\log n)$。</p>
-<h2 id="红黑树"><a href="#红黑树" class="headerlink" title="红黑树"></a>红黑树</h2><p>一种BST，每个结点都有称为“色域”的额外信息。</p>
-<h2 id="红黑树的特性"><a href="#红黑树的特性" class="headerlink" title="红黑树的特性"></a>红黑树的特性</h2><ol>
-<li>每个结点或红或黑</li>
-<li>根结点和叶子结点都是黑色</li>
-<li>每个红色结点的双亲结点是黑色</li>
-<li>从结点x到x的子孙结点的所有简单路径，具有相同的黑色结点数，称为“黑高度”。</li>
-</ol>
-<p>有n个键的红黑树的高度h满足：</p>
-<p>$$<br>h \le 2 \log(n + 1) = O(\log n)<br>$$</p>
-<p>证明如下。</p>
-<p>将红色结点合并入其双亲结点。</p>
-<p>此时所有的叶子结点有相同的深度h’，即为黑深度（Black height），因为从根结点到每个叶子结点经过同样多的黑色结点，而现在只剩下了黑色结点。</p>
-<p>叶子结点的数目=n+1（由归纳法）</p>
-<p>在2-3-4树中，</p>
-<p>$$<br>2^{h’} \le 叶子结点的数目 \le 4^{h’}<br>$$</p>
-<p>于是：</p>
-<p>$$<br>2^{h’} \le n + 1 \<br>h’ \le \log(n + 1)<br>$$</p>
-<p>而</p>
-<p>$$<br>h’ \ge \frac{1}{2}h（由于从跟结点到叶子结点的简单路径中，黑色结点至少占一半）<br>$$</p>
-<p>因此</p>
-<p>$$<br>h \le 2\log(n+1)<br>$$</p>
-<p>红黑树的查询在$O(\log(n))$时间内完成。</p>
-<h2 id="红黑树的增删"><a href="#红黑树的增删" class="headerlink" title="红黑树的增删"></a>红黑树的增删</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Update(Insert &amp; Delete) -&gt; modify the tree</span><br><span class="line">	BST的操作</span><br><span class="line">	改变结点的颜色</span><br><span class="line">	restructuring of links via rotation</span><br></pre></td></tr></table></figure>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">RB_Insert(x):</span><br><span class="line">	Tree_Insert(x)</span><br><span class="line">	为x选择颜色为红</span><br><span class="line">		问题：父节点可能是红色-&gt;破坏了性质3</span><br><span class="line">		Solution: 将问题造成的破坏上移，重新着色，然后用旋转弥补</span><br></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">RB_Insert_Fixup(T, x):</span><br><span class="line">	Tree_Insert(T, x)</span><br><span class="line">	<span class="keyword">while</span> x.parent.color == RED:</span><br><span class="line">		<span class="keyword">if</span> x.parent == x.parent.parent.left:</span><br><span class="line">			y = x.parent.parent.right</span><br><span class="line">			<span class="comment"># case 1</span></span><br><span class="line">			<span class="keyword">if</span> y.color == RED:</span><br><span class="line">				x.parent.color = BLACK</span><br><span class="line">				y.color = BLACK</span><br><span class="line">				x.parent.parent.color = RED</span><br><span class="line">				x = x.parent.parent</span><br><span class="line">			<span class="comment"># case 2</span></span><br><span class="line">			<span class="keyword">elif</span> x == x.parent.right:</span><br><span class="line">				x = x.parent</span><br><span class="line">				Left_Rotate(T, x)</span><br><span class="line">			<span class="comment"># case 3</span></span><br><span class="line">			<span class="keyword">else</span>:</span><br><span class="line">				x.parent.color = BLACK</span><br><span class="line">				x.parent.parent.color = RED</span><br><span class="line">				Right_Rotate(T, x.parent.parent)</span><br><span class="line">		<span class="keyword">else</span>: </span><br><span class="line">			<span class="comment"># 左右对称</span></span><br><span class="line">	T.root.color = BLACK</span><br></pre></td></tr></table></figure>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">RB_Delete_Fixup(T, x):</span><br><span class="line">	<span class="keyword">while</span> x !=  T.root <span class="keyword">and</span> x.color == BLACK:</span><br><span class="line">		<span class="keyword">if</span> x == x.parent.left:</span><br><span class="line">			w = x.parent.right</span><br><span class="line">			<span class="comment"># case 1</span></span><br><span class="line">			<span class="keyword">if</span> w.color == RED:</span><br><span class="line">				w.color = BLACK</span><br><span class="line">				x.parent.color = RED</span><br><span class="line">				Left_Rotate(T, x.parent)</span><br><span class="line">				w = x.parent.right</span><br><span class="line">			<span class="comment"># case 2</span></span><br><span class="line">			<span class="keyword">if</span> w.left.color == BLACK <span class="keyword">and</span> w.right.color == BLACK:</span><br><span class="line">				w.color = RED</span><br><span class="line">				x = x.parent</span><br><span class="line">			<span class="comment"># case 3</span></span><br><span class="line">			<span class="keyword">else</span>:</span><br><span class="line">				<span class="keyword">if</span> w.right.color == BLACK:</span><br><span class="line">					w.left.color = BLACK</span><br><span class="line">					w.color = RED</span><br><span class="line">					Right_Rotate(T, w)</span><br><span class="line">					w = x.parent.right</span><br><span class="line">				w.color = x.parent.color</span><br><span class="line">				x.parent.color = BLACK</span><br><span class="line">				w.right.color = BLACK</span><br><span class="line">				Left_Rotate(T, x.parent)</span><br><span class="line">				x = T.root</span><br><span class="line">		<span class="keyword">else</span>:</span><br><span class="line">			<span class="comment"># 左右对称</span></span><br><span class="line">	x.color = BLACK</span><br></pre></td></tr></table></figure>
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2244,7 +2272,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">24</span>
+                    <span class="site-state-item-count">25</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>

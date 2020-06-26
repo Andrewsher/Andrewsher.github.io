@@ -103,25 +103,30 @@
 
 
 
-  <meta name="description" content="支持向量机定义在特征空间上的间隔最大的线形分类器，核技巧使得它称为事实上的非线性分类器。核函数表示将输入从输入空间映射到特征空间，得到的特征向量的内积。 线形可分支持向量机给定线形可分训练机，通过间隔最大化或等价求解凸二次规划，得到分离超平面：$$w^0 \cdot x + b^0 = 0$$ 以及相应的分类决策函数：$$f(x)=sign(w^0\cdot x+b^0)$$称为线形SVM。 函数">
+  <meta name="description" content="比赛链接：https://www.kaggle.com/c/bengaliai-cv19  1 赛题解析 孟加拉语字符识别。  每一个字符由3部分组成：grapheme root (共168类)，vowel diacritics (共11类)，consonant diacritics (共7类)。  需要对这3个部分的类别进行预测。 public leaderboard的结果较高，且与大部分本地交">
 <meta name="keywords" content="Machine Learning">
 <meta property="og:type" content="article">
-<meta property="og:title" content="线形可分支持向量机">
-<meta property="og:url" content="https://andrewsher.github.io/2018/08/09/线形可分支持向量机/index.html">
+<meta property="og:title" content="kaggle-Bengali.AI Handwritten Grapheme Classification总结">
+<meta property="og:url" content="https://andrewsher.github.io/2020/06/26/kaggle-Bengali-AI-Handwritten-Grapheme-Classification总结/index.html">
 <meta property="og:site_name" content="祁可翰的Blog">
-<meta property="og:description" content="支持向量机定义在特征空间上的间隔最大的线形分类器，核技巧使得它称为事实上的非线性分类器。核函数表示将输入从输入空间映射到特征空间，得到的特征向量的内积。 线形可分支持向量机给定线形可分训练机，通过间隔最大化或等价求解凸二次规划，得到分离超平面：$$w^0 \cdot x + b^0 = 0$$ 以及相应的分类决策函数：$$f(x)=sign(w^0\cdot x+b^0)$$称为线形SVM。 函数">
+<meta property="og:description" content="比赛链接：https://www.kaggle.com/c/bengaliai-cv19  1 赛题解析 孟加拉语字符识别。  每一个字符由3部分组成：grapheme root (共168类)，vowel diacritics (共11类)，consonant diacritics (共7类)。  需要对这3个部分的类别进行预测。 public leaderboard的结果较高，且与大部分本地交">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-08-09T09:04:01.815Z">
+<meta property="og:image" content="https://www.googleapis.com/download/storage/v1/b/kaggle-user-content/o/inbox%2F4114579%2F5231a0ab7a0bf93611fb6fd3d72c6295%2F1.png?generation=1584591840196431&alt=media">
+<meta property="og:image" content="https://www.googleapis.com/download/storage/v1/b/kaggle-user-content/o/inbox%2F4114579%2F2fd56df85b7442295bc605b10053aac9%2F2.png?generation=1584591905364753&alt=media">
+<meta property="og:image" content="https://www.googleapis.com/download/storage/v1/b/kaggle-user-content/o/inbox%2F1620223%2Fb2143c50d9c92271e7b871912dd171d7%2Fbengali_pipeline%20.jpg?generation=1584447993610250&alt=media">
+<meta property="og:image" content="https://www.googleapis.com/download/storage/v1/b/kaggle-user-content/o/inbox%2F1424766%2F3e968cbc82806b9211bf7609b662a18a%2Fbengali%20arch.001.jpeg?generation=1584456769762003&alt=media">
+<meta property="og:updated_time" content="2020-06-26T11:10:48.979Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="线形可分支持向量机">
-<meta name="twitter:description" content="支持向量机定义在特征空间上的间隔最大的线形分类器，核技巧使得它称为事实上的非线性分类器。核函数表示将输入从输入空间映射到特征空间，得到的特征向量的内积。 线形可分支持向量机给定线形可分训练机，通过间隔最大化或等价求解凸二次规划，得到分离超平面：$$w^0 \cdot x + b^0 = 0$$ 以及相应的分类决策函数：$$f(x)=sign(w^0\cdot x+b^0)$$称为线形SVM。 函数">
+<meta name="twitter:title" content="kaggle-Bengali.AI Handwritten Grapheme Classification总结">
+<meta name="twitter:description" content="比赛链接：https://www.kaggle.com/c/bengaliai-cv19  1 赛题解析 孟加拉语字符识别。  每一个字符由3部分组成：grapheme root (共168类)，vowel diacritics (共11类)，consonant diacritics (共7类)。  需要对这3个部分的类别进行预测。 public leaderboard的结果较高，且与大部分本地交">
+<meta name="twitter:image" content="https://www.googleapis.com/download/storage/v1/b/kaggle-user-content/o/inbox%2F4114579%2F5231a0ab7a0bf93611fb6fd3d72c6295%2F1.png?generation=1584591840196431&alt=media">
 
 
 
 
 
 
-  <link rel="canonical" href="https://andrewsher.github.io/2018/08/09/线形可分支持向量机/"/>
+  <link rel="canonical" href="https://andrewsher.github.io/2020/06/26/kaggle-Bengali-AI-Handwritten-Grapheme-Classification总结/"/>
 
 
 
@@ -131,7 +136,7 @@
   };
 </script>
 
-  <title>线形可分支持向量机 | 祁可翰的Blog</title>
+  <title>kaggle-Bengali.AI Handwritten Grapheme Classification总结 | 祁可翰的Blog</title>
   
 
 
@@ -293,7 +298,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2018/08/09/线形可分支持向量机/">
+    <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2020/06/26/kaggle-Bengali-AI-Handwritten-Grapheme-Classification总结/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="祁可翰">
@@ -310,7 +315,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">线形可分支持向量机
+          <h1 class="post-title" itemprop="name headline">kaggle-Bengali.AI Handwritten Grapheme Classification总结
               
             
           </h1>
@@ -329,7 +334,7 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-09T16:05:17+08:00">2018-08-09</time>
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-06-26T16:29:28+08:00">2020-06-26</time>
             
 
             
@@ -366,41 +371,61 @@
       
 
       
-        <h1 id="支持向量机"><a href="#支持向量机" class="headerlink" title="支持向量机"></a>支持向量机</h1><p>定义在特征空间上的间隔最大的线形分类器，核技巧使得它称为事实上的非线性分类器。核函数表示将输入从输入空间映射到特征空间，得到的特征向量的内积。</p>
-<h1 id="线形可分支持向量机"><a href="#线形可分支持向量机" class="headerlink" title="线形可分支持向量机"></a>线形可分支持向量机</h1><p>给定线形可分训练机，通过间隔最大化或等价求解凸二次规划，得到分离超平面：<br>$$<br>w^0 \cdot x + b^0 = 0<br>$$</p>
-<p>以及相应的分类决策函数：<br>$$<br>f(x)=sign(w^0\cdot x+b^0)<br>$$<br>称为线形SVM。</p>
-<h1 id="函数间隔"><a href="#函数间隔" class="headerlink" title="函数间隔"></a>函数间隔</h1><p>定义超平面关于样本点的函数间隔为：<br>$$<br>\hat{\gamma}_i = y_i(w\cdot x_i+b)<br>$$</p>
-<p>超平面$(w,b)$关于训练集$T$的函数间隔：<br>$$<br>\hat{\gamma}=\min\limits_{i=1,\dots,N} \hat{\gamma}_i<br>$$</p>
-<p>点$x_i$与超平面$(w,b)$之间的距离（几何间隔）：<br>$$<br>\gamma_i=y_i(\frac{w}{||w||}\cdot x_i + \frac{b}{||w||})<br>$$</p>
-<p>其中$||w||$为$w$的$L_2$范数。</p>
-<p>$(w,b)$关于$T$的几何间隔：<br>$$<br>\gamma=\min\limits_{i=1,\dots,N}\gamma_i<br>$$</p>
-<p>易知$\gamma_i=\frac{\hat\gamma_i}{||w||}$，$\gamma=\frac{\hat\gamma}{||w||}$</p>
-<h1 id="间隔最大化"><a href="#间隔最大化" class="headerlink" title="间隔最大化"></a>间隔最大化</h1><p>$$<br>\max\limits_{w, b} \gamma<br>$$</p>
-<p>$$<br>s.t. y_i(\frac{w}{||w||}x_i+\frac{b}{||w||}) \ge \gamma, i=1,\dots,N<br>$$</p>
-<p>或：<br>$$<br>\max\limits_{w,b} \frac{\hat\gamma}{||w||}<br>$$<br>$$<br>s.t. y_i(w\cdot x_i+b)\ge \hat\gamma, i=1,\dots,N<br>$$</p>
-<p>或：<br>$$<br>\min\limits_{w,b} \frac{1}{2}||w||^2<br>$$<br>$$<br>s.t. y_i(w\cdot x_i+b) -1 \ge 0, i=1,\dots,N<br>$$</p>
-<h1 id="线形可分支持向量机——最大间隔法"><a href="#线形可分支持向量机——最大间隔法" class="headerlink" title="线形可分支持向量机——最大间隔法"></a>线形可分支持向量机——最大间隔法</h1><p>输入：训练集$t={(x_1,y_1),\dots,(x_N,y_N)}$（二分类）</p>
-<p>输出：最大间隔分离超平面和决策函数</p>
-<ol>
-<li><p>构造并求解最优化问题<br>$$<br>\min\limits_{w,b} \frac{1}{2}||w||^2<br>$$<br>$$<br>s.t. y_i(w\cdot x_i+b) -1 \ge 0, i=1,\dots,N<br>$$<br>求得最优解$w^0,b^0$</p>
+        <p>比赛链接：<a href="https://www.kaggle.com/c/bengaliai-cv19" target="_blank" rel="noopener">https://www.kaggle.com/c/bengaliai-cv19</a> </p>
+<h1 id="1-赛题解析"><a href="#1-赛题解析" class="headerlink" title="1 赛题解析"></a>1 赛题解析</h1><ul>
+<li><p>孟加拉语字符识别。</p>
 </li>
-<li><p>由此得到分离超平面：<br>$$<br>w^0\cdot x+b^0 =0<br>$$<br>分类决策函数：<br>$$<br>f(x)=sign(w^0x+b^0)<br>$$</p>
+<li><p>每一个字符由3部分组成：grapheme root (共168类)，vowel diacritics (共11类)，consonant diacritics (共7类)。</p>
 </li>
+<li>需要对这3个部分的类别进行预测。</li>
+<li>public leaderboard的结果较高，且与大部分本地交叉验证结果一致；private leaderboard与public leaderboard的排名由很大差异，主要是由于数据的分布不一致，出现了之前未曾出现的组合。</li>
+</ul>
+<h1 id="2-第1名的方案"><a href="#2-第1名的方案" class="headerlink" title="2 第1名的方案"></a>2 <a href="https://www.kaggle.com/c/bengaliai-cv19/discussion/135984" title="第一名的方案" target="_blank" rel="noopener">第1名的方案</a></h1><p><img src="https://www.googleapis.com/download/storage/v1/b/kaggle-user-content/o/inbox%2F4114579%2F5231a0ab7a0bf93611fb6fd3d72c6295%2F1.png?generation=1584591840196431&amp;alt=media" alt="模型总览"></p>
+<p>考虑了所有的$168\times 11\times 8=14784$种情况。</p>
+<p>包含了4个模型，第1个用于判断图像的类别是seen还是unseen，第二个用于对seen作分类，第3、4个用于处理unseen类别。</p>
+<p>集成的时候，根据第1和第3、4个模型判断是属于seen还是unseen，如果是seen则用第2个模型分类，否则用第3、4个模型分类。</p>
+<h2 id="2-1-数据划分"><a href="#2-1-数据划分" class="headerlink" title="2.1 数据划分"></a>2.1 数据划分</h2><p>字符的三个元素分别有168、11和8类，所有的情况就是14784类。这14784类中，在训练数据中出现的有1295类，称为”seen”，剩余的称为”unseen”。</p>
+<p>如果将这1295类的训练集再进行随机划分，则可以得到如下的划分：</p>
+<p><img src="https://www.googleapis.com/download/storage/v1/b/kaggle-user-content/o/inbox%2F4114579%2F2fd56df85b7442295bc605b10053aac9%2F2.png?generation=1584591905364753&amp;alt=media" alt="数据划分"></p>
+<h2 id="2-2-第1个模型：判断seen和unseen"><a href="#2-2-第1个模型：判断seen和unseen" class="headerlink" title="2.2 第1个模型：判断seen和unseen"></a>2.2 第1个模型：判断seen和unseen</h2><p>第1个模型的作用是判断输入图片的类别是seen还是unseen。</p>
+<p>该模型的输出神经元数目为1295，最后的激活函数为sigmoid。如果这1295个神经元的输出至少有一个大于阈值，则认为输入图像为seen，否则为unseen。</p>
+<h2 id="2-3-第2个模型：分类seen"><a href="#2-3-第2个模型：分类seen" class="headerlink" title="2.3 第2个模型：分类seen"></a>2.3 第2个模型：分类seen</h2><p>第2个模型的作用是对seen进行分类，这就是一个使用softmax分类器的1295类的分类器，输入图像，输出1295类”seen”各自的概率值。模型采用efficientnet-b7。</p>
+<h2 id="2-4-第3、4个模型：处理unseen"><a href="#2-4-第3、4个模型：处理unseen" class="headerlink" title="2.4 第3、4个模型：处理unseen"></a>2.4 第3、4个模型：处理unseen</h2><p>这两个模型起的作用是一样的，都是用于处理unseen，输出会进行集成。</p>
+<p>每一个模型包含两个子模型，一个是14784类的分类器，输入生成的图像，输出14784类各自的概率；另一个是CycleGAN，用来做图像风格转换，其生成器输入手写字符图像，生成所需的data-like图像。</p>
+<p>在预测的时候，输入测试集中的手写字符图像，先进行风格转换，然后使用分类器进行分类。</p>
+<h2 id="2-5-小结"><a href="#2-5-小结" class="headerlink" title="2.5 小结"></a>2.5 小结</h2><ol>
+<li>考虑了所有可能的情况；</li>
+<li>按照类别是否在训练数据中出现，分成了seen和unseen，两种类别用不同模型处理；</li>
+<li>使用CycleGAN生成数据，主要用来处理unseen。</li>
 </ol>
-<p>线形可分数据集的最大间隔分离超平面是存在且唯一的。</p>
-<h1 id="支持向量"><a href="#支持向量" class="headerlink" title="支持向量"></a>支持向量</h1><p>在线形可分的情况下，训练数据集的样本点中与分离超平面最近的样本点的实例称为支持向量。</p>
-<p>支持向量：$y_i(w\cdot x_i+b)-1=0$</p>
-<p>对于$y_i=+1$的点，支持向量在超平面$H_1:w\cdot x+b=1$上。</p>
-<p>对于$y_i=-1$的点，支持向量在超平面$H_2:w\cdot x+b=-1$上。</p>
-<h1 id="线形可分支持向量机的对偶算法"><a href="#线形可分支持向量机的对偶算法" class="headerlink" title="线形可分支持向量机的对偶算法"></a>线形可分支持向量机的对偶算法</h1><p>应用拉格朗日对偶性，求解对偶问题，得到原始问题的最优解。</p>
-<p>定义拉格朗日函数：<br>$$<br>L(w,b, \alpha) = \frac{1}{2} ||w||^2 - \sum\limits_{i=1}^{N} \alpha_i y_i (w\cdot x_i + b) + \sum\limits_{i=1}^{N} \alpha_i<br>$$<br>其中$\vec\alpha=(\alpha_1,\dots,\alpha_N)^T$为拉格朗日乘子向量。</p>
-<p>根据拉格朗日对偶性，原始问题的对偶问题是极大极小问题：<br>$$<br>\max\limits_{\alpha} \min\limits_{w,b} L(w, b, \alpha)<br>$$</p>
-<p>首先对$(w, b)$求最小：<br>$$<br>\min\limits_{w,b} L(w, b, \alpha) = - \frac{1}{2} \sum\limits_{i=1}^{N} \sum\limits_{j=1}^{N} \alpha_i \alpha_j y_i y_j (x_i \cdot x_j) + \sum\limits_{i=1}^{N}\alpha_i<br>$$</p>
-<p>对上式求对$\alpha$的极大：<br>$$<br>\min\limits_{\alpha} \frac{1}{2}\sum\limits_{i=1}^{N} \sum\limits_{j=1}^{N} \alpha_i\alpha_i y_iy_j (x_i \cdot x_j) - \sum\limits_{i=1}^{N}\alpha_i<br>$$</p>
-<p>$$<br>s.t. \sum\limits_{i=1}^{N}\alpha_iy_i=0, \alpha_i\ge 0, i=1, \dots, N<br>$$</p>
-<p>如果$\alpha^0=(\alpha^0_1, \dots, \alpha^0_l)^T$是上述对偶最优化问题的解，则存在下标$j$，使得$\alpha^0_j \ge 0$，并可按下式求得原始最优化问题的解$w^0,b^0$：<br>$$<br>w^0 = \sum\limits_{i=1}^{N} \alpha^0_iy_ix_i<br>$$<br>$$<br>b^0=y_j - \sum\limits_{i=1}^{N} \alpha^0_iy_i(x_i \cdot x_j)<br>$$</p>
-<p>于是有分离超平面：<br>$$<br>\sum\limits_{=1}^{N} \alpha^0_i y_i (x \cdot x_i) + b^0 = 0<br>$$</p>
-<p>分类决策函数：<br>$$<br>f(x)=sign(\sum\limits_{i=1}^{N} \alpha^0_i y_i (x \cdot x_i) + b^{*})<br>$$</p>
+<h1 id="3-第2名的方案"><a href="#3-第2名的方案" class="headerlink" title="3 第2名的方案"></a>3 <a href="https://www.kaggle.com/c/bengaliai-cv19/discussion/135966" title="第2名的方案" target="_blank" rel="noopener">第2名的方案</a></h1><ol>
+<li>使用一个3-head模型做分类。注意到CV和LB的gap主要来自grapheme_root和consonant_diacritic，在数据中添加一些consonant_diacritic。</li>
+<li>预测单个字素；使用Fmix而非cutmix。</li>
+<li>为root和consonant单独使用模型进行预测；对consonant使用生成的数据。</li>
+<li>多模型混合，对7个模型结果加权求和。</li>
+</ol>
+<h1 id="4-第3名的方案"><a href="#4-第3名的方案" class="headerlink" title="4 第3名的方案"></a>4 <a href="https://www.kaggle.com/c/bengaliai-cv19/discussion/135982" title="第3名的方案" target="_blank" rel="noopener">第3名的方案</a></h1><p><img src="https://www.googleapis.com/download/storage/v1/b/kaggle-user-content/o/inbox%2F1620223%2Fb2143c50d9c92271e7b871912dd171d7%2Fbengali_pipeline%20.jpg?generation=1584447993610250&amp;alt=media" alt="第3名的方案overview"></p>
+<p>先用计算距离的方式判断输入图像是seen还是unseen，然后跳转到对应的分支。</p>
+<h2 id="4-1-训练"><a href="#4-1-训练" class="headerlink" title="4.1 训练"></a>4.1 训练</h2><ul>
+<li>所有模型用增强后的数据集预训练。</li>
+<li>对于seen分支，在预训练数据集上训练对seen的分类，然后在原始数据集上finetune。</li>
+<li>对于unseen和arcface，在原始数据集上对预训练模型进行训练。</li>
+</ul>
+<h2 id="4-2-推理"><a href="#4-2-推理" class="headerlink" title="4.2 推理"></a>4.2 推理</h2><ul>
+<li>对于arcface，计算训练数据和测试数据之间的最小的余弦相似度，用于判断是seen还是unseen；阈值采用的是训练和验证的embedding feature的最小的余弦相似度。</li>
+<li>如果判断结果是seen，使用共享特征用于seen分支的分类。</li>
+<li>如果是unseen，需要用另外的模型提取特征用于分类。</li>
+</ul>
+<h1 id="5-第4名的方案"><a href="#5-第4名的方案" class="headerlink" title="5 第4名的方案"></a>5 <a href="https://www.kaggle.com/c/bengaliai-cv19/discussion/136982" title="第4名的方案" target="_blank" rel="noopener">第4名的方案</a></h1><p>该方案将前述的seen称为ID (in-dictionary)，unseen称为OOD(out-of-dictionary)。首先是用一个arcface模型计算ID的中心，从而判别测试图像是属于ID还是OOD。对于ID，使用arcface模型进行分类。对于OOD，训练另外的1-head和3-head模型进行分类。</p>
+<h1 id="6-第5名的方案"><a href="#6-第5名的方案" class="headerlink" title="6 第5名的方案"></a>6 <a href="https://www.kaggle.com/c/bengaliai-cv19/discussion/136129" title="第5名的方案" target="_blank" rel="noopener">第5名的方案</a></h1><p>3-head模型，辅助head用arc cos损失</p>
+<p><img src="https://www.googleapis.com/download/storage/v1/b/kaggle-user-content/o/inbox%2F1424766%2F3e968cbc82806b9211bf7609b662a18a%2Fbengali%20arch.001.jpeg?generation=1584456769762003&amp;alt=media" alt="第5名的方案"></p>
+<h1 id="7-个人总结"><a href="#7-个人总结" class="headerlink" title="7 个人总结"></a>7 个人总结</h1><ol>
+<li>这种训练数据未覆盖所有类别的情况，在测试数据变化时比较容易翻车。</li>
+<li>直接用一个3-head模型容易过拟合，对于unseen的分类效果不会好。</li>
+<li>这几个方案较多的是先判断是seen还是unseen、再分别处理。判断seen还是unseen比较多的是用arcface模型、计算二者之间的距离；第一名的方案是直接用sigmoid计算1295类的概率、然后用阈值判断。</li>
+<li>模型、损失、数据三者都对性能提升有很大作用，个人认为只有对数据的理解到位了，才能在模型和损失上作出有效的改进。</li>
+<li>top级选手是真的强，让人大开眼界。</li>
+</ol>
 
       
     </div>
@@ -449,8 +474,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/06/10/感知机学习笔记/" rel="next" title="感知机学习笔记">
-                <i class="fa fa-chevron-left"></i> 感知机学习笔记
+              <a href="/2020/05/18/KNN算法/" rel="next" title="KNN算法和KD树">
+                <i class="fa fa-chevron-left"></i> KNN算法和KD树
               </a>
             
           </div>
@@ -458,10 +483,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/10/21/线形支持向量机/" rel="prev" title="线形支持向量机">
-                线形支持向量机 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -608,7 +629,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#支持向量机"><span class="nav-number">1.</span> <span class="nav-text">支持向量机</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#线形可分支持向量机"><span class="nav-number">2.</span> <span class="nav-text">线形可分支持向量机</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#函数间隔"><span class="nav-number">3.</span> <span class="nav-text">函数间隔</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#间隔最大化"><span class="nav-number">4.</span> <span class="nav-text">间隔最大化</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#线形可分支持向量机——最大间隔法"><span class="nav-number">5.</span> <span class="nav-text">线形可分支持向量机——最大间隔法</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#支持向量"><span class="nav-number">6.</span> <span class="nav-text">支持向量</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#线形可分支持向量机的对偶算法"><span class="nav-number">7.</span> <span class="nav-text">线形可分支持向量机的对偶算法</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#1-赛题解析"><span class="nav-number">1.</span> <span class="nav-text">1 赛题解析</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#2-第1名的方案"><span class="nav-number">2.</span> <span class="nav-text">2 第1名的方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#2-1-数据划分"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 数据划分</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-2-第1个模型：判断seen和unseen"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 第1个模型：判断seen和unseen</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-3-第2个模型：分类seen"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 第2个模型：分类seen</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-4-第3、4个模型：处理unseen"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 第3、4个模型：处理unseen</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-5-小结"><span class="nav-number">2.5.</span> <span class="nav-text">2.5 小结</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#3-第2名的方案"><span class="nav-number">3.</span> <span class="nav-text">3 第2名的方案</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#4-第3名的方案"><span class="nav-number">4.</span> <span class="nav-text">4 第3名的方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#4-1-训练"><span class="nav-number">4.1.</span> <span class="nav-text">4.1 训练</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-2-推理"><span class="nav-number">4.2.</span> <span class="nav-text">4.2 推理</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#5-第4名的方案"><span class="nav-number">5.</span> <span class="nav-text">5 第4名的方案</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#6-第5名的方案"><span class="nav-number">6.</span> <span class="nav-text">6 第5名的方案</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#7-个人总结"><span class="nav-number">7.</span> <span class="nav-text">7 个人总结</span></a></li></ol></div>
             
 
           </div>
