@@ -289,6 +289,219 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2021/04/20/CS144-Lab0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="祁可翰">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="祁可翰的Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2021/04/20/CS144-Lab0/" itemprop="url">
+                  CS144-Lab0
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+                
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2021-04-20T11:58:00+08:00">2021-04-20</time>
+            
+
+            
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <p>开始跟<a href="https://cs144.github.io/" target="_blank" rel="noopener">CS144</a>，这门课的lab很有意思，在博客里面记录。</p>
+<h1 id="Fetch-a-Web-Page"><a href="#Fetch-a-Web-Page" class="headerlink" title="Fetch a Web Page"></a>Fetch a Web Page</h1><ol>
+<li>在浏览器地址栏键入<a href="http://cs144.keithw.org/hello" target="_blank" rel="noopener">http://cs144.keithw.org/hello</a>敲击回车，看到屏幕显示如下的字符：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Hello, CS144!</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>下面用命令行去做和浏览器一样的事情，获取同样的内容。</li>
+</ol>
+<p>键入telnet cs144.keithw.org http，敲击回车，建立一个可靠的字节流，显示如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Trying 104.196.238.229...</span><br><span class="line">Connected to cs144.keithw.org.</span><br><span class="line">Escape character is <span class="string">'^]'</span>.</span><br></pre></td></tr></table></figure>
+<p>键入GET /hello HTTP/1.1敲击回车，确认子路径。</p>
+<p>键入Host: cs144.keithw.org敲击回车，确认host path。</p>
+<p>键入Connection: Close敲击回车，关闭连接。</p>
+<p>最后再敲击一次回车，结束HTTP请求。</p>
+<p>屏幕上显示如下：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">GET /hello HTTP/1.1</span><br><span class="line">Host: cs144.keithw.org</span><br><span class="line">Connection: close</span><br><span class="line"></span><br><span class="line">HTTP/1.1 200 OK</span><br><span class="line">Date: Sat, 10 Apr 2021 07:52:03 GMT</span><br><span class="line">Server: Apache</span><br><span class="line">Last-Modified: Thu, 13 Dec 2018 15:45:29 GMT</span><br><span class="line">ETag: <span class="string">"e-57ce93446cb64"</span></span><br><span class="line">Accept-Ranges: bytes</span><br><span class="line">Content-Length: 14</span><br><span class="line">Connection: close</span><br><span class="line">Content-Type: text/plain</span><br><span class="line"></span><br><span class="line">Hello, CS144!</span><br><span class="line">Connection closed by foreign host.</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>Assignment</li>
+</ol>
+<p>键入：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cs144.keithw.org http</span><br><span class="line">GET /lab0/sunetid HTTP/1.1</span><br><span class="line">Host: cs144.keithw.org</span><br><span class="line">Connection: close</span><br></pre></td></tr></table></figure>
+<p>显示：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">aa@desk:~$ telnet cs144.keithw.org http</span><br><span class="line">Trying 104.196.238.229...</span><br><span class="line">Connected to cs144.keithw.org.</span><br><span class="line">Escape character is <span class="string">'^]'</span>.</span><br><span class="line">GET /lab0/sunetid HTTP/1.1</span><br><span class="line">Host: cs144.keithw.org</span><br><span class="line">Connection: close</span><br><span class="line"></span><br><span class="line">HTTP/1.1 200 OK</span><br><span class="line">Date: Sat, 10 Apr 2021 08:43:50 GMT</span><br><span class="line">Server: Apache</span><br><span class="line">X-You-Said-Your-SunetID-Was: sunetid</span><br><span class="line">X-Your-Code-Is: 208907</span><br><span class="line">Content-length: 111</span><br><span class="line">Vary: Accept-Encoding</span><br><span class="line">Connection: close</span><br><span class="line">Content-Type: text/plain</span><br><span class="line"></span><br><span class="line">Hello! You told us that your SUNet ID was <span class="string">"sunetid"</span>. Please see the HTTP headers (above) <span class="keyword">for</span> your secret code.</span><br><span class="line">Connection closed by foreign host.</span><br></pre></td></tr></table></figure>
+<p>X-Your-Code-Is: 208907</p>
+<h1 id="监听和连接"><a href="#监听和连接" class="headerlink" title="监听和连接"></a>监听和连接</h1><ol>
+<li>输入netcat -v -l -p 9090，开启一个server，开始监听。</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">aa@desk:~$ netcat -v -l -p 9090</span><br><span class="line">Listening on 0.0.0.0 9090</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>在另一个terminal输入：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">aa@desk:~$ telnet localhost 9090</span><br><span class="line">Trying 127.0.0.1...</span><br><span class="line">Connected to localhost.</span><br><span class="line">Escape character is <span class="string">'^]'</span>.</span><br></pre></td></tr></table></figure>
+<p>开启一个client，去连接localhost:9090</p>
+<p>这时前一个terminal有如下输出：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Connection received on localhost 7012</span><br></pre></td></tr></table></figure>
+<p>即前一个terminal的server（netcat）被来自localhost:7012的client（telnet）程序连接。</p>
+<ol start="3">
+<li>在server随便键入一些东西：</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">hello, world!</span><br></pre></td></tr></table></figure>
+<p>在client都可以显示出来。</p>
+<p>反过来也是。</p>
+<ol start="4">
+<li>在server键入 Ctrl-C，这样这个连接就关闭了。但是在client键入Ctrl-C就没用。</li>
+</ol>
+<h1 id="Write-a-network-program-using-an-OS-socket"><a href="#Write-a-network-program-using-an-OS-socket" class="headerlink" title="Write a network program using an OS socket"></a>Write a network program using an OS socket</h1><h2 id="实验目的"><a href="#实验目的" class="headerlink" title="实验目的"></a>实验目的</h2><p>用操作系统预先定义好的对TCP的支持，实现一个webget程序，该程序创建TCP stream socket，然后连接到Web Server，最后获取页面内容。</p>
+<h2 id="实验条件"><a href="#实验条件" class="headerlink" title="实验条件"></a>实验条件</h2><p>操作系统：Ubuntu 20.04</p>
+<p>现有代码见<a href="https://github.com/cs144/sponge" target="_blank" rel="noopener">链接</a>，按照说明文档编译。</p>
+<h2 id="编码要求"><a href="#编码要求" class="headerlink" title="编码要求"></a>编码要求</h2><ul>
+<li>善用<a href="http://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines" target="_blank" rel="noopener">cpp文档</a>和<a href="https://en.cppreference.com/w/" target="_blank" rel="noopener">指南</a></li>
+<li>避免使用malloc/free和new/delete这样的“成对”的操作，这样做是为了避免后面一个操作不会发生，例如在throw一个exception的情况下。应当使用的是在构造函数和析构函数里面完成成对的操作。这种编码风格叫“Resource acquisition is initialization”，RAII，即“资源获取就是初始化”。</li>
+<li>原则上不用原始指针，即“*”，只在有必要的时候用智能指针，如unique_ptr或者shared_ptr。</li>
+<li>避免使用templete、线程、锁、虚函数。</li>
+<li>避免C风格的字符串，即“char* str”，如果有必要用的话使用C++的static_cast。</li>
+<li>用const的引用传递函数参数。</li>
+<li>除非变量需要变化，否则用const类型的变量。</li>
+<li>让每个方法都const，除非需要改变对象。</li>
+<li>避免全局变量，让每个变量具有最小的作用域。</li>
+<li>在提交该作业之前，运行make format统一代码风格。</li>
+<li>用git管理，用频繁的小的commit，每次commit说明改动情况及原因。每次commit应该通过更多的测试样例。小的改动有助于debug，也有助于防作弊。自己的git记得用private。</li>
+<li>仔细阅读<a href="https://cs144.github.io/doc/lab0/" target="_blank" rel="noopener">sponge文档</a>，和libsponge/util目录下的头文件file descriptor.hh, socket.hh, address.hh。</li>
+</ul>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>Linux提供了基于IP的服务，sponge提供了面向TCP的socket，所以这里用TPCSocket就可以了，需要传递的字符串和之前的一样。读取的时候用TCPSocket::eof()判断是否文件结尾，打印所有接收到的字符。最后有10行左右的代码。</p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>下面列出get_URL()中涉及到上述任务的代码。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">TCPSocket tcpsocket;</span><br><span class="line">tcpsocket.connect(Address(host, <span class="string">"http"</span>));</span><br><span class="line"><span class="keyword">const</span> <span class="built_in">string</span> strToSend = <span class="string">"GET "</span> + path + <span class="string">" HTTP/1.1\r\n"</span></span><br><span class="line">    + <span class="string">"Host: "</span> + host + <span class="string">"\r\n"</span></span><br><span class="line">    + <span class="string">"Connection: close\r\n\r\n"</span>;      <span class="comment">// 这里简单地复制前面的实验中用到的命令作为字符串就可以了</span></span><br><span class="line">										<span class="comment">// 这里的Connection: close用来关闭连接，否则收不到eof</span></span><br><span class="line">										<span class="comment">// 如果不用Connection: TCPSocket::shutdown(SHUT_WR)</span></span><br><span class="line">										<span class="comment">// 注意这里最后一定是"\r\n\r\n"而不是"\r\n"</span></span><br><span class="line">tcpsocket.write(strToSend);</span><br><span class="line"><span class="comment">// tcpsocket.shutdown(SHUT_WR);         // 关闭写通道，如果用了Connection:close就不需要</span></span><br><span class="line"><span class="keyword">for</span>(<span class="keyword">auto</span> s = tcpsocket.read(); !tcpsocket.eof(); s = tcpsocket.read()) &#123;</span><br><span class="line">    <span class="comment">// 代码可以写的优雅一点（手动狗头）</span></span><br><span class="line">    <span class="built_in">cout</span> &lt;&lt; s;</span><br><span class="line">&#125;</span><br><span class="line">tcpsocket.close();</span><br></pre></td></tr></table></figure>
+<p>结果：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">aa@desk:/mnt/c/Users/admin/Desktop/CS144/lab0/sponge/build$ ./apps/webget cs144.keithw.org /hello</span><br><span class="line">HTTP/1.1 200 OK</span><br><span class="line">Date: Wed, 14 Apr 2021 13:41:52 GMT</span><br><span class="line">Server: Apache</span><br><span class="line">Last-Modified: Thu, 13 Dec 2018 15:45:29 GMT</span><br><span class="line">ETag: <span class="string">"e-57ce93446cb64"</span></span><br><span class="line">Accept-Ranges: bytes</span><br><span class="line">Content-Length: 14</span><br><span class="line">Connection: close</span><br><span class="line">Content-Type: text/plain</span><br><span class="line"></span><br><span class="line">Hello, CS144!</span><br></pre></td></tr></table></figure>
+<p>通过了嘻嘻</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">aa@desk:/mnt/c/Users/admin/Desktop/CS144/lab0/sponge/build$ make check_webget</span><br><span class="line">[100%] Testing webget...</span><br><span class="line">Test project /mnt/c/Users/admin/Desktop/CS144/lab0/sponge/build</span><br><span class="line">    Start 28: t_webget</span><br><span class="line">1/1 Test <span class="comment">#28: t_webget .........................   Passed    1.18 sec</span></span><br><span class="line"></span><br><span class="line">100% tests passed, 0 tests failed out of 1</span><br><span class="line"></span><br><span class="line">Total Test time (real) =   1.19 sec</span><br><span class="line">[100%] Built target check_webget</span><br></pre></td></tr></table></figure>
+<h1 id="An-in-memory-reliable-byte-stream"><a href="#An-in-memory-reliable-byte-stream" class="headerlink" title="An in-memory reliable byte stream"></a>An in-memory reliable byte stream</h1><h2 id="实验目的-1"><a href="#实验目的-1" class="headerlink" title="实验目的"></a>实验目的</h2><p>在内存里面模拟一个TCP连接，实现提供这些功能的接口。</p>
+<h2 id="实验要求"><a href="#实验要求" class="headerlink" title="实验要求"></a>实验要求</h2><ul>
+<li>遇到EOF的时候结束。</li>
+<li>处理字节流的容器大小受限，满了之后必须读取才能写入。</li>
+<li>需要能处理很长很长的字节流。</li>
+<li>本实验是在内存里面模拟。后面的实验可能就不是在内存里面模拟，而是在不可靠的IP层上进行。</li>
+</ul>
+<h2 id="代码-1"><a href="#代码-1" class="headerlink" title="代码"></a>代码</h2><p>这里用deque实现字节流，也可以用string。指向字节流的指针用的是unique_ptr。</p>
+<p>吐槽：真的离谱，通过t_webget和t_address_dt需要搭梯子，通过t_socket_dt不能用win10自带的ubuntu。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line">ByteStream::ByteStream(<span class="keyword">const</span> <span class="keyword">size_t</span> capacity): </span><br><span class="line">		_stream(), </span><br><span class="line">		_capacity(capacity),</span><br><span class="line">		_availCapacity(capacity), </span><br><span class="line">		_bytesWritten(<span class="number">0</span>), </span><br><span class="line">		_bytesRead(<span class="number">0</span>),</span><br><span class="line">		_input_ended(<span class="literal">false</span>) &#123; <span class="comment">/* &#123; DUMMY_CODE(capacity); &#125; */</span></span><br><span class="line">	_stream.reset(<span class="keyword">new</span> <span class="built_in">deque</span>&lt;<span class="keyword">char</span>&gt;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">size_t</span> ByteStream::write(<span class="keyword">const</span> <span class="built_in">string</span> &amp;data) &#123;</span><br><span class="line">	<span class="keyword">size_t</span> availLen = min(_availCapacity, data.size());</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">size_t</span> indexData = <span class="number">0</span>; indexData &lt; availLen; indexData++) &#123;</span><br><span class="line">		_stream-&gt;emplace_back(data[indexData]);</span><br><span class="line">	&#125;</span><br><span class="line">	_availCapacity -= availLen;</span><br><span class="line">	_bytesWritten += availLen;</span><br><span class="line">	<span class="keyword">return</span> availLen;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//! \param[in] len bytes will be copied from the output side of the buffer</span></span><br><span class="line"><span class="built_in">string</span> ByteStream::peek_output(<span class="keyword">const</span> <span class="keyword">size_t</span> len) <span class="keyword">const</span> &#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="built_in">std</span>::<span class="built_in">string</span>(_stream-&gt;begin(), _stream-&gt;begin() + min(min(len, _capacity - _availCapacity), _stream-&gt;size()));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//! \param[in] len bytes will be removed from the output side of the buffer</span></span><br><span class="line"><span class="keyword">void</span> ByteStream::pop_output(<span class="keyword">const</span> <span class="keyword">size_t</span> len) &#123; <span class="comment">// &#123; DUMMY_CODE(len); &#125;</span></span><br><span class="line">	<span class="keyword">size_t</span> availLen = min(len, _capacity - _availCapacity);</span><br><span class="line">	<span class="keyword">for</span>(<span class="keyword">size_t</span> indexData = <span class="number">0</span>; indexData &lt; availLen; indexData++) &#123;</span><br><span class="line">		_stream-&gt;pop_front();</span><br><span class="line">	&#125;</span><br><span class="line">	_bytesRead += availLen;</span><br><span class="line">	_availCapacity += availLen;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//! Read (i.e., copy and then pop) the next "len" bytes of the stream</span></span><br><span class="line"><span class="comment">//! \param[in] len bytes will be popped and returned</span></span><br><span class="line"><span class="comment">//! \returns a string</span></span><br><span class="line"><span class="built_in">std</span>::<span class="built_in">string</span> ByteStream::read(<span class="keyword">const</span> <span class="keyword">size_t</span> len) &#123;</span><br><span class="line">	<span class="keyword">size_t</span> availLen = min(len, _capacity - _availCapacity);</span><br><span class="line">	<span class="built_in">std</span>::<span class="built_in">string</span> res = peek_output(availLen);</span><br><span class="line">	pop_output(availLen);</span><br><span class="line">	<span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">void</span> ByteStream::end_input() &#123; _input_ended = <span class="literal">true</span>;&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">bool</span> ByteStream::input_ended() <span class="keyword">const</span>  &#123; <span class="comment">//&#123; return &#123;&#125;; &#125;</span></span><br><span class="line">	<span class="keyword">return</span> _input_ended;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">size_t</span> ByteStream::buffer_size() <span class="keyword">const</span> &#123; <span class="comment">//&#123; return &#123;&#125;; &#125;</span></span><br><span class="line">	<span class="keyword">return</span> _capacity - _availCapacity;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">bool</span> ByteStream::buffer_empty() <span class="keyword">const</span> &#123; <span class="comment">// &#123; return &#123;&#125;; &#125;</span></span><br><span class="line">	<span class="keyword">if</span>(_availCapacity == _capacity) <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">	<span class="keyword">else</span> <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">bool</span> ByteStream::eof() <span class="keyword">const</span> &#123; <span class="keyword">return</span> input_ended() &amp;&amp; buffer_empty(); &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">size_t</span> ByteStream::bytes_written() <span class="keyword">const</span> &#123; <span class="comment">// &#123; return &#123;&#125;; &#125;</span></span><br><span class="line">	<span class="keyword">return</span> _bytesWritten;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">size_t</span> ByteStream::bytes_read() <span class="keyword">const</span> &#123; <span class="keyword">return</span> _bytesRead; &#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">size_t</span> ByteStream::remaining_capacity() <span class="keyword">const</span> &#123; <span class="comment">// &#123; return &#123;&#125;; &#125;</span></span><br><span class="line">	<span class="keyword">return</span> _availCapacity;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>通过了</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">cs144@cs144vm:/media/sf_share/sponge/build$ make check_lab0</span><br><span class="line">[100%] Testing Lab 0...</span><br><span class="line">Test project /media/sf_share/sponge/build</span><br><span class="line">    Start 23: t_byte_stream_construction</span><br><span class="line">1/9 Test <span class="comment">#23: t_byte_stream_construction .......   Passed    0.01 sec</span></span><br><span class="line">    Start 24: t_byte_stream_one_write</span><br><span class="line">2/9 Test <span class="comment">#24: t_byte_stream_one_write ..........   Passed    0.01 sec</span></span><br><span class="line">    Start 25: t_byte_stream_two_writes</span><br><span class="line">3/9 Test <span class="comment">#25: t_byte_stream_two_writes .........   Passed    0.01 sec</span></span><br><span class="line">    Start 26: t_byte_stream_capacity</span><br><span class="line">4/9 Test <span class="comment">#26: t_byte_stream_capacity ...........   Passed    0.99 sec</span></span><br><span class="line">    Start 27: t_byte_stream_many_writes</span><br><span class="line">5/9 Test <span class="comment">#27: t_byte_stream_many_writes ........   Passed    0.01 sec</span></span><br><span class="line">    Start 28: t_webget</span><br><span class="line">6/9 Test <span class="comment">#28: t_webget .........................   Passed    6.08 sec</span></span><br><span class="line">    Start 50: t_address_dt</span><br><span class="line">7/9 Test <span class="comment">#50: t_address_dt .....................   Passed    5.02 sec</span></span><br><span class="line">    Start 51: t_parser_dt</span><br><span class="line">8/9 Test <span class="comment">#51: t_parser_dt ......................   Passed    0.01 sec</span></span><br><span class="line">    Start 52: t_socket_dt</span><br><span class="line">9/9 Test <span class="comment">#52: t_socket_dt ......................   Passed    0.01 sec</span></span><br><span class="line"></span><br><span class="line">100% tests passed, 0 tests failed out of 9</span><br><span class="line"></span><br><span class="line">Total Test time (real) =  12.25 sec</span><br><span class="line">[100%] Built target check_lab0</span><br></pre></td></tr></table></figure>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2020/06/26/kaggle-Bengali-AI-Handwritten-Grapheme-Classification总结/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -2047,184 +2260,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="https://andrewsher.github.io/2018/06/10/感知机学习笔记/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="祁可翰">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="祁可翰的Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/10/感知机学习笔记/" itemprop="url">
-                  感知机学习笔记
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-                
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-10T21:24:01+08:00">2018-06-10</time>
-            
-
-            
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="感知机"><a href="#感知机" class="headerlink" title="感知机"></a>感知机</h1><p>$$<br>f(x)=sign(w \cdot x + b)<br>$$</p>
-<p>其中，w，b是感知机的模型参数，$w \in R^n$是权值，$ b \in R $是偏置。</p>
-<p>$$<br>sign(x) =<br>\begin{cases}<br>+1,&amp;x \ge 0 \<br>-1, &amp;x \lt 0<br>\end{cases}<br>$$</p>
-<p>这是一种线性分类模型，属于判别模型。</p>
-<p>对它的几何解释：$w \cdot x + b = 0$对应$R^n$中的一个超平面，将特征空间分为两部分；$w$是法向量，$b$是截距。</p>
-<h1 id="数据集的线形可分性"><a href="#数据集的线形可分性" class="headerlink" title="数据集的线形可分性"></a>数据集的线形可分性</h1><p>设数据集：<br>$$<br>T = { (x_1, y_1), \dots, (x_N, y_N)}<br>$$</p>
-<p>如果在$R^n$中，存在$w \cdot x + b = 0$的超平面，将正负实例完全正确地划分到超平面的两侧，则称$T$为线形可分，否则为线型不可分。</p>
-<h1 id="对-x-0-的分类"><a href="#对-x-0-的分类" class="headerlink" title="对$x_0$的分类"></a>对$x_0$的分类</h1><p>$x_0$到超平面$S$的距离：$\frac{1}{||w||}|w\cdot x_0+b|$，而对于误分类的点，有$y_i(w \cdot x_i + b) \lt 0$。于是误分类的总距离：</p>
-<p>$$<br>-\frac{1}{||w||} \sum\limits_{x_i \in M}y_i(w\cdot w_i + b)<br>$$</p>
-<p>Loss function:</p>
-<p>$$<br>L(w, b) = -\sum\limits_{x_i \in M}y_i(w\cdot w_i + b)<br>$$</p>
-<p>其中$M$是误分类点的集合。</p>
-<h1 id="优化过程"><a href="#优化过程" class="headerlink" title="优化过程"></a>优化过程</h1><p>$$<br>\min \limits_{w, b} -\sum\limits_{x_i \in M} y_i(w\cdot x_i + b)<br>$$</p>
-<p>while 存在误分类点:<br>  随机选择误分类点$(x_i, y_i)$<br>  $w$ := $w + \eta y_ix_i$<br>  $b$ := $b + \eta y_i$</p>
-<h1 id="Novikoff定理"><a href="#Novikoff定理" class="headerlink" title="Novikoff定理"></a>Novikoff定理</h1><p>（1）$\exists || \hat w _{opt} ||= 1$的超平面</p>
-<p>$$<br>\hat w_{opt} \cdot \hat{x} + \hat{b}_{opt} = 0<br>$$</p>
-<p>将线形可分的数据集$T$完全正确地分开；且</p>
-<p>$$<br>\exists \gamma \gt 0, \forall i = 1, 2, \dots, N<br>$$</p>
-<p>，有$y_i(\hat{w}_{opt} \cdot \hat{x}_i) = y_i(w_{opt}\cdot x_i + b_{opt}) \ge \gamma$</p>
-<p>（2）令$R = \max \limits_{1 \le i \le N} || \hat{x}_i||$，则感知机算法原始形式在$T$上的误分类次数$k \le \left( \frac{R}{\gamma} \right)^2$</p>
-<h1 id="感知机学习算法的对偶形式"><a href="#感知机学习算法的对偶形式" class="headerlink" title="感知机学习算法的对偶形式"></a>感知机学习算法的对偶形式</h1><p>感知机模型：$f(x) = sign \left(\sum \limits_{j=1} ^{N} \alpha_j y_j x_j \cdot x + b\right)$，其中$\alpha = (\alpha_1, \alpha_2, \dots, \alpha_n)^T$。</p>
-<p>（1）$\alpha := 0, b := 0$</p>
-<p>（2）若存在误分类的$(x_i, y_i)$，则$\alpha_i := \alpha_i + \eta$，$b := b + \eta y_i$。</p>
-<p>（3）重复（2），直到没有误分类。</p>
-<h1 id="证明：样本集-T-线形可分的充要条件是正实例的凸壳与负实例的凸壳互不相交"><a href="#证明：样本集-T-线形可分的充要条件是正实例的凸壳与负实例的凸壳互不相交" class="headerlink" title="证明：样本集$T$线形可分的充要条件是正实例的凸壳与负实例的凸壳互不相交"></a>证明：样本集$T$线形可分的充要条件是正实例的凸壳与负实例的凸壳互不相交</h1><p>$S={x_1, x_2, \dots, x_k} \subset R^n$</p>
-<p>$S$的凸壳</p>
-<p>$$<br>conv(S) = \left\{  x = \sum\limits_{i=1}^k \lambda_ix_i | \sum\limits_{i=1}^k\lambda_i = 1, \lambda_i \ge 0, i = 1, 2, \dots, k \right\}<br>$$</p>
-<p>证明：分$T$为正实例$T_+$和负实例$T_-$，对应的凸壳分别为$conv(T_+)$和$conv(T_-)$。</p>
-<p>(1) 若$T$线形可分，则有超平面$wx+b=0$满足条件。</p>
-<p>对于$T_+$中的$x_i$，有</p>
-<p>$$<br>wx_i+b=\epsilon_i \gt 0<br>$$</p>
-<p>对于$conv(T_+)$中的$t_+$，有</p>
-<p>$$<br>wt_++b = \sum\limits_{i=1}^{k} \lambda_i\epsilon_i + b \gt 0<br>$$</p>
-<p>同理，对于$conv(T_-)$中的$t_-$，有$wt_-+b \lt 0$。</p>
-<p>显然，同一个式子不能同时大于0和小于0，即以上两式不可能同时成立，即不存在$t_0$使得$t_0 \in conv(T_+) \bigwedge t_0 \in conv(T_-)$，即$conv(T_+) \bigcap conv(T_-) = \emptyset$。</p>
-<p>(2)设$||conv(T_+), conv(T_-)|| = \min ||x_+, x_-|| , \forall x_+ \in conv(T_+), \forall x \in conv(T_-)$，并记对应的$x_+, x_-$。</p>
-<p>记$w = x_+ - x_-, b = - \frac{x_+ \cdot x_+ - x_- \cdot x_-}{2}$。</p>
-<p>易知$T_+ \subseteq conv(T_+)， T_- \subseteq conv(T_-)$。</p>
-<p>于是$\forall x_i \in T_+,$</p>
-<p>$$<br>wx_i+b = x_+x_i - x_-x_i - \frac{x_+x_+-x_-x_-}{2} = \frac{||x_–x_i||^2 - ||x_+-x_i||^2}{2}<br>$$</p>
-<p>由于$x_i\in T_+ \subseteq conv(T_+),$</p>
-<p>$$<br>||x_i, x_-|| \gt ||x_i, x_+||<br>$$</p>
-<p>$$<br>\therefore wx_i+b \gt 0<br>$$</p>
-<p>同理，$\forall x_j \in T_-, wx_j+b \lt 0$</p>
-<p>于是，存在超平面$wx+b=0$将$T$正确分开，即$T$线形可分。</p>
-<p>证毕。</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2272,7 +2307,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">25</span>
+                    <span class="site-state-item-count">26</span>
                     <span class="site-state-item-name">posts</span>
                   </a>
                 </div>
@@ -2295,7 +2330,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">4</span>
+                      
+                    
+                    <span class="site-state-item-count">5</span>
                     <span class="site-state-item-name">tags</span>
                   </a>
                 </div>
@@ -2349,7 +2386,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2020</span>
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
   <span class="with-love" id="animate">
     <i class="fa fa-user"></i>
   </span>
@@ -2538,9 +2575,9 @@
   
     
       
-        
-      
     
+      
+        
       
     
       
