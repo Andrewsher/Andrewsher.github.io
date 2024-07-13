@@ -47,14 +47,14 @@ layout: default
       <section class="page__content" itemprop="text">
         {{ content }}
 
-        {% if page.citation and page.paperurl and page.slidesurl %}
-          <p style="font-size: smaller">Recommended citation: {{ page.citation }}<br /><a href="{{ page.paperurl }}">Download Paper</a> | <a href="{{ page.slidesurl }}">Download Slides</a></p>
-        {% elsif page.citation and page.paperurl %}
-          <p style="font-size: smaller">Recommended citation: {{ page.citation }}<br /><a href="{{ page.paperurl }}">Download Paper</a></p>
-        {% elsif page.citation and page.slidesurl %}
-          <p style="font-size: smaller">Recommended citation: {{ page.citation }}<br /><a href="{{ page.slidesurl }}">Download Slides</a></p>
-        {% elsif page.citation %}
-          <p style="font-size: smaller">Recommended citation: {{ page.citation }}</p>
+        {% if page.codeurl and page.paperurl and page.slidesurl %}
+          <p style="font-size: smaller"><a href="{{ page.codeurl }}">Code</a> | <a href="{{ page.paperurl }}">Download Paper</a> | <a href="{{ page.slidesurl }}">Download Slides</a></p>
+        {% elsif page.codeurl and page.paperurl %}
+          <p style="font-size: smaller"><a href="{{ page.codeurl }}">Code</a> | <a href="{{ page.paperurl }}">Download Paper</a></p>
+        {% elsif page.codeurl and page.slidesurl %}
+          <p style="font-size: smaller"><a href="{{ page.codeurl }}">Code</a> | <a href="{{ page.slidesurl }}">Download Slides</a></p>
+        {% elsif page.codeurl %}
+          <p style="font-size: smaller"><a href="{{ page.codeurl }}">Code</a></p>
         {% elsif page.slidesurl %}
           <p style="font-size: smaller"><a href="{{ page.slidesurl }}">Download Slides</a></p>
         {% endif %}
