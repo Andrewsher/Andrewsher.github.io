@@ -7,7 +7,7 @@ redirect_from:
   - /about.html
 ---
 
-I am currently a PhD student at Stony Brook University. I obtained degree of Master of Engineering from University of Chinese Academy of Sciences, and degree of Bachelar of Engieer from Zhejiang University.
+I am currently a PhD student at Stony Brook University. I obtained degree of Master of Engineering from University of Chinese Academy of Sciences, and degree of Bachelar of Engineering from Zhejiang University.
 
 Education
 ------
