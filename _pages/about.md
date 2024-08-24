@@ -7,16 +7,17 @@ redirect_from:
   - /about.html
 ---
 
-I am currently a data engineer at Stori. I obtained degree of Master of Engineering from University of Chinese Academy of Sciences, and degree of Bachelar of Engieer from Zhejiang University.
+I am currently a PhD student at Stony Brook University. I obtained degree of Master of Engineering from University of Chinese Academy of Sciences, and degree of Bachelar of Engieer from Zhejiang University.
 
 Education
 ------
-- Master of Engineering in Computer Technology, 2021, [University of Chinese Academy of Sciences](https://english.ucas.ac.cn/)
-- Bachelor of Engineering in Measurement Control Technology and Instruments, 2017, [Zhejiang University](https://www.zju.edu.cn/english/)
+- PhD student in Biomedical Informatics, 2024.8-present, [Stony Brook University](https://www.stonybrook.edu/)
+- Master of Engineering in Computer Technology, 2018.9-2021.7, [University of Chinese Academy of Sciences](https://english.ucas.ac.cn/)
+- Bachelor of Engineering in Measurement Control Technology and Instruments, 2013.9-2017.7, [Zhejiang University](https://www.zju.edu.cn/english/)
 
 Experiences
 ------
-- Data Engineer at [Storicard](https://www.storicard.com/)
-- Software Development Engineer at [Amazon](https://www.amazon.com/)
-- Research Intern at [Tencent](https://www.tencent.com/en-us/index.html)
+- Data Engineer, 2023.4-2024.7, [Stori](https://www.storicard.com/)
+- Software Development Engineer, 2021.8-2023.2, [Amazon](https://www.amazon.com/)
+- Research Intern, 2020.6-2020.9 [Tencent](https://www.tencent.com/en-us/index.html)
 
