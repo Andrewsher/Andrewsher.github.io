@@ -21,3 +21,10 @@ Experiences
 - Software Development Engineer, 2021.8-2023.2, [Amazon](https://www.amazon.com/)
 - Research Intern, 2020.6-2020.9 [Tencent](https://www.tencent.com/en-us/index.html)
 
+Publications
+------
+Please see my full paper list in [Google Scholar](https://scholar.google.com/citations?user=H6mDo6MAAAAJ).
+
+Resume
+------
+You can find my Resume [here](files/Resume.pdf).
