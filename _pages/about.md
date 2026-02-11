@@ -19,6 +19,3 @@ Publications
 ------
 Please see my full paper list in [Google Scholar](https://scholar.google.com/citations?user=H6mDo6MAAAAJ).
 
-Resume
-------
-You can find my Resume [here](files/Resume.pdf).
